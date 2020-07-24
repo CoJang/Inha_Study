@@ -143,32 +143,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			switch (singleton.GetSceneManager()->GetInstance()->GetType())
 			{
-			case TITLE:
-			{
-				static wstring input;
-				if (wParam != VK_RETURN && wParam != VK_BACK)
+				case TITLE:
 				{
-					input += wParam;
-					singleton.GetSceneManager()->GetInstance()->SetID(input);
+					static wstring input;
+					if (wParam != VK_RETURN && wParam != VK_BACK)
+					{
+						input += wParam;
+						singleton.GetSceneManager()->GetInstance()->SetID(input);
+					}
+					else if (wParam == VK_BACK && input.size() > 0)
+					{
+						input.erase(input.begin() + input.size() - 1);
+						singleton.GetSceneManager()->GetInstance()->SetID(input);
+					}
+					else
+					{
+						singleton.GetSceneManager()->GetInstance()->SetID(input);
+						input = TEXT("");
+					}
 				}
-				else if (wParam == VK_BACK && input.size() > 0)
-				{
-					input.erase(input.begin() + input.size() - 1);
-					singleton.GetSceneManager()->GetInstance()->SetID(input);
-				}
-				else
-				{
-					singleton.GetSceneManager()->GetInstance()->SetID(input);
-					input = TEXT("");
-				}
-			}
-			break;
-		case GAME:
-			break;
-		case GAMEOVER:
-			break;
-		} // end of switch(manager.GetInstance()->GetType())
-	} // end of WM_CHAR:
+				break;
+			case GAME:
+				break;
+			case GAMEOVER:
+				break;
+		} // end of switch(singleton.GetSceneManager()->GetInstance()->GetType())
+	} // end of WM_KEYDOWN:
 	break;
 	case WM_LBUTTONUP:
 		{
