@@ -31,6 +31,18 @@ Player::~Player()
 
 void Player::Render(HDC hdc)
 {
+	if (prevPos.x != Pos.x || prevPos.y != Pos.y)
+	{
+		int PivotX = 33; int PivotY = 60; int r = 10;
+		RECT tempRgn = { prevPos.x + PivotX - r, prevPos.y + PivotY - r, prevPos.x + PivotX + r, prevPos.y + PivotY + r };
+		FootPrints.push_back(tempRgn);
+	}
+	for (int i = 0; i < FootPrints.size(); i++)
+	{
+		//SetRgnPixels(hdc, FootPrints[i], RGB(255, 0, 0));
+		Rectangle(hdc, FootPrints[i].left, FootPrints[i].top, FootPrints[i].right, FootPrints[i].bottom);
+	}
+
 	HDC buffer;
 	HBITMAP oldbuffer;
 	COLORREF Filter = RGB(255, 0, 255);
@@ -46,6 +58,13 @@ void Player::Render(HDC hdc)
 
 	SelectObject(buffer, oldbuffer);
 	DeleteDC(buffer);
+}
+
+void Player::SetRgnPixels(HDC hdc, RECT region, COLORREF color)
+{
+	for(int i = region.left; i <= region.right; i++)
+		for(int j = region.top; j <= region.bottom; j++)
+			SetPixel(hdc, i, j, color);
 }
 
 void Player::UpdateFrame()
