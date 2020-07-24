@@ -22,7 +22,10 @@ Player::Player()
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
 	CharSize = 2;
+
 	prevPos = Pos;
+	Max_Print = 25;
+	PrintDist = 15;
 }
 
 Player::~Player()
@@ -31,16 +34,26 @@ Player::~Player()
 
 void Player::Render(HDC hdc)
 {
-	if (prevPos.x != Pos.x || prevPos.y != Pos.y)
+	if (prevPos.x + PrintDist < Pos.x || prevPos.x - PrintDist > Pos.x ||
+		prevPos.y + PrintDist < Pos.y || prevPos.y - PrintDist > Pos.y)
 	{
-		int PivotX = 33; int PivotY = 60; int r = 10;
-		RECT tempRgn = { prevPos.x + PivotX - r, prevPos.y + PivotY - r, prevPos.x + PivotX + r, prevPos.y + PivotY + r };
-		FootPrints.push_back(tempRgn);
+		for (int i = 0; i < Max_Print; i++)
+		{
+			if (!FootPrints[i].IsActived())
+			{
+				FootPrints[i].SetState(true);
+				FootPrints[i].SetPos(prevPos);
+				break;
+			}
+		}
 	}
-	for (int i = 0; i < FootPrints.size(); i++)
+
+	for (int i = 0; i < Max_Print; i++)
 	{
-		//SetRgnPixels(hdc, FootPrints[i], RGB(255, 0, 0));
-		Rectangle(hdc, FootPrints[i].left, FootPrints[i].top, FootPrints[i].right, FootPrints[i].bottom);
+		if (FootPrints[i].IsActived())
+		{
+			FootPrints[i].Render(hdc);
+		}
 	}
 
 	HDC buffer;
@@ -78,9 +91,17 @@ void Player::UpdateFrame()
 void Player::Update()
 {
 	UpdateFrame();
-	prevPos = Pos;
+
+	if(prevPos.x + PrintDist < Pos.x || prevPos.x - PrintDist > Pos.x ||
+		prevPos.y + PrintDist < Pos.y || prevPos.y - PrintDist > Pos.y)
+		prevPos = Pos;
+
 	Pos.x = Pos.x + (Dir.x * Speed);
 	Pos.y = Pos.y + (Dir.y * Speed);
+
+	for (int i = 0; i < Max_Print; i++)
+		if (FootPrints[i].IsActived())
+			 FootPrints[i].Update();
 }
 
 void Player::SetPlayerDir(POINT input)
@@ -106,7 +127,36 @@ void Player::SetPlayerDir(POINT input)
 	else
 	{
 		Anim_Frame_Cur = Anim_Frame_Min;
-		Dir.x = 0;
-		Dir.y = 0;
+		Dir.x = 0; Dir.y = 0;
 	}
+}
+
+FootPrint::FootPrint()
+{
+	Pivot.x = 33; Pivot.y = 60; r = 10;
+	Rgn = { Pos.x + Pivot.x - r, Pos.y + Pivot.y - r, Pos.x + Pivot.x + r, Pos.y + Pivot.y + r };
+	LifeTime = 2000; IsActive = false; Life = LifeTime;
+	color = RGB(255, 0, 0);
+}
+
+void FootPrint::Render(HDC hdc)
+{
+	Rectangle(hdc, Rgn.left, Rgn.top, Rgn.right, Rgn.bottom);
+}
+
+void FootPrint::Update()
+{
+	if (Life <= 0)
+	{
+		IsActive = false;
+		Life = LifeTime;
+		Pos = { 0, 0 };
+		Rgn = { Pos.x + Pivot.x - r, Pos.y + Pivot.y - r, Pos.x + Pivot.x + r, Pos.y + Pivot.y + r };
+	}
+	else
+	{
+		Life -= ElapseTime;
+		Rgn = { Pos.x + Pivot.x - r, Pos.y + Pivot.y - r, Pos.x + Pivot.x + r, Pos.y + Pivot.y + r };
+	}
+
 }

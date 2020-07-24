@@ -5,11 +5,24 @@
 class FootPrint : Objects
 {
 private:
+	int r;
 	RECT Rgn;
 	COLORREF color;
+	POINT Pivot;
+
+	int LifeTime;
+	int Life;
+	bool IsActive;
 public:
-	FootPrint() {};
-	~FootPrint() {};  
+	FootPrint();
+	~FootPrint() {};
+
+	int GetR() { return r; };
+	void Render(HDC hdc);
+	void Update();
+	bool IsActived() { return IsActive; };
+	void SetState(bool input) { IsActive = input; };
+	void SetPos(POINT input) { Pos = input; };
 };
 
 class Player : public Objects
@@ -25,7 +38,9 @@ private:
 	float CharSize;
 
 	POINT prevPos;
-	vector<RECT> FootPrints;
+	int Max_Print;
+	FootPrint FootPrints[25];
+	int PrintDist;
 public:
 	Player();
 	~Player();
