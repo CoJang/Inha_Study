@@ -21,6 +21,8 @@ Player::Player()
 
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
+	CharSize = 2;
+	prevPos = Pos;
 }
 
 Player::~Player()
@@ -39,7 +41,7 @@ void Player::Render(HDC hdc)
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
 
-	TransparentBlt(hdc, Pos.x, Pos.y, Sprite_Size.x * 2, Sprite_Size.y * 2,
+	TransparentBlt(hdc, Pos.x, Pos.y, Sprite_Size.x * CharSize, Sprite_Size.y * CharSize,
 		buffer, Start.x, Start.y, Sprite_Size.x, Sprite_Size.y, Filter);
 
 	SelectObject(buffer, oldbuffer);
@@ -57,6 +59,7 @@ void Player::UpdateFrame()
 void Player::Update()
 {
 	UpdateFrame();
+	prevPos = Pos;
 	Pos.x = Pos.x + (Dir.x * Speed);
 	Pos.y = Pos.y + (Dir.y * Speed);
 }

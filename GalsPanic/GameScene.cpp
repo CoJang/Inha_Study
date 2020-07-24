@@ -50,6 +50,17 @@ void GameScene::Update()
 	MainChar->Update();
 }
 
+void GameScene::ResetScene()
+{
+	score = 0;
+	myFont = CreateFont(20, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, TEXT("Valorant"));
+	Life = LIFE_MAX;
+	Timer = 0;
+
+	GenPos = { 55, 55 };
+	MainChar->SetPos({ 0, 0 });
+}
+
 void GameScene::GenerateEnemy()
 {
 	if (Timer > GenTime)
@@ -79,12 +90,23 @@ void GameScene::DrawButtons()
 
 ButtonType GameScene::CheckClick(POINT mpos, int flag)
 {
-
 	return UNKNOWN;
 }
 
 void GameScene::CheckKeyDown(WPARAM wParam)
 {
+	static float CharSize = 2.0f;
+	if (GetKeyState(VK_NUMPAD8) & 0x8000)
+	{
+		CharSize += 0.1f;
+		MainChar->SetPlayerSize(CharSize);
+	}
+	else if (GetKeyState(VK_NUMPAD2) & 0x8000)
+	{
+		CharSize -= 0.1f;
+		MainChar->SetPlayerSize(CharSize);
+	}
+
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
 		MainChar->SetPlayerDir({ -1, 0 });

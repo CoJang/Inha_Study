@@ -24,6 +24,7 @@ public:
 
 	void Update();
 	void Render();
+	void ResetScene();
 	void FileSave(wstring ID, int Score);
 	void FileLoad(TCHAR* dstFileName);
 	ButtonType CheckClick(POINT mpos, int flag);

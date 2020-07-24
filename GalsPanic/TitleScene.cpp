@@ -32,6 +32,13 @@ void TitleScene::Update()
 
 }
 
+void TitleScene::ResetScene()
+{
+	ID = TEXT("Unknown");
+	Timer = 0;
+	myFont = CreateFont(30, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, TEXT("Valorant"));
+}
+
 void TitleScene::ShowID()
 {
 	Timer += ElapseTime;

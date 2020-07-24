@@ -31,6 +31,7 @@ public:
 
 	void Render();
 	void Update();
+	void ResetScene();
 	void GenerateEnemy();
 };
 

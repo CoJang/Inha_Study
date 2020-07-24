@@ -12,6 +12,9 @@ private:
 
 	POINT Start;
 	int Speed;
+	float CharSize;
+
+	POINT prevPos;
 public:
 	Player();
 	~Player();
@@ -21,5 +24,7 @@ public:
 	void Update();
 
 	void SetPlayerDir(POINT input);
+	void SetPlayerSize(float input) { CharSize = input; };
+	float GetPlayerSize() { return CharSize; };
 };
 

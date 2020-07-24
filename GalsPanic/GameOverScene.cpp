@@ -58,6 +58,14 @@ void GameOverScene::Render()
 	SelectObject(*hdc, oldFont);
 }
 
+void GameOverScene::ResetScene()
+{
+	myFont = CreateFont(30, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, TEXT("Valorant"));
+	Loadstr.clear();
+	ScoreList.clear();
+	IDList.clear();
+}
+
 void GameOverScene::FileSave(wstring ID, int Score)
 {
 	wofstream DstFile;
