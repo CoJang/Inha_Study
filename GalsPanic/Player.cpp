@@ -4,7 +4,7 @@
 
 Player::Player()
 {
-	Pos = { 0, 0 }; Dir = { 0, 0 }; Speed = 5;
+	Pos = { 0, 0 }; Dir = { 0, 0 }; Speed = 10;
 	
 	ImagePath = TEXT("images/character.bmp");
 	hImage = (HBITMAP)LoadImage(NULL, ImagePath.c_str(), 
@@ -24,16 +24,18 @@ Player::Player()
 	CharSize = 2;
 
 	prevPos = Pos;
-	Max_Print = 25;
+	Max_Print = 99;
 	PrintDist = 15;
 }
 
-Player::~Player()
-{
-}
+Player::~Player(){}
 
 void Player::Render(HDC hdc)
 {
+	for (int i = 0; i < Max_Print; i++)
+		if (FootPrints[i].IsActived())
+			 FootPrints[i].Render(hdc);
+
 	if (prevPos.x + PrintDist < Pos.x || prevPos.x - PrintDist > Pos.x ||
 		prevPos.y + PrintDist < Pos.y || prevPos.y - PrintDist > Pos.y)
 	{
@@ -45,14 +47,6 @@ void Player::Render(HDC hdc)
 				FootPrints[i].SetPos(prevPos);
 				break;
 			}
-		}
-	}
-
-	for (int i = 0; i < Max_Print; i++)
-	{
-		if (FootPrints[i].IsActived())
-		{
-			FootPrints[i].Render(hdc);
 		}
 	}
 
@@ -71,13 +65,6 @@ void Player::Render(HDC hdc)
 
 	SelectObject(buffer, oldbuffer);
 	DeleteDC(buffer);
-}
-
-void Player::SetRgnPixels(HDC hdc, RECT region, COLORREF color)
-{
-	for(int i = region.left; i <= region.right; i++)
-		for(int j = region.top; j <= region.bottom; j++)
-			SetPixel(hdc, i, j, color);
 }
 
 void Player::UpdateFrame()
@@ -135,7 +122,7 @@ FootPrint::FootPrint()
 {
 	Pivot.x = 33; Pivot.y = 60; r = 10;
 	Rgn = { Pos.x + Pivot.x - r, Pos.y + Pivot.y - r, Pos.x + Pivot.x + r, Pos.y + Pivot.y + r };
-	LifeTime = 2000; IsActive = false; Life = LifeTime;
+	LifeTime = 4000; IsActive = false; Life = LifeTime;
 	color = RGB(255, 0, 0);
 }
 
@@ -151,12 +138,12 @@ void FootPrint::Update()
 		IsActive = false;
 		Life = LifeTime;
 		Pos = { 0, 0 };
-		Rgn = { Pos.x + Pivot.x - r, Pos.y + Pivot.y - r, Pos.x + Pivot.x + r, Pos.y + Pivot.y + r };
 	}
 	else
 	{
 		Life -= ElapseTime;
-		Rgn = { Pos.x + Pivot.x - r, Pos.y + Pivot.y - r, Pos.x + Pivot.x + r, Pos.y + Pivot.y + r };
 	}
+
+	Rgn = { Pos.x + Pivot.x - r, Pos.y + Pivot.y - r, Pos.x + Pivot.x + r, Pos.y + Pivot.y + r };
 
 }

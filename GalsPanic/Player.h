@@ -10,8 +10,8 @@ private:
 	COLORREF color;
 	POINT Pivot;
 
-	int LifeTime;
 	int Life;
+	int LifeTime;
 	bool IsActive;
 public:
 	FootPrint();
@@ -39,20 +39,18 @@ private:
 
 	POINT prevPos;
 	int Max_Print;
-	FootPrint FootPrints[25];
+	FootPrint FootPrints[99];
 	int PrintDist;
 public:
 	Player();
 	~Player();
 
 	void Render(HDC hdc);
-	void SetRgnPixels(HDC hdc, RECT region, COLORREF color);
 	void UpdateFrame();
 	void Update();
 
 	void SetPlayerDir(POINT input);
 	void SetPlayerSize(float input) { CharSize = input; };
 	float GetPlayerSize() { return CharSize; };
-
 };
 

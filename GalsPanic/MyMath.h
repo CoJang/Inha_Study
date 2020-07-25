@@ -7,3 +7,4 @@
 
 void RotatePoint(POINT & dest, POINT & src, float angle, int r);
 POINT CramersRule(POINT P1, POINT P2, POINT P3, POINT P4);
+void SetRgnPixels(HDC hdc, RECT region, COLORREF color);
