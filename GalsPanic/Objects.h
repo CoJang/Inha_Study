@@ -15,7 +15,7 @@ public:
 	Objects() : Pos({ 0,0 }) {};
 	virtual ~Objects() {};
 
-	virtual void Render(HDC front, HDC back) = 0;
+	virtual void Render(HDC front, HDC back) {}
 	virtual void Update() = 0;
 	virtual void SetPos(POINT input) { Pos = input; };
 	virtual POINT GetPos() { return Pos; };

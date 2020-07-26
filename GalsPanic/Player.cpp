@@ -34,7 +34,11 @@ void Player::Render(HDC front, HDC back)
 {
 	for (int i = 0; i < Max_Print; i++)
 		if (FootPrints[i].IsActived())
-			 FootPrints[i].Render(front, back);
+			 FootPrints[i].SetPixelsRgn(map, FILLED, RGB(255, 0, 255)); // BGR¼ø¼­ÀÓ
+		//else 
+		//	 FootPrints[i].SetPixelsRgn(map, NOT_FILLED, RGB(255, 255, 255));
+
+	//FootPrints[0].SetPixels(map, FILLED, RGB(255, 0, 0));
 
 	if (prevPos.x + PrintDist < Pos.x || prevPos.x - PrintDist > Pos.x ||
 		prevPos.y + PrintDist < Pos.y || prevPos.y - PrintDist > Pos.y)
@@ -63,6 +67,7 @@ void Player::Render(HDC front, HDC back)
 
 	SelectObject(back, oldbuffer);
 }
+
 
 void Player::UpdateFrame()
 {
@@ -120,12 +125,6 @@ FootPrint::FootPrint()
 	Pivot.x = 33; Pivot.y = 60; r = 10;
 	Rgn = { Pos.x + Pivot.x - r, Pos.y + Pivot.y - r, Pos.x + Pivot.x + r, Pos.y + Pivot.y + r };
 	LifeTime = 4000; IsActive = false; Life = LifeTime;
-	color = RGB(255, 0, 0);
-}
-
-void FootPrint::Render(HDC front, HDC back)
-{
-	Rectangle(front, Rgn.left, Rgn.top, Rgn.right, Rgn.bottom);
 }
 
 void FootPrint::Update()
@@ -143,4 +142,14 @@ void FootPrint::Update()
 
 	Rgn = { Pos.x + Pivot.x - r, Pos.y + Pivot.y - r, Pos.x + Pivot.x + r, Pos.y + Pivot.y + r };
 
+}
+
+void FootPrint::SetPixelsRgn(MyMap* map, TileState state, COLORREF color)
+{
+	for(int y = Rgn.top; y < Rgn.bottom; y++)
+		for (int x = Rgn.left; x < Rgn.right; x++)
+		{
+			map->SetMapTileState({ x, y }, state);
+			map->SetMapTileColor({ x, y }, color);
+		}
 }

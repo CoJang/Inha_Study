@@ -19,6 +19,8 @@ GameScene::GameScene()
 
 	MainChar = new Player;
 	Map = new MyMap;
+
+	MainChar->InitPlayer(Map);
 }
 
 GameScene::~GameScene()
@@ -31,6 +33,7 @@ void GameScene::Render()
 {
 	if (Life <= 0) return;
 
+	// First Priority [ Background ]
 	Map->Render(*FrontBuffer, *BackBuffer);
 
 	DrawButtons();
@@ -49,7 +52,7 @@ void GameScene::Update()
 	}
 
 	Timer += ElapseTime;
-	Map->Update(); // First Priority [ Background ]
+	Map->Update();
 
 	//GenerateEnemy();
 

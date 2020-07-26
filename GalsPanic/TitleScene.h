@@ -15,8 +15,6 @@ private:
 	int FT_Color;
 	int blinktime;
 	int Timer;
-
-	Scene* NextScene;
 public:
 	TitleScene();
 	~TitleScene();

@@ -27,10 +27,3 @@ POINT CramersRule(POINT P1, POINT P2, POINT P3, POINT P4)
 
 	return CrossPoint;
 }
-
-void SetRgnPixels(HDC hdc, RECT region, COLORREF color)
-{
-	for (int i = region.left; i <= region.right; i++)
-		for (int j = region.top; j <= region.bottom; j++)
-			SetPixel(hdc, i, j, color);
-}

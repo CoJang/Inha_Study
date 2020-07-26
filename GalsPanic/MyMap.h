@@ -20,9 +20,11 @@ class MyMap
 private:
 	// WIN_HEIGHT : 800, WIN_WIDTH : 450
 	MapTile Tiles[800][450];
+	unsigned int* p_pattern;
+	HBITMAP Tile;
 public:
 	MyMap();
-	~MyMap() {};
+	~MyMap();
 
 	TileState GetMapTileState(POINT pos) { return Tiles[pos.y][pos.x].state; }
 	void SetMapTileState(POINT pos, TileState input) { Tiles[pos.y][pos.x].state = input; };
