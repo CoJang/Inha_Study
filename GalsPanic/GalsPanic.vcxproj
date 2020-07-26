@@ -144,6 +144,7 @@
     <ClInclude Include="GameOverScene.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="MyMap.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="Objects.h" />
     <ClInclude Include="Player.h" />
@@ -159,6 +160,7 @@
     <ClCompile Include="GameOverScene.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MyMap.cpp" />
     <ClCompile Include="MyMath.cpp" />
     <ClCompile Include="Objects.cpp" />
     <ClCompile Include="Player.cpp" />
