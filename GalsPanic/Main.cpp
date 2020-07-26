@@ -101,13 +101,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static POINT mousePos;
 	static HDC hdc;
+	static HDC BackBuffer[2];
+	static HBITMAP BackBitmap, oldBitmap;
+	static RECT winRect;
 
     switch (message)
     {
 	case WM_CREATE:
 		{
 			SetTimer(hWnd, 99, ElapseTime, NULL);
-			singleton.InitSingleton(&hdc);
+			GetWindowRect(hWnd, &winRect);
+
+			BackBuffer[0] = CreateCompatibleDC(hdc);
+			BackBuffer[1] = CreateCompatibleDC(BackBuffer[0]);
+
+			BackBitmap = CreateCompatibleBitmap(hdc, winRect.right, winRect.bottom); //도화지 준비!
+			oldBitmap = (HBITMAP)SelectObject(BackBuffer[0], BackBitmap);			 //도화지 세팅
+
+			singleton.InitSingleton(&BackBuffer[0], &BackBuffer[1]);
 		}
 		break;
     case WM_COMMAND:
@@ -131,10 +142,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             hdc = BeginPaint(hWnd, &ps);
+			BackBitmap = CreateCompatibleBitmap(hdc, winRect.right, winRect.bottom); 
+			oldBitmap = (HBITMAP)SelectObject(BackBuffer[0], BackBitmap); 
+			PatBlt(BackBuffer[0], 0, 0, winRect.right, winRect.bottom, WHITENESS);
 
 			singleton.GetSceneManager()->GetInstance()->Update();
 			singleton.GetSceneManager()->GetInstance()->Render();
 			singleton.GetSceneManager()->GetInstance()->CheckKeyDown(wParam);
+
+			BitBlt(hdc, 0, 0, winRect.right, winRect.bottom, BackBuffer[0], 0, 0, SRCCOPY);
+			SelectObject(BackBuffer[0], oldBitmap);
 
             EndPaint(hWnd, &ps);
         }
@@ -188,8 +205,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_TIMER:
 		{
-			InvalidateRgn(hWnd, NULL, TRUE);
+			InvalidateRgn(hWnd, NULL, FALSE);
 		}
+		break;
+	case WM_SIZE:
+		GetWindowRect(hWnd, &winRect);
 		break;
     case WM_DESTROY:
         PostQuitMessage(0);

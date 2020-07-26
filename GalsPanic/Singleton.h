@@ -9,7 +9,7 @@ public:
 	Singleton();
 	~Singleton();
 
-	void InitSingleton(HDC* hdc);
+	void InitSingleton(HDC* Frontbuffer, HDC* backbuffer);
 
 	SceneManager* GetSceneManager() { return SM; };
 };

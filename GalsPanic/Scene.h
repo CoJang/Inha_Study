@@ -26,11 +26,13 @@ protected:
 
 	HFONT myFont;
 	HFONT oldFont;
-	HDC* hdc;
+
+	HDC* FrontBuffer;
+	HDC* BackBuffer;
 public:
 	Scene() { type = DEFAULT; };
 	virtual ~Scene() {};
-	void InitScene(HDC* device) { hdc = device; };
+	void InitScene(HDC* Front, HDC* Back) { FrontBuffer = Front; BackBuffer = Back; };
 
 	virtual void SetID(wstring input) { ID = input; };
 	virtual wstring GetID() { return NULL; };

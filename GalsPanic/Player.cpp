@@ -30,11 +30,11 @@ Player::Player()
 
 Player::~Player(){}
 
-void Player::Render(HDC hdc)
+void Player::Render(HDC front, HDC back)
 {
 	for (int i = 0; i < Max_Print; i++)
 		if (FootPrints[i].IsActived())
-			 FootPrints[i].Render(hdc);
+			 FootPrints[i].Render(front, back);
 
 	if (prevPos.x + PrintDist < Pos.x || prevPos.x - PrintDist > Pos.x ||
 		prevPos.y + PrintDist < Pos.y || prevPos.y - PrintDist > Pos.y)
@@ -50,21 +50,18 @@ void Player::Render(HDC hdc)
 		}
 	}
 
-	HDC buffer;
 	HBITMAP oldbuffer;
 	COLORREF Filter = RGB(255, 0, 255);
 
-	buffer = CreateCompatibleDC(hdc);
-	oldbuffer = (HBITMAP)SelectObject(buffer, hImage);
+	oldbuffer = (HBITMAP)SelectObject(back, hImage);
 
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
 
-	TransparentBlt(hdc, Pos.x, Pos.y, Sprite_Size.x * CharSize, Sprite_Size.y * CharSize,
-		buffer, Start.x, Start.y, Sprite_Size.x, Sprite_Size.y, Filter);
+	TransparentBlt(front, Pos.x, Pos.y, Sprite_Size.x * CharSize, Sprite_Size.y * CharSize,
+		back, Start.x, Start.y, Sprite_Size.x, Sprite_Size.y, Filter);
 
-	SelectObject(buffer, oldbuffer);
-	DeleteDC(buffer);
+	SelectObject(back, oldbuffer);
 }
 
 void Player::UpdateFrame()
@@ -126,9 +123,9 @@ FootPrint::FootPrint()
 	color = RGB(255, 0, 0);
 }
 
-void FootPrint::Render(HDC hdc)
+void FootPrint::Render(HDC front, HDC back)
 {
-	Rectangle(hdc, Rgn.left, Rgn.top, Rgn.right, Rgn.bottom);
+	Rectangle(front, Rgn.left, Rgn.top, Rgn.right, Rgn.bottom);
 }
 
 void FootPrint::Update()

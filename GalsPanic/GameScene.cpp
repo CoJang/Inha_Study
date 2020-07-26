@@ -18,19 +18,23 @@ GameScene::GameScene()
 	GenPos = { 55, 55 };
 
 	MainChar = new Player;
+	Map = new MyMap;
 }
 
 GameScene::~GameScene()
 {
 	delete MainChar;
+	delete Map;
 }
 
 void GameScene::Render()
 {
 	if (Life <= 0) return;
 
+	Map->Render(*FrontBuffer, *BackBuffer);
+
 	DrawButtons();
-	MainChar->Render(*hdc);
+	MainChar->Render(*FrontBuffer, *BackBuffer);
 }
 
 void GameScene::Update()
@@ -45,7 +49,9 @@ void GameScene::Update()
 	}
 
 	Timer += ElapseTime;
-	GenerateEnemy();
+	Map->Update(); // First Priority [ Background ]
+
+	//GenerateEnemy();
 
 	MainChar->Update();
 }
@@ -61,30 +67,30 @@ void GameScene::ResetScene()
 	MainChar->SetPos({ 0, 0 });
 }
 
-void GameScene::GenerateEnemy()
-{
-	if (Timer > GenTime)
-	{
-		GenPos.x += 25;
-		if (GenPos.x > WIN_WIDTH) GenPos.x = 10;
-		
-		Timer = 0;
-	}
-}
+//void GameScene::GenerateEnemy()
+//{
+//	if (Timer > GenTime)
+//	{
+//		GenPos.x += 25;
+//		if (GenPos.x > WIN_WIDTH) GenPos.x = 10;
+//		
+//		Timer = 0;
+//	}
+//}
 
 
 void GameScene::DrawButtons()
 {
-	oldFont = (HFONT)SelectObject(*hdc, myFont);
+	oldFont = (HFONT)SelectObject(*FrontBuffer, myFont);
 
 	ScoreStr = TEXT("Score : ") + (to_wstring(score));
-	DrawText(*hdc, ScoreStr.c_str(), ScoreStr.size(), &SCORE_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-	DrawText(*hdc, ID.c_str(), ID.size(), &ID_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	DrawText(*FrontBuffer, ScoreStr.c_str(), ScoreStr.size(), &SCORE_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	DrawText(*FrontBuffer, ID.c_str(), ID.size(), &ID_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
 	wstring temp = TEXT("LIFE : ") + to_wstring(Life);
-	DrawText(*hdc, temp.c_str(), temp.size(), &LIFE_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	DrawText(*FrontBuffer, temp.c_str(), temp.size(), &LIFE_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
-	SelectObject(*hdc, oldFont);
+	SelectObject(*FrontBuffer, oldFont);
 
 }
 

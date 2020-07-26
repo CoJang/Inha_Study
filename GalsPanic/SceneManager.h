@@ -9,7 +9,8 @@ class SceneManager
 private:
 	vector<Scene*> Manager;
 	Scene* CurrentScene;
-	HDC* hdc;
+	HDC* FrontBuffer;
+	HDC* BackBuffer;
 
 	wstring ID;
 	int score;
@@ -19,7 +20,7 @@ public:
 
 	Scene* GetInstance() { return CurrentScene; };
 
-	void InitManager(HDC* device);
+	void InitManager(HDC* Front, HDC* Back);
 	void Destroy();
 
 	void NextScene();

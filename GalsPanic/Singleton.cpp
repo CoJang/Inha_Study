@@ -12,9 +12,9 @@ Singleton::~Singleton()
 	delete SM;
 }
 
-void Singleton::InitSingleton(HDC* hdc)
+void Singleton::InitSingleton(HDC* Frontbuffer, HDC* backbuffer)
 {
 	SM = new SceneManager;
 
-	SM->InitManager(hdc);
+	SM->InitManager(Frontbuffer, backbuffer);
 }

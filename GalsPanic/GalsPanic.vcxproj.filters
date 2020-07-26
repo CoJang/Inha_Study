@@ -27,6 +27,9 @@
     <Filter Include="Source Files\Objects">
       <UniqueIdentifier>{ac738bbb-6b8d-466c-a301-ce791d9b5d40}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Map">
+      <UniqueIdentifier>{6c32e121-c662-4dab-bfb4-4666098d2d14}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -71,6 +74,9 @@
     <ClInclude Include="Player.h">
       <Filter>Source Files\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="MyMap.h">
+      <Filter>Source Files\Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -105,6 +111,9 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MyMap.cpp">
+      <Filter>Source Files\Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -33,29 +33,29 @@ void GameOverScene::Render()
 {
 	myFont = CreateFont(30, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, TEXT("Valorant"));
 
-	Rectangle(*hdc, RANK_Rect.left, RANK_Rect.top, RANK_Rect.right, RANK_Rect.bottom);
+	Rectangle(*FrontBuffer, RANK_Rect.left, RANK_Rect.top, RANK_Rect.right, RANK_Rect.bottom);
 	//Rectangle(*hdc, START_Rect.left, START_Rect.top, START_Rect.right, START_Rect.bottom);
-	Rectangle(*hdc, RETRY_Rect.left, RETRY_Rect.top, RETRY_Rect.right, RETRY_Rect.bottom);
-	Rectangle(*hdc, QUIT_Rect.left, QUIT_Rect.top, QUIT_Rect.right, QUIT_Rect.bottom);
+	Rectangle(*FrontBuffer, RETRY_Rect.left, RETRY_Rect.top, RETRY_Rect.right, RETRY_Rect.bottom);
+	Rectangle(*FrontBuffer, QUIT_Rect.left, QUIT_Rect.top, QUIT_Rect.right, QUIT_Rect.bottom);
 
-	oldFont = (HFONT)SelectObject(*hdc, myFont);
-	TextOut(*hdc, 150, 100, TEXT("- RANK -"), 8);
-	DrawText(*hdc, ID.c_str(), ID.size(), &ID_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-	DrawText(*hdc, str.c_str(), str.size(), &SCORE_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	oldFont = (HFONT)SelectObject(*FrontBuffer, myFont);
+	TextOut(*FrontBuffer, 150, 100, TEXT("- RANK -"), 8);
+	DrawText(*FrontBuffer, ID.c_str(), ID.size(), &ID_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	DrawText(*FrontBuffer, str.c_str(), str.size(), &SCORE_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
-	DrawText(*hdc, TEXT("RETRY"), 5, &RETRY_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-	DrawText(*hdc, TEXT("QUIT"), 4, &QUIT_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	DrawText(*FrontBuffer, TEXT("RETRY"), 5, &RETRY_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	DrawText(*FrontBuffer, TEXT("QUIT"), 4, &QUIT_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
 	if (!Loadstr.empty())
 	{
 		myFont = CreateFont(18, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, TEXT("Valorant"));
-		oldFont = (HFONT)SelectObject(*hdc, myFont);
-		DrawText(*hdc, Loadstr.c_str(), Loadstr.size(), &RANK_smallRect, DT_LEFT);
+		oldFont = (HFONT)SelectObject(*FrontBuffer, myFont);
+		DrawText(*FrontBuffer, Loadstr.c_str(), Loadstr.size(), &RANK_smallRect, DT_LEFT);
 	}
 	else
 		FileLoad(TEXT("Ranking.dat"));
 
-	SelectObject(*hdc, oldFont);
+	SelectObject(*FrontBuffer, oldFont);
 }
 
 void GameOverScene::ResetScene()

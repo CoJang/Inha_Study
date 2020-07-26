@@ -18,7 +18,7 @@ public:
 	~FootPrint() {};
 
 	int GetR() { return r; };
-	void Render(HDC hdc);
+	void Render(HDC front, HDC back);
 	void Update();
 	bool IsActived() { return IsActive; };
 	void SetState(bool input) { IsActive = input; };
@@ -45,7 +45,7 @@ public:
 	Player();
 	~Player();
 
-	void Render(HDC hdc);
+	void Render(HDC front, HDC back);
 	void UpdateFrame();
 	void Update();
 

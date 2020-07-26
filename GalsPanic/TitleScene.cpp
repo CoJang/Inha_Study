@@ -42,18 +42,18 @@ void TitleScene::ResetScene()
 void TitleScene::ShowID()
 {
 	Timer += ElapseTime;
-	SetBkMode(*hdc, OPAQUE);
-	SetBkColor(*hdc, BK_Color);
-	SetTextColor(*hdc, FT_Color);
-	Rectangle(*hdc, ID_Rect.left, ID_Rect.top, ID_Rect.right, ID_Rect.bottom);
+	SetBkMode(*FrontBuffer, OPAQUE);
+	SetBkColor(*FrontBuffer, BK_Color);
+	SetTextColor(*FrontBuffer, FT_Color);
+	Rectangle(*FrontBuffer, ID_Rect.left, ID_Rect.top, ID_Rect.right, ID_Rect.bottom);
 
-	oldFont = (HFONT)SelectObject(*hdc, myFont);
+	oldFont = (HFONT)SelectObject(*FrontBuffer, myFont);
 
-	TextOut(*hdc, 110, 235, TEXT("ENTER YOUR ID"), 13);
-	DrawText(*hdc, ID.c_str(), ID.size(), &ID_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	TextOut(*FrontBuffer, 110, 235, TEXT("ENTER YOUR ID"), 13);
+	DrawText(*FrontBuffer, ID.c_str(), ID.size(), &ID_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
-	SelectObject(*hdc, oldFont);
-	
+	SelectObject(*FrontBuffer, oldFont);
+
 	if (blinktime < Timer)
 	{
 		int temp = BK_Color;
@@ -65,9 +65,9 @@ void TitleScene::ShowID()
 
 void TitleScene::DrawButtons()
 {
-	oldFont = (HFONT)SelectObject(*hdc, myFont);
-	Rectangle(*hdc, START_Rect.left, START_Rect.top, START_Rect.right, START_Rect.bottom);
-	DrawText(*hdc, TEXT("PRESS TO START"), 14, &START_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	oldFont = (HFONT)SelectObject(*FrontBuffer, myFont);
+	Rectangle(*FrontBuffer, START_Rect.left, START_Rect.top, START_Rect.right, START_Rect.bottom);
+	DrawText(*FrontBuffer, TEXT("PRESS TO START"), 14, &START_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 }
 
 ButtonType TitleScene::CheckClick(POINT mpos, int flag)

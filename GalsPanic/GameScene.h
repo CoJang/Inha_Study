@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "Player.h"
+#include "MyMap.h"
 
 #define ENEMY_MAX 15
 #define LIFE_MAX 10
@@ -21,6 +22,7 @@ private:
 	int Life;
 
 	Player* MainChar;
+	MyMap* Map;
 public:
 	GameScene();
 	~GameScene();
@@ -32,6 +34,6 @@ public:
 	void Render();
 	void Update();
 	void ResetScene();
-	void GenerateEnemy();
+	//void GenerateEnemy();
 };
 

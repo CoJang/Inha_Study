@@ -52,20 +52,21 @@ void SceneManager::PrevScene()
 	}
 }
 
-void SceneManager::InitManager(HDC* device)
+void SceneManager::InitManager(HDC* Front, HDC* Back)
 {
 	Scene* Title = new TitleScene;
 	Scene* InGame = new GameScene;
 	Scene* End = new GameOverScene;
 
-	Title->InitScene(device);
-	InGame->InitScene(device);
-	End->InitScene(device);
+	Title->InitScene(Front, Back);
+	InGame->InitScene(Front, Back);
+	End->InitScene(Front, Back);
 
 	Manager.push_back(Title);
 	Manager.push_back(InGame);
 	Manager.push_back(End);
 
 	CurrentScene = Manager[TITLE];
-	hdc = device;
+	FrontBuffer = Front;
+	BackBuffer = Back;
 }
