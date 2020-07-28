@@ -25,20 +25,26 @@ Player::Player()
 
 	prevPos = Pos;
 	Max_Print = 99;
-	PrintDist = 15;
+	PrintDist = 19;
+
+	tempColor = RGB(0, 0, 255);
+	fillColor = RGB(0, 255, 0);
 }
 
 Player::~Player(){}
+
+void Player::InitPlayer(MyMap * input)
+{
+	map = input;
+	RECT temp = { 100, 100, 200, 200 };
+	FootPrints[0].SetPixelsRgn(map, FILLED, RGB(0, 0, 0), temp);
+}
 
 void Player::Render(HDC front, HDC back)
 {
 	for (int i = 0; i < Max_Print; i++)
 		if (FootPrints[i].IsActived())
-			 FootPrints[i].SetPixelsRgn(map, FILLED, RGB(255, 0, 255)); // BGR순서임
-		//else 
-		//	 FootPrints[i].SetPixelsRgn(map, NOT_FILLED, RGB(255, 255, 255));
-
-	//FootPrints[0].SetPixels(map, FILLED, RGB(255, 0, 0));
+			 FootPrints[i].SetPixelsRgn(map, TEMP_FILLED, tempColor); // BGR순서임
 
 	if (prevPos.x + PrintDist < Pos.x || prevPos.x - PrintDist > Pos.x ||
 		prevPos.y + PrintDist < Pos.y || prevPos.y - PrintDist > Pos.y)
@@ -89,8 +95,7 @@ void Player::Update()
 	Pos.y = Pos.y + (Dir.y * Speed);
 
 	for (int i = 0; i < Max_Print; i++)
-		if (FootPrints[i].IsActived())
-			 FootPrints[i].Update();
+			FootPrints[i].Update(map);
 }
 
 void Player::SetPlayerDir(POINT input)
@@ -127,21 +132,23 @@ FootPrint::FootPrint()
 	LifeTime = 4000; IsActive = false; Life = LifeTime;
 }
 
-void FootPrint::Update()
+void FootPrint::Update(MyMap* map)
 {
 	if (Life <= 0)
 	{
 		IsActive = false;
 		Life = LifeTime;
 		Pos = { 0, 0 };
+		SetPixelsRgn(map, NOT_FILLED, 0x00000000);
 	}
 	else
 	{
-		Life -= ElapseTime;
+		if (IsActive)
+		{
+			Life -= ElapseTime;
+			Rgn = { Pos.x + Pivot.x - r, Pos.y + Pivot.y - r, Pos.x + Pivot.x + r, Pos.y + Pivot.y + r };
+		}
 	}
-
-	Rgn = { Pos.x + Pivot.x - r, Pos.y + Pivot.y - r, Pos.x + Pivot.x + r, Pos.y + Pivot.y + r };
-
 }
 
 void FootPrint::SetPixelsRgn(MyMap* map, TileState state, COLORREF color)
@@ -153,3 +160,15 @@ void FootPrint::SetPixelsRgn(MyMap* map, TileState state, COLORREF color)
 			map->SetMapTileColor({ x, y }, color);
 		}
 }
+
+void FootPrint::SetPixelsRgn(MyMap * map, TileState state, COLORREF color, RECT Region)
+{
+	for (int y = Region.top; y < Region.bottom; y++)
+		for (int x = Region.left; x < Region.right; x++)
+		{
+			map->SetMapTileState({ x, y }, state);
+			map->SetMapTileColor({ x, y }, color);
+		}
+}
+
+

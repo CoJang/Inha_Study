@@ -18,12 +18,13 @@ public:
 	~FootPrint() {};
 
 	int GetR() { return r; };
-	void Update();
+	void Update(MyMap* input);
 	bool IsActived() { return IsActive; };
 	void SetState(bool input) { IsActive = input; };
 	void SetPos(POINT input) { Pos = input; };
 
 	void SetPixelsRgn(MyMap* input, TileState state, COLORREF color);
+	void SetPixelsRgn(MyMap* input, TileState state, COLORREF color, RECT Region);
 };
 
 class Player : public Objects
@@ -44,11 +45,13 @@ private:
 	int PrintDist;
 
 	MyMap* map;
+	COLORREF tempColor;
+	COLORREF fillColor;
 public:
 	Player();
 	~Player();
 
-	void InitPlayer(MyMap* input) { map = input; };
+	void InitPlayer(MyMap* input);
 	void Render(HDC front, HDC back);
 	void UpdateFrame();
 	void Update();

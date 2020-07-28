@@ -13,6 +13,7 @@ struct MapTile
 	TileState state;
 	POINT Pos;
 	COLORREF color;
+	COLORREF Prevcolor;
 };
 
 class MyMap

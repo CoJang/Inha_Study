@@ -16,8 +16,18 @@ public:
 	virtual ~Objects() {};
 
 	virtual void Render(HDC front, HDC back) {}
-	virtual void Update() = 0;
+	virtual void Update() {};
 	virtual void SetPos(POINT input) { Pos = input; };
 	virtual POINT GetPos() { return Pos; };
+};
+
+class ImageObject : Objects
+{
+public:
+	ImageObject();
+	~ImageObject() {};
+
+	void Update();
+	void Render(HDC front, HDC back);
 };
 

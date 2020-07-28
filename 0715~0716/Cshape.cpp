@@ -78,6 +78,7 @@ void Cshape::Collision(RECT winRect, vector<Cshape*>& CollisionManager, GAMEMODE
 
 				r = r + otherR;
 
+				delete CollisionManager[i];
 				CollisionManager.erase(CollisionManager.begin() + i);
 				i--;
 				return;

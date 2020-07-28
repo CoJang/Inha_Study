@@ -23,6 +23,7 @@ private:
 
 	Player* MainChar;
 	MyMap* Map;
+	ImageObject* Background;
 public:
 	GameScene();
 	~GameScene();
@@ -34,6 +35,5 @@ public:
 	void Render();
 	void Update();
 	void ResetScene();
-	//void GenerateEnemy();
 };
 

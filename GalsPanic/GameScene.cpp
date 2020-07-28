@@ -19,6 +19,7 @@ GameScene::GameScene()
 
 	MainChar = new Player;
 	Map = new MyMap;
+	Background = new ImageObject;
 
 	MainChar->InitPlayer(Map);
 }
@@ -27,6 +28,7 @@ GameScene::~GameScene()
 {
 	delete MainChar;
 	delete Map;
+	delete Background;
 }
 
 void GameScene::Render()
@@ -34,6 +36,7 @@ void GameScene::Render()
 	if (Life <= 0) return;
 
 	// First Priority [ Background ]
+	Background->Render(*FrontBuffer, *BackBuffer);
 	Map->Render(*FrontBuffer, *BackBuffer);
 
 	DrawButtons();
@@ -52,11 +55,8 @@ void GameScene::Update()
 	}
 
 	Timer += ElapseTime;
-	Map->Update();
-
-	//GenerateEnemy();
-
 	MainChar->Update();
+	Map->Update();
 }
 
 void GameScene::ResetScene()
@@ -69,18 +69,6 @@ void GameScene::ResetScene()
 	GenPos = { 55, 55 };
 	MainChar->SetPos({ 0, 0 });
 }
-
-//void GameScene::GenerateEnemy()
-//{
-//	if (Timer > GenTime)
-//	{
-//		GenPos.x += 25;
-//		if (GenPos.x > WIN_WIDTH) GenPos.x = 10;
-//		
-//		Timer = 0;
-//	}
-//}
-
 
 void GameScene::DrawButtons()
 {
