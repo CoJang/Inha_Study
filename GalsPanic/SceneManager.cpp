@@ -66,7 +66,7 @@ void SceneManager::InitManager(HDC* Front, HDC* Back)
 	Manager.push_back(InGame);
 	Manager.push_back(End);
 
-	CurrentScene = Manager[TITLE];
+	CurrentScene = Manager[GAME];
 	FrontBuffer = Front;
 	BackBuffer = Back;
 }
