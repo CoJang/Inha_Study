@@ -24,7 +24,6 @@ public:
 	void SetPos(POINT input) { Pos = input; };
 
 	bool SetPixelsRgn(MyMap* input, TileState state, COLORREF color);
-	
 };
 
 class Player : public Objects

@@ -21,8 +21,8 @@ private:
 	POINT GenPos;
 	int Life;
 
-	Player* MainChar;
 	MyMap* Map;
+	Player* MainChar;
 	ImageObject* Background;
 public:
 	GameScene();

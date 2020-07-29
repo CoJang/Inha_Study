@@ -19,13 +19,14 @@ private:
 public:
 	Tile();
 	~Tile() {};
-
 	
-	void SetTile(POINT position, COLORREF col, TileState condition);
-	void SetColor(COLORREF col) { color = col; };
-	void SetState(TileState condition) { state = condition; };
 	void Update();
 	void Render(HDC hdc);
+	void SetTile(POINT position, COLORREF col, TileState condition);
+	void SetColor(COLORREF col) { if (state != FILLED) color = col; };
+	void SetState(TileState condition) { if(state != FILLED) state = condition; };
+	TileState GetState() { return state; };
+	COLORREF GetColor() { return color; };
 };
 
 
@@ -49,5 +50,6 @@ public:
 	void Render(HDC hdc);
 	void DrawGrid(HDC hdc);
 	void CheckKeyDown();
+	void CheckFilled();
 };
 

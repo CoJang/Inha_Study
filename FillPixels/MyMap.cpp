@@ -13,6 +13,14 @@ MyMap::MyMap()
 
 	Tiles = new Tile[GridXNum * GridYNum];
 	InitTiles();
+	Tiles[45].SetColor(0x00000000);
+	Tiles[45].SetState(FILLED);
+	Tiles[46].SetColor(0x00000000);
+	Tiles[46].SetState(FILLED);
+	Tiles[55].SetColor(0x00000000);
+	Tiles[55].SetState(FILLED);
+	Tiles[56].SetColor(0x00000000);
+	Tiles[56].SetState(FILLED);
 }
 
 
@@ -33,7 +41,10 @@ void MyMap::Render(HDC hdc)
 
 void MyMap::Update()
 {
+	MainChar->Update();
 
+	for (int i = 0; i < GridXNum * GridYNum; i++)
+		Tiles[i].Update();
 }
 
 void MyMap::CheckKeyDown()
@@ -62,12 +73,17 @@ void MyMap::CheckKeyDown()
 	if (GetKeyState(VK_SPACE) & 0x8000)
 	{
 		POINT index;
-		index.x = (MainChar->GetPos().x - Pos.x) / Grid_Dist ;
-		index.y = (MainChar->GetPos().y - Pos.y) / Grid_Dist ;
+		index.x = (MainChar->GetPos().x - Pos.x) / Grid_Dist;
+		index.y = (MainChar->GetPos().y - Pos.y) / Grid_Dist;
 
-		(Tiles + (index.x + (index.y * GridXNum)))->SetState(TEMP_FILLED);
 		(Tiles + (index.x + (index.y * GridXNum)))->SetColor(0x000000FF);
+		(Tiles + (index.x + (index.y * GridXNum)))->SetState(TEMP_FILLED);
 	}
+}
+
+void MyMap::CheckFilled()
+{
+
 }
 
 void MyMap::DrawGrid(HDC hdc)
@@ -115,7 +131,7 @@ void Tile::SetTile(POINT position, COLORREF col, TileState condition)
 
 void Tile::Update()
 {
-
+	if (state == NOT_FILLED) return;
 }
 
 void Tile::Render(HDC hdc)

@@ -20,7 +20,7 @@ class MyMap
 {
 private:
 	// WIN_HEIGHT : 800, WIN_WIDTH : 450
-	MapTile Tiles[300][300];
+	MapTile Tiles[800][450];
 	unsigned int* p_pattern;
 	HBITMAP Tile;
 public:
