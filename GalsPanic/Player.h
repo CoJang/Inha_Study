@@ -23,8 +23,8 @@ public:
 	void SetState(bool input) { IsActive = input; };
 	void SetPos(POINT input) { Pos = input; };
 
-	void SetPixelsRgn(MyMap* input, TileState state, COLORREF color);
-	void SetPixelsRgn(MyMap* input, TileState state, COLORREF color, RECT Region);
+	bool SetPixelsRgn(MyMap* input, TileState state, COLORREF color);
+	
 };
 
 class Player : public Objects
@@ -45,8 +45,6 @@ private:
 	int PrintDist;
 
 	MyMap* map;
-	COLORREF tempColor;
-	COLORREF fillColor;
 public:
 	Player();
 	~Player();
@@ -58,6 +56,7 @@ public:
 
 	void SetPlayerDir(POINT input);
 	void SetPlayerSize(float input) { CharSize = input; };
+	bool SetPixelsRgn(MyMap* input, TileState state, COLORREF color, RECT Region);
 	float GetPlayerSize() { return CharSize; };
 };
 

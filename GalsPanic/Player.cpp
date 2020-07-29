@@ -26,9 +26,6 @@ Player::Player()
 	prevPos = Pos;
 	Max_Print = 99;
 	PrintDist = 19;
-
-	tempColor = RGB(0, 0, 255);
-	fillColor = RGB(0, 255, 0);
 }
 
 Player::~Player(){}
@@ -36,15 +33,27 @@ Player::~Player(){}
 void Player::InitPlayer(MyMap * input)
 {
 	map = input;
-	RECT temp = { 100, 100, 200, 200 };
-	FootPrints[0].SetPixelsRgn(map, FILLED, RGB(0, 0, 0), temp);
+	RECT temp = { 100, 100, 150, 150 };
+	SetPixelsRgn(map, FILLED, RGB(0, 0, 0), temp);
 }
 
 void Player::Render(HDC front, HDC back)
 {
+	bool IsMeet = false;
+	int index = -1;
 	for (int i = 0; i < Max_Print; i++)
 		if (FootPrints[i].IsActived())
-			 FootPrints[i].SetPixelsRgn(map, TEMP_FILLED, tempColor); // BGR¼ø¼­ÀÓ
+		{
+			if (FootPrints[i].SetPixelsRgn(map, TEMP_FILLED, 0xFFFF0000))
+			{
+				IsMeet = true;
+				index = i;
+			}
+		}
+
+	if (IsMeet)
+		for (int i = 0; i < index; i++)
+			FootPrints[i].SetPixelsRgn(map, FILLED, 0x00000000);
 
 	if (prevPos.x + PrintDist < Pos.x || prevPos.x - PrintDist > Pos.x ||
 		prevPos.y + PrintDist < Pos.y || prevPos.y - PrintDist > Pos.y)
@@ -94,6 +103,13 @@ void Player::Update()
 	Pos.x = Pos.x + (Dir.x * Speed);
 	Pos.y = Pos.y + (Dir.y * Speed);
 
+	if (Pos.x < 0) Pos.x = 0;
+	if (Pos.x > WIN_WIDTH - 50)
+		Pos.x = WIN_WIDTH - 50;
+	if (Pos.y < 0) Pos.y = 0;
+	if (Pos.y > WIN_HEIGHT - 80)
+		Pos.y = WIN_HEIGHT - 80;
+
 	for (int i = 0; i < Max_Print; i++)
 			FootPrints[i].Update(map);
 }
@@ -137,9 +153,11 @@ void FootPrint::Update(MyMap* map)
 	if (Life <= 0)
 	{
 		IsActive = false;
+		//if(map->GetMapTileState(Pos) != FILLED)
+		//	SetPixelsRgn(map, NOT_FILLED, 0xFFFFFFFF);
+
 		Life = LifeTime;
 		Pos = { 0, 0 };
-		SetPixelsRgn(map, NOT_FILLED, 0x00000000);
 	}
 	else
 	{
@@ -151,24 +169,40 @@ void FootPrint::Update(MyMap* map)
 	}
 }
 
-void FootPrint::SetPixelsRgn(MyMap* map, TileState state, COLORREF color)
+bool FootPrint::SetPixelsRgn(MyMap* map, TileState state, COLORREF color)
 {
+	bool IsMeet = false;
 	for(int y = Rgn.top; y < Rgn.bottom; y++)
 		for (int x = Rgn.left; x < Rgn.right; x++)
 		{
-			map->SetMapTileState({ x, y }, state);
-			map->SetMapTileColor({ x, y }, color);
+			if (map->GetMapTileState({ Pos }) != FILLED)
+			{
+				map->SetMapTileState({ x, y }, state);
+				map->SetMapTileColor({ x, y }, color);
+			}
+			else if (map->GetMapTileState({ Pos }) == FILLED)
+				IsMeet = true;
 		}
+
+	return IsMeet;
 }
 
-void FootPrint::SetPixelsRgn(MyMap * map, TileState state, COLORREF color, RECT Region)
+bool Player::SetPixelsRgn(MyMap * map, TileState state, COLORREF color, RECT Region)
 {
+	bool IsMeet = false;
 	for (int y = Region.top; y < Region.bottom; y++)
 		for (int x = Region.left; x < Region.right; x++)
 		{
-			map->SetMapTileState({ x, y }, state);
-			map->SetMapTileColor({ x, y }, color);
+			if (map->GetMapTileState({ x, y }) != FILLED)
+			{
+				map->SetMapTileState({ x, y }, state);
+				map->SetMapTileColor({ x, y }, color);
+			}
+			else if (map->GetMapTileState({ x, y }) == FILLED)
+				IsMeet = true;
 		}
+
+	return IsMeet;
 }
 
 
