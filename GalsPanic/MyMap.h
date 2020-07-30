@@ -1,5 +1,4 @@
 #pragma once
-#include "stdafx.h"
 
 enum TileState
 {
@@ -13,14 +12,13 @@ struct MapTile
 	TileState state;
 	POINT Pos;
 	COLORREF color;
-	COLORREF Prevcolor;
 };
 
 class MyMap
 {
 private:
 	// WIN_HEIGHT : 800, WIN_WIDTH : 450
-	MapTile Tiles[800][450];
+	MapTile Tiles[WIN_HEIGHT][450];
 	unsigned int* p_pattern;
 	HBITMAP Tile;
 public:

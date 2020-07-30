@@ -17,8 +17,12 @@
 #include <memory.h>
 #include <tchar.h>
 
-
 // TODO: reference additional headers your program requires here
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
 #define Grid_Width 500
 #define Grid_Height 500
 #define Grid_Dist 50

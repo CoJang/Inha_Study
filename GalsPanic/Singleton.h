@@ -1,5 +1,6 @@
 #pragma once
-#include "SceneManager.h"
+
+class SceneManager;
 
 class Singleton
 {
@@ -13,4 +14,3 @@ public:
 
 	SceneManager* GetSceneManager() { return SM; };
 };
-

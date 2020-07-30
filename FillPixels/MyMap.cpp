@@ -15,12 +15,19 @@ MyMap::MyMap()
 	InitTiles();
 	Tiles[45].SetColor(0x00000000);
 	Tiles[45].SetState(FILLED);
+	FilledContainer.push_back({ 4, 5 });
 	Tiles[46].SetColor(0x00000000);
 	Tiles[46].SetState(FILLED);
+	FilledContainer.push_back({ 4, 6 });
 	Tiles[55].SetColor(0x00000000);
 	Tiles[55].SetState(FILLED);
+	FilledContainer.push_back({ 5, 5 });
 	Tiles[56].SetColor(0x00000000);
 	Tiles[56].SetState(FILLED);
+	FilledContainer.push_back({ 5, 6 });
+
+	StartEnd[0] = { -1, 0 };
+	StartEnd[1] = { -1, 0 };
 }
 
 
@@ -76,15 +83,80 @@ void MyMap::CheckKeyDown()
 		index.x = (MainChar->GetPos().x - Pos.x) / Grid_Dist;
 		index.y = (MainChar->GetPos().y - Pos.y) / Grid_Dist;
 
-		(Tiles + (index.x + (index.y * GridXNum)))->SetColor(0x000000FF);
-		(Tiles + (index.x + (index.y * GridXNum)))->SetState(TEMP_FILLED);
+		Tiles[index.x + (index.y * GridXNum)].SetColor(0x000000FF);
+		Tiles[index.x + (index.y * GridXNum)].SetState(TEMP_FILLED);
+
+		if (Tiles[index.x + (index.y * GridXNum)].GetState() == TEMP_FILLED)
+		{
+			if(TempFillContainer.empty())
+				TempFillContainer.push_back({ index.x, index.y });
+
+			bool IsNotExist = true;
+			for (int i = 0; i < TempFillContainer.size(); i++)
+			{
+				if (TempFillContainer[i].x == index.x && TempFillContainer[i].y == index.y)
+					IsNotExist = false;
+			}
+
+			if(IsNotExist)
+				TempFillContainer.push_back({ index.x, index.y });
+		}
+		if (Tiles[index.x + (index.y * GridXNum)].GetState() == FILLED)
+		{
+			if (StartEnd[0].x == -1)
+			{
+				StartEnd[0] = index;
+			}
+			else if (StartEnd[1].x == -1)
+			{
+				StartEnd[1] = { index.x, index.y };
+				FillLine();
+			}
+		}
 	}
 }
 
-void MyMap::CheckFilled()
+void MyMap::FillLine()
 {
-
+	for (POINT i : TempFillContainer)
+	{
+		Tiles[i.x + (i.y * GridXNum)].SetColor(0x00000000);
+		Tiles[i.x + (i.y * GridXNum)].SetState(FILLED);
+		FilledContainer.push_back(i);
+	}
+	TempFillContainer.clear();
+	StartEnd[0] = { -1, 0 };
+	StartEnd[1] = { -1, 0 };
+	CheckFilled();
 }
+
+void MyMap::CheckFilled()
+{ 
+	int Min, Max;
+	Min = 10; Max = -1;
+	for (int y = 0; y < GridYNum; y++)
+	{
+		for (int x = 0; x < GridXNum; x++)
+		{
+			Tile TempTile = Tiles[x + (y * GridXNum)];
+			if (TempTile.GetState() == FILLED && x < Min)
+				Min = x;
+			else if ((TempTile.GetState() == FILLED && x > Max))
+				Max = x;
+		}
+
+		for (int x = Min; x < Max; x++)
+		{
+			Tiles[x + (y * GridXNum)].SetColor(0x00000000);
+			Tiles[x + (y * GridXNum)].SetState(FILLED);
+			FilledContainer.push_back({x, y});
+		}
+
+		Min = 10; Max = -1;
+	}
+}
+
+
 
 void MyMap::DrawGrid(HDC hdc)
 {
@@ -118,7 +190,7 @@ Tile::Tile()
 	Pos = { 0, 0 };
 	color = RGB(0, 0, 0);
 	state = FILLED;
-	Rgn = { Pos.x - Grid_Dist /2, Pos.y - Grid_Dist / 2,
+	Rgn = { Pos.x - Grid_Dist / 2, Pos.y - Grid_Dist / 2,
 			Pos.x + Grid_Dist / 2, Pos.y + Grid_Dist / 2 };
 }
 

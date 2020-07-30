@@ -1,4 +1,5 @@
 #pragma once
+#include "stdafx.h"
 #include "Player.h"
 
 enum TileState
@@ -40,6 +41,10 @@ private:
 
 	int GridXNum;
 	int GridYNum;
+
+	vector<POINT> TempFillContainer;
+	vector<POINT> FilledContainer;
+	POINT StartEnd[2];
 public:
 	MyMap();
 	~MyMap();
@@ -47,9 +52,10 @@ public:
 	void InitTiles();
 
 	void Update();
+	void FillLine();
+	void CheckFilled();
+	void CheckKeyDown();
 	void Render(HDC hdc);
 	void DrawGrid(HDC hdc);
-	void CheckKeyDown();
-	void CheckFilled();
 };
 

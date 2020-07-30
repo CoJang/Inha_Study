@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "SceneManager.h"
 #include "GameScene.h"
 
 extern Singleton singleton;
