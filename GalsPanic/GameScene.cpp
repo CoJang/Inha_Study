@@ -16,10 +16,9 @@ GameScene::GameScene()
 	Life = LIFE_MAX;
 	Timer = 0;
 	GenTime = 333;
-	GenPos = { 55, 55 };
 
-	MainChar = new Player;
 	Map = new MyMap;
+	MainChar = new Player;
 	Background = new ImageObject;
 
 	MainChar->InitPlayer(Map);
@@ -67,7 +66,6 @@ void GameScene::ResetScene()
 	Life = LIFE_MAX;
 	Timer = 0;
 
-	GenPos = { 55, 55 };
 	MainChar->SetPos({ 0, 0 });
 }
 

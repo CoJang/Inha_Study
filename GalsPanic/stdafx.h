@@ -36,3 +36,5 @@ using namespace std;
 #define WIN_HEIGHT 800
 
 #define ElapseTime 33
+
+#define TILESIZE 10

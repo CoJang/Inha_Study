@@ -18,7 +18,6 @@ private:
 
 	float Timer;
 	float GenTime;
-	POINT GenPos;
 	int Life;
 
 	MyMap* Map;

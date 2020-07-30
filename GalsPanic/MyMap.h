@@ -7,29 +7,38 @@ enum TileState
 	TEMP_FILLED
 };
 
-struct MapTile
+class MapTile
 {
-	TileState state;
+public:
 	POINT Pos;
 	COLORREF color;
+	TileState state;
+
+	RECT Rgn;
+	HPEN hPen;
+	HBRUSH hBrush;
+public:
+	MapTile() {};
+	~MapTile() {};
+
+	void Render(HDC front, HDC back);
 };
 
 class MyMap
 {
 private:
-	// WIN_HEIGHT : 800, WIN_WIDTH : 450
-	MapTile Tiles[WIN_HEIGHT][450];
-	unsigned int* p_pattern;
-	HBITMAP Tile;
+	MapTile* Tiles;
+	HBITMAP TileBitmap;
+	POINT MapSize;
 public:
 	MyMap();
 	~MyMap();
 
-	TileState GetMapTileState(POINT pos) { return Tiles[pos.y][pos.x].state; }
-	void SetMapTileState(POINT pos, TileState input) { Tiles[pos.y][pos.x].state = input; };
+	TileState GetMapTileState(POINT pos);
+	void SetMapTileState(POINT pos, TileState input);
 
-	COLORREF GetMapTileColor(POINT pos) { return Tiles[pos.y][pos.x].color; }
-	void SetMapTileColor(POINT pos, COLORREF input) { Tiles[pos.y][pos.x].color = input; };
+	COLORREF GetMapTileColor(POINT pos);
+	void SetMapTileColor(POINT pos, COLORREF input);
 
 	void Render(HDC front, HDC back);
 	void Update();

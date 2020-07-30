@@ -2,28 +2,27 @@
 #include "Objects.h"
 #include "MyMap.h"
 
-class FootPrint : Objects
-{
-private:
-	int r;
-	RECT Rgn;
-	POINT Pivot;
-
-	int Life;
-	int LifeTime;
-	bool IsActive;
-public:
-	FootPrint();
-	~FootPrint() {};
-
-	int GetR() { return r; };
-	void Update(MyMap* input);
-	bool IsActived() { return IsActive; };
-	void SetState(bool input) { IsActive = input; };
-	void SetPos(POINT input) { Pos = input; };
-
-	bool SetPixelsRgn(MyMap* input, TileState state, COLORREF color);
-};
+//class FootPrint : Objects
+//{
+//private:
+//	int r;
+//	POINT Pivot;
+//
+//	int Life;
+//	int LifeTime;
+//	bool IsActive;
+//public:
+//	FootPrint();
+//	~FootPrint() {};
+//
+//	int GetR() { return r; };
+//	void Update(MyMap* input);
+//	bool IsActived() { return IsActive; };
+//	void SetState(bool input) { IsActive = input; };
+//	void SetPos(POINT input) { Pos = input; };
+//
+//	bool SetPixelsRgn(MyMap* input, TileState state, COLORREF color);
+//};
 
 class Player : public Objects
 {
@@ -37,11 +36,6 @@ private:
 	int Speed;
 	float CharSize;
 
-	POINT prevPos;
-	int Max_Print;
-	FootPrint FootPrints[99];
-	int PrintDist;
-
 	MyMap* map;
 public:
 	Player();
@@ -54,7 +48,8 @@ public:
 
 	void SetPlayerDir(POINT input);
 	void SetPlayerSize(float input) { CharSize = input; };
-	bool SetPixelsRgn(MyMap* input, TileState state, COLORREF color, RECT Region);
+	void SetPixelsRgn(TileState state, COLORREF color, RECT Region);
+	void SetPixel(TileState state, COLORREF color);
 	float GetPlayerSize() { return CharSize; };
 };
 
