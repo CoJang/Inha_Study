@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MyMap.h"
 
+#pragma comment(lib, "msimg32.lib")
 
 MyMap::MyMap()
 {
@@ -13,10 +14,10 @@ MyMap::MyMap()
 
 	Tiles = new Tile[GridXNum * GridYNum];
 	InitTiles();
-	Tiles[45].SetColor(0x00000000);
+	Tiles[45].SetColor(0x000000FF);
 	Tiles[45].SetState(FILLED);
 	FilledContainer.push_back({ 4, 5 });
-	Tiles[46].SetColor(0x00000000);
+	Tiles[46].SetColor(0xFF0000FF);
 	Tiles[46].SetState(FILLED);
 	FilledContainer.push_back({ 4, 6 });
 	Tiles[55].SetColor(0x00000000);
@@ -28,6 +29,8 @@ MyMap::MyMap()
 
 	StartEnd[0] = { -1, 0 };
 	StartEnd[1] = { -1, 0 };
+
+	Suzy = new ImageObject;
 }
 
 
@@ -35,15 +38,43 @@ MyMap::~MyMap()
 {
 	delete MainChar;
 	delete[] Tiles;
+	delete Suzy;
 }
 
-void MyMap::Render(HDC hdc)
+void MyMap::Render(HDC input)
 {
-	DrawGrid(hdc);
-	for(int i = 0; i < GridXNum * GridYNum; i++)
-		Tiles[i].Render(hdc);
+	BackBitmap = CreateCompatibleBitmap(*hdc, WIN_WIDTH, WIN_HEIGHT);
+	HBITMAP oldBitmap = (HBITMAP)SelectObject(*Back, BackBitmap);
 
-	MainChar->Render(hdc);
+	//DrawGrid(*hdc);
+	Suzy->Render(*Back);
+
+	BitBlt(*hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT, *Back, 0, 0, SRCCOPY);
+	SelectObject(*Back, oldBitmap);
+
+	HBITMAP BackBitmap1 = CreateCompatibleBitmap(*hdc, WIN_WIDTH, WIN_HEIGHT);
+	HBITMAP oldBitmap1 = (HBITMAP)SelectObject(*front, BackBitmap1);
+
+	for(int i = 0; i < GridXNum * GridYNum; i++)
+		Tiles[i].Render(*front);
+
+	BitBlt(*hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT, *front, 0, 0, SRCCOPY);
+	SelectObject(*front, oldBitmap1);
+
+	//TransparentBlt(*hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT,
+	//	*front, 0, 0, WIN_WIDTH, WIN_HEIGHT, RGB(0, 0, 0));
+
+
+
+	//TransparentBlt(*hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT,
+	//	*front, 0, 0, WIN_WIDTH, WIN_HEIGHT, RGB(0, 0, 0));
+
+	//MainChar->Render(*hdc);
+
+	//SelectObject(*front, oldbuffer);
+	//DeleteObject(BackBitmap);
+	DeleteObject(oldBitmap);
+	DeleteObject(oldBitmap1);
 }
 
 void MyMap::Update()
@@ -171,6 +202,15 @@ void MyMap::DrawGrid(HDC hdc)
 		}
 }
 
+void MyMap::InitMap(HDC* _hdc, HDC* FRONT, HDC* BACK)
+{
+	hdc = _hdc;
+	front = FRONT;
+	Back = BACK;
+
+	BackBitmap = CreateCompatibleBitmap(*front, WIN_HEIGHT, WIN_HEIGHT); // 수지를 가릴 도화지
+}
+
 void MyMap::InitTiles()
 {
 	for (int y = 0; y < GridYNum; y++)
@@ -206,17 +246,46 @@ void Tile::Update()
 	if (state == NOT_FILLED) return;
 }
 
-void Tile::Render(HDC hdc)
+void Tile::Render(HDC front)
 {
 	if (state == NOT_FILLED) return;
 
 	HBRUSH hBrush;
 	HBRUSH oldBrush;
 	hBrush = CreateSolidBrush(color);
-	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+	oldBrush = (HBRUSH)SelectObject(front, hBrush);
 
-	Rectangle(hdc, Rgn.left, Rgn.top, Rgn.right, Rgn.bottom);
+	Rectangle(front, Rgn.left, Rgn.top, Rgn.right, Rgn.bottom);
 
-	SelectObject(hdc, oldBrush);
+	SelectObject(front, oldBrush);
 	DeleteObject(hBrush);
+}
+
+ImageObject::ImageObject()
+{
+	Pos = { 0, 0 }; Dir = { 0, 0 };
+
+	ImagePath = TEXT("images/수지.bmp");
+	hImage = (HBITMAP)LoadImage(NULL, ImagePath.c_str(),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hImage, sizeof(BITMAP), &bitImage);
+
+	Sprite_Size.x = bitImage.bmWidth;
+	Sprite_Size.y = bitImage.bmHeight;
+}
+
+void ImageObject::Update(){}
+
+void ImageObject::Render(HDC back)
+{
+	HDC temp = CreateCompatibleDC(back);
+	HBITMAP oldbuffer = (HBITMAP)SelectObject(temp, hImage);
+
+	COLORREF Filter = RGB(0, 0, 0);
+
+	TransparentBlt(back, 0, 0, Sprite_Size.x, Sprite_Size.y,
+		temp, 0, 0, Sprite_Size.x, Sprite_Size.y, Filter);
+
+	SelectObject(temp, oldbuffer);
+	DeleteDC(temp);
 }

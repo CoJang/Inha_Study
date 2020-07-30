@@ -26,3 +26,6 @@ using namespace std;
 #define Grid_Width 500
 #define Grid_Height 500
 #define Grid_Dist 50
+
+#define WIN_WIDTH 450
+#define WIN_HEIGHT 800

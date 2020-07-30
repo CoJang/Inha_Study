@@ -85,10 +85,10 @@ void MyMap::Render(HDC front, HDC back)
 		}
 	}
 	
-	COLORREF Filter = 0x00000000;
-	HBITMAP oldBitmap = (HBITMAP)SelectObject(back, TileBitmap);
-	TransparentBlt(front, 0, 0, WIN_WIDTH, WIN_HEIGHT, back, 0, 0, WIN_WIDTH, WIN_HEIGHT, Filter);
-	(HBITMAP)SelectObject(back, oldBitmap);
+	//COLORREF Filter = 0x00000000;
+	//HBITMAP oldBitmap = (HBITMAP)SelectObject(back, TileBitmap);
+	//TransparentBlt(front, 0, 0, WIN_WIDTH, WIN_HEIGHT, back, 0, 0, WIN_WIDTH, WIN_HEIGHT, Filter);
+	//(HBITMAP)SelectObject(back, oldBitmap);
 }
 
 void MyMap::Update()

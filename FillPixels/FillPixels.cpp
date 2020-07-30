@@ -83,7 +83,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+	   CW_USEDEFAULT, 0, WIN_WIDTH, WIN_HEIGHT, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -99,11 +99,21 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static MyMap map;
+	static HDC hdc;
+	static HDC BackBuffer[2];
+	RECT rt;
 
     switch (message)
     {
 	case WM_CREATE:
-		SetTimer(hWnd, 100, 33, NULL);
+		SetTimer(hWnd, 100, 1000, NULL);
+		GetClientRect(hWnd, &rt);
+
+		hdc = GetDC(hWnd);
+		BackBuffer[0] = CreateCompatibleDC(hdc);
+		BackBuffer[1] = CreateCompatibleDC(BackBuffer[0]);
+
+		map.InitMap(&hdc, &BackBuffer[0], &BackBuffer[1]);
 		break;
     case WM_COMMAND:
         {
@@ -125,7 +135,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
+            hdc = BeginPaint(hWnd, &ps);
 			
 			map.Update();
 			map.Render(hdc);
@@ -140,6 +150,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		InvalidateRgn(hWnd, NULL, TRUE);
 		break;
     case WM_DESTROY:
+		ReleaseDC(hWnd, hdc);
+		ReleaseDC(hWnd, BackBuffer[0]);
+		ReleaseDC(hWnd, BackBuffer[1]);
         PostQuitMessage(0);
         break;
     default:

@@ -30,7 +30,22 @@ public:
 	COLORREF GetColor() { return color; };
 };
 
+class ImageObject
+{
+	wstring ImagePath;
+	HBITMAP hImage;
+	BITMAP bitImage;
 
+	POINT Dir;
+	POINT Pos;
+	POINT Sprite_Size;
+public:
+	ImageObject();
+	~ImageObject() {};
+
+	void Update();
+	void Render(HDC hdc);
+};
 
 class MyMap
 {
@@ -38,6 +53,7 @@ private:
 	POINT Pos;
 	Tile* Tiles;
 	Player* MainChar;
+	ImageObject* Suzy;
 
 	int GridXNum;
 	int GridYNum;
@@ -45,17 +61,21 @@ private:
 	vector<POINT> TempFillContainer;
 	vector<POINT> FilledContainer;
 	POINT StartEnd[2];
+
+	HDC* hdc, *front, *Back;
+	HBITMAP BackBitmap;
 public:
 	MyMap();
 	~MyMap();
 
+	void InitMap(HDC* _hdc, HDC* FRONT, HDC* BACK);
 	void InitTiles();
 
 	void Update();
 	void FillLine();
 	void CheckFilled();
 	void CheckKeyDown();
-	void Render(HDC hdc);
+	void Render(HDC input);
 	void DrawGrid(HDC hdc);
 };
 
