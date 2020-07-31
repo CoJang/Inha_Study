@@ -85,6 +85,8 @@ void MapTile::Render(HDC front, HDC back)
 
 	SelectObject(back, oldBrush);
 	SelectObject(back, oldPen);
+	DeleteObject(oldBrush);
+	DeleteObject(oldPen);
 	DeleteObject(hBrush);
 	DeleteObject(hPen);
 }
@@ -117,11 +119,26 @@ void MyMap::CheckTileState(POINT pos)
 			StartEnd[1] = { pos.x, pos.y };
 			FillLine();
 		}
+
+		if (FilledContainer.empty())
+			FilledContainer.push_back({ pos.x, pos.y });
+
+		bool IsNotExist = true;
+		for (int i = 0; i < FilledContainer.size(); i++)
+		{
+			if (FilledContainer[i].x == pos.x && FilledContainer[i].y == pos.y)
+				IsNotExist = false;
+		}
+
+		if (IsNotExist)
+			FilledContainer.push_back({ pos.x, pos.y });
 	}
 }
 
 void MyMap::FillLine()
 {
+	CheckFilled();
+
 	for (POINT i : TempFillContainer)
 	{
 		Tiles[i.x + (i.y * MapSize.x)].color = FILL;
@@ -132,31 +149,68 @@ void MyMap::FillLine()
 	TempFillContainer.clear();
 	StartEnd[0] = { -1, -1 };
 	StartEnd[1] = { -1, -1 };
-	CheckFilled();
+
+	// ======================= Debug Only =============================
+		//float Persentage = FilledContainer.size();
+		float Persentage = FilledContainer.size() / (float)(MapSize.x * MapSize.y) * 100;
+		string str = "Complete " + to_string(Persentage) + "%\n";
+		DWORD dwWrite;
+		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		WriteFile(hOut, str.c_str(), str.size(), &dwWrite, NULL);
+	// ======================= Debug Only =============================
 }
 
 void MyMap::CheckFilled()
 {
-	int Min, Max;
-	Min = MapSize.x; Max = -1;
+	int Min = MapSize.x; int Max = -1;
+
 	for (int y = 0; y < MapSize.y; y++)
 	{
 		for (int x = 0; x < MapSize.x; x++)
 		{
 			MapTile TempTile = Tiles[x + (y * MapSize.x)];
-			if (TempTile.state == FILLED && x < Min)
+			if (TempTile.state == TEMP_FILLED && x < Min)
 				Min = x;
-			else if ((TempTile.state == FILLED && x > Max))
+			else if ((TempTile.state == TEMP_FILLED && x > Max))
 				Max = x;
 		}
 
 		for (int x = Min; x < Max; x++)
 		{
-			Tiles[x + (y * MapSize.x)].color = FILL;
-			Tiles[x + (y * MapSize.x)].state = FILLED;
-			FilledContainer.push_back({ x, y });
+			if (Tiles[x + (y * MapSize.x)].state == NOT_FILLED)
+			{
+				Tiles[x + (y * MapSize.x)].color = FILL;
+				Tiles[x + (y * MapSize.x)].state = FILLED;
+				FilledContainer.push_back({ x, y });
+			}
 		}
 
-		Min = 10; Max = -1;
+		Min = MapSize.x; Max = -1;
+	}
+
+	Min = MapSize.y; Max = -1;
+
+	for (int x = 0; x < MapSize.x; x++)
+	{
+		for (int y = 0; y < MapSize.y; y++)
+		{
+			MapTile TempTile = Tiles[x + (y * MapSize.x)];
+			if (TempTile.state == TEMP_FILLED && y < Min)
+				Min = y;
+			else if ((TempTile.state == TEMP_FILLED && y > Max))
+				Max = y;
+		}
+
+		for (int y = Min; y < Max; y++)
+		{
+			if (Tiles[x + (y * MapSize.x)].state == NOT_FILLED)
+			{
+				Tiles[x + (y * MapSize.x)].color = FILL;
+				Tiles[x + (y * MapSize.x)].state = FILLED;
+				FilledContainer.push_back({ x, y });
+			}
+		}
+
+		Min = MapSize.y; Max = -1;
 	}
 }

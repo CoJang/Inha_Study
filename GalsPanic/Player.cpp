@@ -35,36 +35,6 @@ void Player::InitPlayer(MyMap * input)
 
 void Player::Render(HDC front, HDC back)
 {
-	//bool IsMeet = false;
-	//int index = -1;
-	//for (int i = 0; i < Max_Print; i++)
-	//	if (FootPrints[i].IsActived())
-	//	{
-	//		if (FootPrints[i].SetPixelsRgn(map, TEMP_FILLED, 0xFFFF0000))
-	//		{
-	//			IsMeet = true;
-	//			index = i;
-	//		}
-	//	}
-
-	//if (IsMeet)
-	//	for (int i = 0; i < index; i++)
-	//		FootPrints[i].SetPixelsRgn(map, FILLED, 0x00000000);
-
-	//if (prevPos.x + PrintDist < Pos.x || prevPos.x - PrintDist > Pos.x ||
-	//	prevPos.y + PrintDist < Pos.y || prevPos.y - PrintDist > Pos.y)
-	//{
-	//	for (int i = 0; i < Max_Print; i++)
-	//	{
-	//		if (!FootPrints[i].IsActived())
-	//		{
-	//			FootPrints[i].SetState(true);
-	//			FootPrints[i].SetPos(prevPos);
-	//			break;
-	//		}
-	//	}
-	//}
-
 	HBITMAP oldbuffer;
 	COLORREF Filter = RGB(255, 0, 255);
 
@@ -77,6 +47,7 @@ void Player::Render(HDC front, HDC back)
 		back, Start.x, Start.y, Sprite_Size.x, Sprite_Size.y, Filter);
 
 	SelectObject(back, oldbuffer);
+	DeleteObject(oldbuffer);
 }
 
 
@@ -99,8 +70,8 @@ void Player::Update()
 	if (Pos.x > WIN_WIDTH - 50)
 		Pos.x = WIN_WIDTH - 50;
 	if (Pos.y < 0) Pos.y = 0;
-	if (Pos.y > WIN_HEIGHT - 80)
-		Pos.y = WIN_HEIGHT - 80;
+	if (Pos.y > WIN_HEIGHT - 70)
+		Pos.y = WIN_HEIGHT - 70;
 }
 
 void Player::SetPlayerDir(POINT input)
