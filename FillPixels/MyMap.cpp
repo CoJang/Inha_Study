@@ -17,13 +17,13 @@ MyMap::MyMap()
 	Tiles[45].SetColor(0x000000FF);
 	Tiles[45].SetState(FILLED);
 	FilledContainer.push_back({ 4, 5 });
-	Tiles[46].SetColor(0xFF0000FF);
+	Tiles[46].SetColor(0x000000FF);
 	Tiles[46].SetState(FILLED);
 	FilledContainer.push_back({ 4, 6 });
-	Tiles[55].SetColor(0x00000000);
+	Tiles[55].SetColor(0x000000FF);
 	Tiles[55].SetState(FILLED);
 	FilledContainer.push_back({ 5, 5 });
-	Tiles[56].SetColor(0x00000000);
+	Tiles[56].SetColor(0x000000FF);
 	Tiles[56].SetState(FILLED);
 	FilledContainer.push_back({ 5, 6 });
 
@@ -46,7 +46,7 @@ void MyMap::Render(HDC input)
 	BackBitmap = CreateCompatibleBitmap(*hdc, WIN_WIDTH, WIN_HEIGHT);
 	HBITMAP oldBitmap = (HBITMAP)SelectObject(*Back, BackBitmap);
 
-	//DrawGrid(*hdc);
+	DrawGrid(*hdc);
 	Suzy->Render(*Back);
 
 	BitBlt(*hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT, *Back, 0, 0, SRCCOPY);
@@ -58,23 +58,17 @@ void MyMap::Render(HDC input)
 	for(int i = 0; i < GridXNum * GridYNum; i++)
 		Tiles[i].Render(*front);
 
-	BitBlt(*hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT, *front, 0, 0, SRCCOPY);
+
+	TransparentBlt(*hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT,
+		*front, 0, 0, WIN_WIDTH, WIN_HEIGHT, 0x000000FF);
 	SelectObject(*front, oldBitmap1);
 
-	//TransparentBlt(*hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT,
-	//	*front, 0, 0, WIN_WIDTH, WIN_HEIGHT, RGB(0, 0, 0));
-
-
-
-	//TransparentBlt(*hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT,
-	//	*front, 0, 0, WIN_WIDTH, WIN_HEIGHT, RGB(0, 0, 0));
-
-	//MainChar->Render(*hdc);
+	MainChar->Render(*hdc);
 
 	//SelectObject(*front, oldbuffer);
 	//DeleteObject(BackBitmap);
-	DeleteObject(oldBitmap);
 	DeleteObject(oldBitmap1);
+	DeleteObject(oldBitmap);
 }
 
 void MyMap::Update()
@@ -114,7 +108,7 @@ void MyMap::CheckKeyDown()
 		index.x = (MainChar->GetPos().x - Pos.x) / Grid_Dist;
 		index.y = (MainChar->GetPos().y - Pos.y) / Grid_Dist;
 
-		Tiles[index.x + (index.y * GridXNum)].SetColor(0x000000FF);
+		Tiles[index.x + (index.y * GridXNum)].SetColor(0x00FFFFFF);
 		Tiles[index.x + (index.y * GridXNum)].SetState(TEMP_FILLED);
 
 		if (Tiles[index.x + (index.y * GridXNum)].GetState() == TEMP_FILLED)
@@ -151,7 +145,7 @@ void MyMap::FillLine()
 {
 	for (POINT i : TempFillContainer)
 	{
-		Tiles[i.x + (i.y * GridXNum)].SetColor(0x00000000);
+		Tiles[i.x + (i.y * GridXNum)].SetColor(0x000000FF);
 		Tiles[i.x + (i.y * GridXNum)].SetState(FILLED);
 		FilledContainer.push_back(i);
 	}
@@ -178,7 +172,7 @@ void MyMap::CheckFilled()
 
 		for (int x = Min; x < Max; x++)
 		{
-			Tiles[x + (y * GridXNum)].SetColor(0x00000000);
+			Tiles[x + (y * GridXNum)].SetColor(0x000000FF);
 			Tiles[x + (y * GridXNum)].SetState(FILLED);
 			FilledContainer.push_back({x, y});
 		}
