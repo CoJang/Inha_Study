@@ -131,7 +131,7 @@ void Player::SetPlayerDir(POINT input)
 
 	if (GetKeyState(VK_SPACE) & 0x8000)
 	{
-		SetPixel(TEMP_FILLED, RGB(0, 255, 255));
+		SetPixel(TEMP_FILLED, TEMPFILL);
 	}
 }
 void Player::SetPixelsRgn(TileState state, COLORREF color, RECT Region)
@@ -139,16 +139,16 @@ void Player::SetPixelsRgn(TileState state, COLORREF color, RECT Region)
 	for (int y = Region.top; y < Region.bottom; y++)
 		for (int x = Region.left; x < Region.right; x++)
 		{
-			map->SetMapTileState({ x, y }, state);
 			map->SetMapTileColor({ x, y }, color);
+			map->SetMapTileState({ x, y }, state);
 		}
 }
 
 void Player::SetPixel(TileState state, COLORREF color)
 {
 	POINT Pivot = {33, 60};
-	map->SetMapTileState({ Pos.x + Pivot.x, Pos.y + Pivot.y }, state);
 	map->SetMapTileColor({ Pos.x + Pivot.x, Pos.y + Pivot.y }, color);
+	map->SetMapTileState({ Pos.x + Pivot.x, Pos.y + Pivot.y }, state);
 }
 
 

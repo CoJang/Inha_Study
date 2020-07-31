@@ -37,4 +37,8 @@ using namespace std;
 
 #define ElapseTime 33
 
-#define TILESIZE 50
+#define TILESIZE 10
+
+#define FILL RGB(0, 0, 0)
+#define TEMPFILL RGB(0, 255, 255)
+#define NOTFILL RGB(255, 255, 255)

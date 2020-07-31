@@ -29,6 +29,10 @@ class MyMap
 private:
 	MapTile* Tiles;
 	POINT MapSize;
+
+	vector<POINT> TempFillContainer;
+	vector<POINT> FilledContainer;
+	POINT StartEnd[2];
 public:
 	MyMap();
 	~MyMap();
@@ -40,6 +44,10 @@ public:
 	void SetMapTileColor(POINT pos, COLORREF input);
 
 	void Render(HDC front, HDC back);
-	void Update();
+	void Update() {};
+
+	void CheckTileState(POINT pos);
+	void CheckFilled();
+	void FillLine();
 };
 
