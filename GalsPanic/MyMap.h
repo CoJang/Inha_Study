@@ -28,7 +28,6 @@ class MyMap
 {
 private:
 	MapTile* Tiles;
-	HBITMAP TileBitmap;
 	POINT MapSize;
 public:
 	MyMap();

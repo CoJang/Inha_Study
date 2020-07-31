@@ -58,15 +58,15 @@ void MyMap::Render(HDC input)
 	for(int i = 0; i < GridXNum * GridYNum; i++)
 		Tiles[i].Render(*front);
 
-
 	TransparentBlt(*hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT,
 		*front, 0, 0, WIN_WIDTH, WIN_HEIGHT, 0x000000FF);
-	SelectObject(*front, oldBitmap1);
+	SelectObject(*front, BackBitmap1);
 
 	MainChar->Render(*hdc);
 
 	//SelectObject(*front, oldbuffer);
-	//DeleteObject(BackBitmap);
+	DeleteObject(BackBitmap1);
+	DeleteObject(BackBitmap);
 	DeleteObject(oldBitmap1);
 	DeleteObject(oldBitmap);
 }
@@ -244,10 +244,8 @@ void Tile::Render(HDC front)
 {
 	if (state == NOT_FILLED) return;
 
-	HBRUSH hBrush;
-	HBRUSH oldBrush;
-	hBrush = CreateSolidBrush(color);
-	oldBrush = (HBRUSH)SelectObject(front, hBrush);
+	HBRUSH hBrush = CreateSolidBrush(color);
+	HBRUSH oldBrush = (HBRUSH)SelectObject(front, hBrush);;
 
 	Rectangle(front, Rgn.left, Rgn.top, Rgn.right, Rgn.bottom);
 

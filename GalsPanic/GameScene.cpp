@@ -35,12 +35,36 @@ void GameScene::Render()
 {
 	if (Life <= 0) return;
 
-	// First Priority [ Background ]
+	// Hide Background Image with Bitmap
+	HBITMAP BackBitmap = CreateCompatibleBitmap(*FrontBuffer, WIN_WIDTH, WIN_HEIGHT);
+	HBITMAP oldBitmap = (HBITMAP)SelectObject(*BackBuffer, BackBitmap);
+
+	// First Priority [ Background ], Render Target : BackBuffer
 	Background->Render(*FrontBuffer, *BackBuffer);
+
+	// Copy [ BackBuffer -> FrontBuffer ]
+	BitBlt(*FrontBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT, *BackBuffer, 0, 0, SRCCOPY);
+	SelectObject(*BackBuffer, oldBitmap);
+
+	// Hide again & Use BackBuffer again
+	HBITMAP BackBitmap1 = CreateCompatibleBitmap(*FrontBuffer, WIN_WIDTH, WIN_HEIGHT);
+	HBITMAP oldBitmap1 = (HBITMAP)SelectObject(*BackBuffer, BackBitmap1);
+	
+	// Render Target : BackBuffer
 	Map->Render(*FrontBuffer, *BackBuffer);
+
+	// Copy & Filtering [ BackBuffer -> Front Buffer ]
+	TransparentBlt(*FrontBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT,
+		*BackBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT, RGB(0, 0, 0));
+	SelectObject(*BackBuffer, BackBitmap1);
 
 	DrawButtons();
 	MainChar->Render(*FrontBuffer, *BackBuffer);
+
+	DeleteObject(oldBitmap);
+	DeleteObject(oldBitmap1);
+	DeleteObject(BackBitmap);
+	DeleteObject(BackBitmap1);
 }
 
 void GameScene::Update()

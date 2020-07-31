@@ -37,4 +37,4 @@ using namespace std;
 
 #define ElapseTime 33
 
-#define TILESIZE 10
+#define TILESIZE 50

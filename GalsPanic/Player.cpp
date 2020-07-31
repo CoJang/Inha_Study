@@ -131,7 +131,7 @@ void Player::SetPlayerDir(POINT input)
 
 	if (GetKeyState(VK_SPACE) & 0x8000)
 	{
-		SetPixel(FILLED, 0x00000000);
+		SetPixel(TEMP_FILLED, RGB(0, 255, 255));
 	}
 }
 void Player::SetPixelsRgn(TileState state, COLORREF color, RECT Region)
