@@ -84,11 +84,31 @@ void MapTile::Render(HDC front, HDC back)
 	Rectangle(back, Rgn.left, Rgn.top, Rgn.right, Rgn.bottom);
 
 	SelectObject(back, oldBrush);
-	SelectObject(back, oldPen);
 	DeleteObject(oldBrush);
+
+	SelectObject(back, oldPen);
 	DeleteObject(oldPen);
+
 	DeleteObject(hBrush);
 	DeleteObject(hPen);
+}
+
+void MyMap::FloodFill(POINT pos, TileState check)
+{
+	if (pos.x >= MapSize.x || pos.y >= MapSize.y ||
+		pos.x < 0 || pos.y < 0) return;
+
+	if (Tiles[pos.x + (pos.y * MapSize.x)].state == check)
+	{
+		Tiles[pos.x + (pos.y * MapSize.x)].color = FILL;
+		Tiles[pos.x + (pos.y * MapSize.x)].state = FILLED;
+		FilledContainer.push_back(pos);
+
+		FloodFill({ pos.x + 1, pos.y }, check);
+		FloodFill({ pos.x, pos.y + 1 }, check);
+		FloodFill({ pos.x - 1, pos.y }, check);
+		FloodFill({ pos.x, pos.y - 1 }, check);
+	}
 }
 
 void MyMap::CheckTileState(POINT pos)
@@ -98,7 +118,7 @@ void MyMap::CheckTileState(POINT pos)
 		if (TempFillContainer.empty())
 			TempFillContainer.push_back({ pos.x, pos.y });
 
-		bool IsNotExist = true;
+		bool IsNotExist = true; // For avoid Overlapping(Duplication)
 		for (int i = 0; i < TempFillContainer.size(); i++)
 		{
 			if (TempFillContainer[i].x == pos.x && TempFillContainer[i].y == pos.y)
@@ -123,7 +143,7 @@ void MyMap::CheckTileState(POINT pos)
 		if (FilledContainer.empty())
 			FilledContainer.push_back({ pos.x, pos.y });
 
-		bool IsNotExist = true;
+		bool IsNotExist = true; 
 		for (int i = 0; i < FilledContainer.size(); i++)
 		{
 			if (FilledContainer[i].x == pos.x && FilledContainer[i].y == pos.y)
@@ -139,29 +159,69 @@ void MyMap::FillLine()
 {
 	CheckFilled();
 
-	for (POINT i : TempFillContainer)
+	if (!TempFillContainer.empty())
 	{
-		Tiles[i.x + (i.y * MapSize.x)].color = FILL;
-		Tiles[i.x + (i.y * MapSize.x)].state = FILLED;
-		FilledContainer.push_back(i);
+		POINT tempPos = TempFillContainer[0];
+
+		// Fill Line
+		FloodFill(tempPos, TEMP_FILLED);
+
+		if (IsIn({ tempPos.x + 1, tempPos.y }, FILLED))
+		{
+			FloodFill({ tempPos.x + 1, tempPos.y }, NOT_FILLED);
+		}
+		else if (IsIn({ tempPos.x, tempPos.y + 1 }, FILLED))
+		{
+			FloodFill({ tempPos.x, tempPos.y + 1 }, NOT_FILLED);
+		}
+		else if (IsIn({ tempPos.x - 1, tempPos.y }, FILLED))
+		{
+			FloodFill({ tempPos.x - 1, tempPos.y }, NOT_FILLED);
+		}
+		else if (IsIn({ tempPos.x, tempPos.y - 1 }, FILLED))
+		{
+			FloodFill({ tempPos.x, tempPos.y - 1 }, NOT_FILLED);
+		}
+
+		TempFillContainer.clear();
 	}
 
-	TempFillContainer.clear();
+	//for (POINT i : TempFillContainer)
+	//{
+	//	Tiles[i.x + (i.y * MapSize.x)].color = FILL;
+	//	Tiles[i.x + (i.y * MapSize.x)].state = FILLED;
+	//	FilledContainer.push_back(i);
+	//}
+	
 	StartEnd[0] = { -1, -1 };
 	StartEnd[1] = { -1, -1 };
-
-	// ======================= Debug Only =============================
-		//float Persentage = FilledContainer.size();
-		float Persentage = FilledContainer.size() / (float)(MapSize.x * MapSize.y) * 100;
-		string str = "Complete " + to_string(Persentage) + "%\n";
-		DWORD dwWrite;
-		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-		WriteFile(hOut, str.c_str(), str.size(), &dwWrite, NULL);
-	// ======================= Debug Only =============================
 }
+
+bool MyMap::IsIn(POINT pos, TileState check)
+{
+	int MeetCnt = 0;
+
+	for (int x = pos.x; x < MapSize.x; x++)
+	{
+		if (Tiles[x + (pos.y * MapSize.x)].state == check &&
+			Tiles[(x - 1) + (pos.y * MapSize.x)].state != check)
+		{
+			MeetCnt++;
+		}
+	}
+
+	if (MeetCnt % 2 == 0)
+		return false;
+	else
+		return true;
+
+}
+
 
 void MyMap::CheckFilled()
 {
+	if (TempFillContainer.empty()) return;
+
 	int Min = MapSize.x; int Max = -1;
 
 	for (int y = 0; y < MapSize.y; y++)

@@ -46,8 +46,12 @@ public:
 	void Render(HDC front, HDC back);
 	void Update() {};
 
+	// Color Fill Func.
+	void FloodFill(POINT pos, TileState check);
 	void CheckTileState(POINT pos);
 	void CheckFilled();
 	void FillLine();
+
+	bool IsIn(POINT pos, TileState check);
 };
 
