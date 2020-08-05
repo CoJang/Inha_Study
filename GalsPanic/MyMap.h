@@ -13,6 +13,7 @@ public:
 	POINT Pos;
 	COLORREF color;
 	TileState state;
+	bool IsChecked;
 
 	RECT Rgn;
 	HPEN hPen;
@@ -55,5 +56,6 @@ public:
 	void FillLine();
 
 	bool IsIn(POINT pos, TileState check);
+	void UnCheckAll();
 };
 

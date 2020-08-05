@@ -13,6 +13,7 @@ MyMap::MyMap()
 		{
 			Tiles[x + (y * MapSize.x)].Pos = { x * TILESIZE + TILESIZE / 2, y * TILESIZE + TILESIZE / 2 };
 			Tiles[x + (y * MapSize.x)].state = NOT_FILLED;
+			Tiles[x + (y * MapSize.x)].IsChecked = false;
 			Tiles[x + (y * MapSize.x)].color = NOTFILL;
 			Tiles[x + (y * MapSize.x)].Rgn = {  Tiles[x + (y * MapSize.x)].Pos.x - TILESIZE / 2,
 												Tiles[x + (y * MapSize.x)].Pos.y - TILESIZE / 2,
@@ -125,12 +126,15 @@ void MyMap::NonRecursiveFloodFill(POINT pos, TileState check)
 		int x = p.x;
 		int y = p.y;
 
+		if (Tiles[x + (y * MapSize.x)].IsChecked) continue;
 		if (x < 0 || y < 0 || x >= MapSize.x || y >= MapSize.y) continue;
 
-		if (Tiles[x + (y * MapSize.x)].state == check)
+		if (Tiles[x + (y * MapSize.x)].state == check ||
+			Tiles[x + (y * MapSize.x)].state == FILLED)
 		{
 			Tiles[x + (y * MapSize.x)].color = FILL;
 			Tiles[x + (y * MapSize.x)].state = FILLED;
+			Tiles[x + (y * MapSize.x)].IsChecked = true;
 			FilledContainer.push_back({x, y});
 
 			FloodFillContainer.push({x + 1, y});
@@ -190,12 +194,13 @@ void MyMap::FillLine()
 	if (!TempFillContainer.empty())
 	{
 		int halfPoint = TempFillContainer.size() / 2;
-		POINT tempPos = TempFillContainer[halfPoint];
+		POINT tempPos = TempFillContainer[1];
 
 		string str;
 		DWORD dwWrite;
 		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
+		
 		// Fill Line
 		NonRecursiveFloodFill(tempPos, TEMP_FILLED);
 
@@ -216,7 +221,9 @@ void MyMap::FillLine()
 			NonRecursiveFloodFill({ tempPos.x - 1, tempPos.y - 1 }, NOT_FILLED);
 		}
 
+
 		TempFillContainer.clear();
+		UnCheckAll();
 	}
 
 	StartEnd[0] = { -1, -1 };
@@ -228,7 +235,7 @@ bool MyMap::IsIn(POINT pos, TileState check)
 	if(Tiles[pos.x + (pos.y * MapSize.x)].state == FILLED) return false;
 
 	int MeetCnt = 0;
-	int IsMeet = false;
+	bool IsMeet = false;
 
 	for (int x = pos.x; x < MapSize.x; x++)
 	{
@@ -248,6 +255,13 @@ bool MyMap::IsIn(POINT pos, TileState check)
 	else
 		return true;
 
+}
+
+void MyMap::UnCheckAll()
+{
+	for (int y = 0; y < MapSize.y; y++)
+		for (int x = 0; x < MapSize.x; x++)
+			Tiles[x + (y * MapSize.x)].IsChecked = false;
 }
 
 
