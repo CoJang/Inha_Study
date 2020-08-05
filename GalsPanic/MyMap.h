@@ -32,6 +32,7 @@ private:
 
 	vector<POINT> TempFillContainer;
 	vector<POINT> FilledContainer;
+	stack<POINT> FloodFillContainer;
 	POINT StartEnd[2];
 public:
 	MyMap();
@@ -48,6 +49,7 @@ public:
 
 	// Color Fill Func.
 	void FloodFill(POINT pos, TileState check);
+	void NonRecursiveFloodFill(POINT pos, TileState check);
 	void CheckTileState(POINT pos);
 	void CheckFilled();
 	void FillLine();

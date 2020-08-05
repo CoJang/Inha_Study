@@ -23,6 +23,7 @@
 #include <fstream>
 #include <istream>
 #include <ostream>
+#include <stack>
 
 using namespace std;
 
@@ -37,7 +38,7 @@ using namespace std;
 
 #define ElapseTime 33
 
-#define TILESIZE 10
+#define TILESIZE 30
 
 #define FILL RGB(0, 0, 0)
 #define TEMPFILL RGB(0, 255, 255)

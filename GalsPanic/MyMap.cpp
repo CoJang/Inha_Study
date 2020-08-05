@@ -95,8 +95,8 @@ void MapTile::Render(HDC front, HDC back)
 
 void MyMap::FloodFill(POINT pos, TileState check)
 {
-	if (pos.x >= MapSize.x || pos.y >= MapSize.y ||
-		pos.x < 0 || pos.y < 0) return;
+	if (pos.x < 0 || pos.y < 0 ||
+		pos.x >= MapSize.x || pos.y >= MapSize.y ) return;
 
 	if (Tiles[pos.x + (pos.y * MapSize.x)].state == check)
 	{
@@ -108,6 +108,36 @@ void MyMap::FloodFill(POINT pos, TileState check)
 		FloodFill({ pos.x, pos.y + 1 }, check);
 		FloodFill({ pos.x - 1, pos.y }, check);
 		FloodFill({ pos.x, pos.y - 1 }, check);
+	}
+}
+
+void MyMap::NonRecursiveFloodFill(POINT pos, TileState check)
+{
+	if (pos.x < 0 || pos.y < 0 ||
+		pos.x >= MapSize.x || pos.y >= MapSize.y) return;
+
+	FloodFillContainer.push(pos);
+
+	while (FloodFillContainer.size() > 0)
+	{
+		POINT p = FloodFillContainer.top();
+		FloodFillContainer.pop();
+		int x = p.x;
+		int y = p.y;
+
+		if (x < 0 || y < 0 || x >= MapSize.x || y >= MapSize.y) continue;
+
+		if (Tiles[x + (y * MapSize.x)].state == check)
+		{
+			Tiles[x + (y * MapSize.x)].color = FILL;
+			Tiles[x + (y * MapSize.x)].state = FILLED;
+			FilledContainer.push_back({x, y});
+
+			FloodFillContainer.push({x + 1, y});
+			FloodFillContainer.push({x, y + 1});
+			FloodFillContainer.push({x - 1, y});
+			FloodFillContainer.push({x, y - 1});
+		}
 	}
 }
 
@@ -157,56 +187,59 @@ void MyMap::CheckTileState(POINT pos)
 
 void MyMap::FillLine()
 {
-	CheckFilled();
-
 	if (!TempFillContainer.empty())
 	{
-		POINT tempPos = TempFillContainer[0];
+		int halfPoint = TempFillContainer.size() / 2;
+		POINT tempPos = TempFillContainer[halfPoint];
+
+		string str;
+		DWORD dwWrite;
+		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
 		// Fill Line
-		FloodFill(tempPos, TEMP_FILLED);
+		NonRecursiveFloodFill(tempPos, TEMP_FILLED);
 
-		if (IsIn({ tempPos.x + 1, tempPos.y }, FILLED))
+		if (IsIn({ tempPos.x + 1, tempPos.y + 1 }, FILLED))
 		{
-			FloodFill({ tempPos.x + 1, tempPos.y }, NOT_FILLED);
+			NonRecursiveFloodFill({ tempPos.x + 1, tempPos.y + 1 }, NOT_FILLED);
 		}
-		else if (IsIn({ tempPos.x, tempPos.y + 1 }, FILLED))
+		else if (IsIn({ tempPos.x + 1, tempPos.y - 1 }, FILLED))
 		{
-			FloodFill({ tempPos.x, tempPos.y + 1 }, NOT_FILLED);
+			NonRecursiveFloodFill({ tempPos.x + 1, tempPos.y - 1 }, NOT_FILLED);
 		}
-		else if (IsIn({ tempPos.x - 1, tempPos.y }, FILLED))
+		else if (IsIn({ tempPos.x - 1, tempPos.y + 1 }, FILLED))
 		{
-			FloodFill({ tempPos.x - 1, tempPos.y }, NOT_FILLED);
+			NonRecursiveFloodFill({ tempPos.x - 1, tempPos.y + 1 }, NOT_FILLED);
 		}
-		else if (IsIn({ tempPos.x, tempPos.y - 1 }, FILLED))
+		else if (IsIn({ tempPos.x - 1, tempPos.y - 1 }, FILLED))
 		{
-			FloodFill({ tempPos.x, tempPos.y - 1 }, NOT_FILLED);
+			NonRecursiveFloodFill({ tempPos.x - 1, tempPos.y - 1 }, NOT_FILLED);
 		}
 
 		TempFillContainer.clear();
 	}
 
-	//for (POINT i : TempFillContainer)
-	//{
-	//	Tiles[i.x + (i.y * MapSize.x)].color = FILL;
-	//	Tiles[i.x + (i.y * MapSize.x)].state = FILLED;
-	//	FilledContainer.push_back(i);
-	//}
-	
 	StartEnd[0] = { -1, -1 };
 	StartEnd[1] = { -1, -1 };
 }
 
 bool MyMap::IsIn(POINT pos, TileState check)
 {
+	if(Tiles[pos.x + (pos.y * MapSize.x)].state == FILLED) return false;
+
 	int MeetCnt = 0;
+	int IsMeet = false;
 
 	for (int x = pos.x; x < MapSize.x; x++)
 	{
-		if (Tiles[x + (pos.y * MapSize.x)].state == check &&
-			Tiles[(x - 1) + (pos.y * MapSize.x)].state != check)
+		if (Tiles[x + (pos.y * MapSize.x)].state == check && !IsMeet)
 		{
 			MeetCnt++;
+			IsMeet = true;
+		}
+		else if (Tiles[x + (pos.y * MapSize.x)].state != check && IsMeet)
+		{
+			IsMeet = false;
 		}
 	}
 
