@@ -21,6 +21,7 @@ Player::Player()
 
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
+	oldDir = Dir;
 	CharSize = 2;
 }
 
@@ -102,8 +103,18 @@ void Player::SetPlayerDir(POINT input)
 
 	if (GetKeyState(VK_SPACE) & 0x8000)
 	{
-		SetPixel(TEMP_FILLED, TEMPFILL);
+		if (oldDir.x != Dir.x || oldDir.y != Dir.y)
+		{
+			SetPixel(TEMP_FILLED, 0x000000FF);
+
+		}
+		else
+		{
+			SetPixel(TEMP_FILLED, TEMPFILL);
+		}
 	}
+
+	oldDir = Dir;
 }
 void Player::SetPixelsRgn(TileState state, COLORREF color, RECT Region)
 {

@@ -232,23 +232,34 @@ void MyMap::FillLine()
 
 bool MyMap::IsIn(POINT pos, TileState check)
 {
-	if(Tiles[pos.x + (pos.y * MapSize.x)].state == FILLED) return false;
+	//if(Tiles[pos.x + (pos.y * MapSize.x)].state == FILLED) return false;
 
 	int MeetCnt = 0;
 	bool IsMeet = false;
+	POINT First, Last;
+	First = { -1, -1 }; Last = { -1, -1 };
 
 	for (int x = pos.x; x < MapSize.x; x++)
 	{
+		if (x + 1 < MapSize.x && IsMeet &&
+			Tiles[(x + 1) + (pos.y * MapSize.x)].state != check)
+		{
+			IsMeet = false;
+		}
 		if (Tiles[x + (pos.y * MapSize.x)].state == check && !IsMeet)
 		{
 			MeetCnt++;
 			IsMeet = true;
-		}
-		else if (Tiles[x + (pos.y * MapSize.x)].state != check && IsMeet)
-		{
-			IsMeet = false;
+
+			if (First.x == -1 && Tiles[(x - 1) + (pos.y * MapSize.x)].state != check)
+				First = { x, pos.y };
+			else if (Last.x == -1)
+				Last = { x, pos.y };
 		}
 	}
+
+	if (First.x == Last.x && First.y == Last.y && First.x != -1)
+		MeetCnt--;
 
 	if (MeetCnt % 2 == 0)
 		return false;

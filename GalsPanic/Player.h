@@ -33,6 +33,7 @@ private:
 	int Anim_Frame_Flag;
 
 	POINT Start;
+	POINT oldDir;
 	int Speed;
 	float CharSize;
 
