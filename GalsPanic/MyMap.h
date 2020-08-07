@@ -57,8 +57,6 @@ public:
 	void Update() {};
 
 	// Color Fill Func.
-
-	// Position, SrcState, destColor, destState
 	void NonRecursiveFloodFill(POINT, TileState, COLORREF, TileState);
 	void FillRectLine(POINT Min, POINT Max, TileState state);
 	void CheckRegion(POINT Min, POINT Max);
