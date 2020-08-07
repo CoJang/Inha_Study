@@ -22,6 +22,7 @@ GameScene::GameScene()
 	Background = new ImageObject;
 
 	MainChar->InitPlayer(Map);
+	MainChar->SetPos({ 250, 250 });
 }
 
 GameScene::~GameScene()

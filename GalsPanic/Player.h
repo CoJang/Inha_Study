@@ -33,7 +33,8 @@ private:
 	int Anim_Frame_Flag;
 
 	POINT Start;
-	POINT oldDir;
+	POINT oldPos;
+	POINT Pivot;
 	int Speed;
 	float CharSize;
 
@@ -49,8 +50,7 @@ public:
 
 	void SetPlayerDir(POINT input);
 	void SetPlayerSize(float input) { CharSize = input; };
-	void SetPixelsRgn(TileState state, COLORREF color, RECT Region);
-	void SetPixel(TileState state, COLORREF color);
+	void SetPixel(TileState state, COLORREF color, POINT pos);
 	float GetPlayerSize() { return CharSize; };
 };
 

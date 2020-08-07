@@ -4,7 +4,7 @@
 
 Player::Player()
 {
-	Pos = { 0, 0 }; Dir = { 0, 0 }; Speed = 10;
+	Pos = { 0, 0 }; Dir = { 0, 0 }; Speed = 10; oldPos = Pos;
 	
 	ImagePath = TEXT("images/character.bmp");
 	hImage = (HBITMAP)LoadImage(NULL, ImagePath.c_str(), 
@@ -21,8 +21,8 @@ Player::Player()
 
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
-	oldDir = Dir;
 	CharSize = 2;
+	Pivot = { 33, 60 };
 }
 
 Player::~Player(){}
@@ -30,8 +30,6 @@ Player::~Player(){}
 void Player::InitPlayer(MyMap * input)
 {
 	map = input;
-	RECT temp = { 250, 250, 350, 350 };
-	SetPixelsRgn(FILLED, RGB(0, 0, 0), temp);
 }
 
 void Player::Render(HDC front, HDC back)
@@ -73,6 +71,23 @@ void Player::Update()
 	if (Pos.y < 0) Pos.y = 0;
 	if (Pos.y > WIN_HEIGHT - 70)
 		Pos.y = WIN_HEIGHT - 70;
+
+	if (GetKeyState(VK_SPACE) & 0x8000)
+	{
+		if (oldPos.x != Pos.x && oldPos.y != Pos.y)
+		{
+			POINT Temp = { Pos.x - (Dir.x * Speed), Pos.y - (Dir.y * Speed) };
+			POINT Vertex = { Temp.x + Pivot.x, Temp.y + Pivot.y };
+			SetPixel(TEMP_FILLED, TEMPFILL, Pos);
+			SetPixel(TEMP_FILLED, 0x000000FF, Temp);
+			map->SaveVertex(Vertex);
+		}
+		else
+			SetPixel(TEMP_FILLED, TEMPFILL, Pos);
+	}
+
+	if (oldPos.x != Pos.x && oldPos.y != Pos.y)
+		oldPos = Pos;
 }
 
 void Player::SetPlayerDir(POINT input)
@@ -100,37 +115,12 @@ void Player::SetPlayerDir(POINT input)
 		Anim_Frame_Cur = Anim_Frame_Min;
 		Dir.x = 0; Dir.y = 0;
 	}
-
-	if (GetKeyState(VK_SPACE) & 0x8000)
-	{
-		if (oldDir.x != Dir.x || oldDir.y != Dir.y)
-		{
-			SetPixel(TEMP_FILLED, 0x000000FF);
-
-		}
-		else
-		{
-			SetPixel(TEMP_FILLED, TEMPFILL);
-		}
-	}
-
-	oldDir = Dir;
-}
-void Player::SetPixelsRgn(TileState state, COLORREF color, RECT Region)
-{
-	for (int y = Region.top; y < Region.bottom; y++)
-		for (int x = Region.left; x < Region.right; x++)
-		{
-			map->SetMapTileColor({ x, y }, color);
-			map->SetMapTileState({ x, y }, state);
-		}
 }
 
-void Player::SetPixel(TileState state, COLORREF color)
+void Player::SetPixel(TileState state, COLORREF color, POINT pos)
 {
-	POINT Pivot = {33, 60};
-	map->SetMapTileColor({ Pos.x + Pivot.x, Pos.y + Pivot.y }, color);
-	map->SetMapTileState({ Pos.x + Pivot.x, Pos.y + Pivot.y }, state);
+	map->SetMapTileColor({ pos.x + Pivot.x, pos.y + Pivot.y }, color);
+	map->SetMapTileState({ pos.x + Pivot.x, pos.y + Pivot.y }, state);
 }
 
 

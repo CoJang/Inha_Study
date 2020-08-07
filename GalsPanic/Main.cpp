@@ -112,7 +112,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 	case WM_CREATE:
 		{
-			AllocConsole();
+			//AllocConsole();
 			SetTimer(hWnd, 99, ElapseTime, NULL);
 			GetWindowRect(hWnd, &winRect);
 
@@ -216,7 +216,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		GetWindowRect(hWnd, &winRect);
 		break;
     case WM_DESTROY:
-		FreeConsole();
+		//FreeConsole();
         PostQuitMessage(0);
         break;
     default:
