@@ -50,14 +50,14 @@ void GameScene::Render()
 	// Hide again & Use BackBuffer again
 	HBITMAP BackBitmap1 = CreateCompatibleBitmap(*FrontBuffer, WIN_WIDTH, WIN_HEIGHT);
 	HBITMAP oldBitmap1 = (HBITMAP)SelectObject(*BackBuffer, BackBitmap1);
-	PatBlt(*BackBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT, WHITENESS);
+	PatBlt(*BackBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT, BLACKNESS);
 	
 	// Render Target : BackBuffer
 	Map->Render(*FrontBuffer, *BackBuffer);
 
 	// Copy & Filtering [ BackBuffer -> Front Buffer ]
 	TransparentBlt(*FrontBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT,
-		*BackBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT, RGB(0, 0, 0));
+		*BackBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT, FILL);
 	SelectObject(*BackBuffer, BackBitmap1);
 
 	DrawButtons();

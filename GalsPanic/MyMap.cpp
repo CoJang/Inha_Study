@@ -26,7 +26,7 @@ MyMap::MyMap()
 	Min = { -1, -1 }; Max = { -1, -1 };
 
 	RECT StartRegion = { 250, 250, 350, 350 };
-	SetPixelsRgn(RGB(0, 0, 0), FILLED, StartRegion);
+	SetPixelsRgn(FILL, FILLED, StartRegion);
 
 	SaveVertex({ StartRegion.left,   StartRegion.top });
 	SaveVertex({ StartRegion.right,  StartRegion.top });
@@ -178,12 +178,12 @@ void MyMap::CheckTileState(POINT pos)
 		else if (StartEnd[1].x == -1)
 		{
 			StartEnd[1] = { pos.x, pos.y };
-			FillLine();
+			FillRegion();
 		}
 	}
 }
 
-void MyMap::FillLine()
+void MyMap::FillRegion()
 {
 	if (TempFillContainer.size() > 1)
 	{

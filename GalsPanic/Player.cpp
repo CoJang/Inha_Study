@@ -6,12 +6,12 @@ Player::Player()
 {
 	Pos = { 0, 0 }; Dir = { 0, 0 }; Speed = 10; oldPos = Pos;
 	
-	ImagePath = TEXT("images/character.bmp");
+	ImagePath = TEXT("images/Pac-Man_Sprites.bmp");
 	hImage = (HBITMAP)LoadImage(NULL, ImagePath.c_str(), 
 		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	GetObject(hImage, sizeof(BITMAP), &bitImage);
 
-	Sprite_Size.x = bitImage.bmWidth / 6;
+	Sprite_Size.x = bitImage.bmWidth / 11;
 	Sprite_Size.y = bitImage.bmHeight / 8;
 
 	Anim_Frame_Max = bitImage.bmWidth / Sprite_Size.x - 1;
@@ -21,8 +21,8 @@ Player::Player()
 
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
-	CharSize = 2;
-	Pivot = { 33, 60 };
+	CharSize = 3.5f;
+	Pivot = { 20, 20 };
 }
 
 Player::~Player(){}
@@ -35,7 +35,7 @@ void Player::InitPlayer(MyMap * input)
 void Player::Render(HDC front, HDC back)
 {
 	HBITMAP oldbuffer;
-	COLORREF Filter = RGB(255, 0, 255);
+	COLORREF Filter = RGB(0, 0, 0);
 
 	oldbuffer = (HBITMAP)SelectObject(back, hImage);
 
@@ -78,12 +78,10 @@ void Player::Update()
 		{
 			POINT Temp = { Pos.x - (Dir.x * Speed), Pos.y - (Dir.y * Speed) };
 			POINT Vertex = { Temp.x + Pivot.x, Temp.y + Pivot.y };
-			SetPixel(TEMP_FILLED, TEMPFILL, Pos);
-			SetPixel(TEMP_FILLED, 0x000000FF, Temp);
 			map->SaveVertex(Vertex);
 		}
-		else
-			SetPixel(TEMP_FILLED, TEMPFILL, Pos);
+		
+		SetPixel(TEMP_FILLED, TEMPFILL, Pos);
 	}
 
 	if (oldPos.x != Pos.x && oldPos.y != Pos.y)
@@ -96,19 +94,23 @@ void Player::SetPlayerDir(POINT input)
 
 	if (Dir.y == 1)
 	{
-		Anim_Frame_Flag = 0;
+		Anim_Frame_Min = 3;
+		Anim_Frame_Max = 4;
 	}
 	else if (Dir.x == -1)
 	{
-		Anim_Frame_Flag = 1;
+		Anim_Frame_Min = 5;
+		Anim_Frame_Max = 7;
 	}
 	else if (Dir.x == 1)
 	{
-		Anim_Frame_Flag = 2;
+		Anim_Frame_Min = 0;
+		Anim_Frame_Max = 2;
 	}
 	else if(Dir.y == -1)
 	{
-		Anim_Frame_Flag = 3;
+		Anim_Frame_Min = 8;
+		Anim_Frame_Max = 9;
 	}
 	else
 	{

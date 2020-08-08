@@ -40,6 +40,6 @@ using namespace std;
 
 #define TILESIZE 10
 
-#define FILL RGB(0, 0, 0)
+#define FILL RGB(255, 0, 255)
 #define TEMPFILL RGB(0, 255, 255)
 #define NOTFILL RGB(255, 255, 255)
