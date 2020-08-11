@@ -23,6 +23,7 @@ GameScene::GameScene()
 
 	MainChar->InitPlayer(Map);
 	MainChar->SetPos({ 250, 250 });
+	Background->InitImageObject(TEXT("Images/donkeykong.bmp"), { 100, 100 });
 }
 
 GameScene::~GameScene()
@@ -107,7 +108,6 @@ void GameScene::DrawButtons()
 	DrawText(*FrontBuffer, temp.c_str(), temp.size(), &LIFE_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
 	SelectObject(*FrontBuffer, oldFont);
-
 }
 
 ButtonType GameScene::CheckClick(POINT mpos, int flag)

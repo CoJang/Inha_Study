@@ -33,8 +33,8 @@ using namespace std;
 
 #pragma comment(lib, "msimg32.lib")
 
-#define WIN_WIDTH 450
-#define WIN_HEIGHT 800
+#define WIN_WIDTH 630
+#define WIN_HEIGHT 850
 
 #define ElapseTime 33
 
