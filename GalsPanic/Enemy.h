@@ -16,6 +16,10 @@ public:
 	Enemy();
 	~Enemy();
 
+	void InitEnemy(wstring filepath, POINT pos);
+	void Render(HDC front, HDC back);
+	void UpdateFrame();
+	void Update();
 
 
 

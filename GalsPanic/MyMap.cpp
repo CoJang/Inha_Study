@@ -120,6 +120,7 @@ void MapTile::Render(HDC front, HDC back)
 	DeleteObject(hBrush);
 	DeleteObject(hPen);
 }
+
 // Position, SrcState, destColor, destState
 void MyMap::NonRecursiveFloodFill(POINT pos, TileState SrcState, COLORREF Color, TileState destState)
 {

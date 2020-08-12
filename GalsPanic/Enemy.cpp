@@ -5,7 +5,17 @@ Enemy::Enemy()
 {
 	Pos = { 0, 0 }; Dir = { 0, 0 }; Speed = 10;
 
-	ImagePath = TEXT("images/Pac-Man_Sprites.bmp");
+
+}
+
+Enemy::~Enemy()
+{
+}
+
+void Enemy::InitEnemy(wstring filepath, POINT pos)
+{
+	Pos = pos;
+	ImagePath = filepath;
 	hImage = (HBITMAP)LoadImage(NULL, ImagePath.c_str(),
 		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	GetObject(hImage, sizeof(BITMAP), &bitImage);
@@ -22,6 +32,26 @@ Enemy::Enemy()
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
 }
 
-Enemy::~Enemy()
+void Enemy::Render(HDC front, HDC back)
 {
+}
+
+void Enemy::UpdateFrame()
+{
+	Anim_Frame_Cur++;
+
+	if (Anim_Frame_Cur > Anim_Frame_Max)
+		Anim_Frame_Cur = Anim_Frame_Min;
+}
+
+void Enemy::Update()
+{
+	UpdateFrame();
+
+	if (Pos.x < 0) Pos.x = 0;
+	if (Pos.x > WIN_WIDTH - 50)
+		Pos.x = WIN_WIDTH - 50;
+	if (Pos.y < 0) Pos.y = 0;
+	if (Pos.y > WIN_HEIGHT - 70)
+		Pos.y = WIN_HEIGHT - 70;
 }
