@@ -23,6 +23,7 @@ GameScene::GameScene()
 
 	MainChar->InitPlayer(Map);
 	MainChar->SetPos({ 250, 250 });
+	Background->InitImageObject(TEXT("Images/donkeykong.bmp"), { 100, 100 });
 }
 
 GameScene::~GameScene()
@@ -50,14 +51,14 @@ void GameScene::Render()
 	// Hide again & Use BackBuffer again
 	HBITMAP BackBitmap1 = CreateCompatibleBitmap(*FrontBuffer, WIN_WIDTH, WIN_HEIGHT);
 	HBITMAP oldBitmap1 = (HBITMAP)SelectObject(*BackBuffer, BackBitmap1);
-	PatBlt(*BackBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT, WHITENESS);
+	PatBlt(*BackBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT, BLACKNESS);
 	
 	// Render Target : BackBuffer
 	Map->Render(*FrontBuffer, *BackBuffer);
 
 	// Copy & Filtering [ BackBuffer -> Front Buffer ]
 	TransparentBlt(*FrontBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT,
-		*BackBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT, RGB(0, 0, 0));
+		*BackBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT, FILL);
 	SelectObject(*BackBuffer, BackBitmap1);
 
 	DrawButtons();
@@ -107,7 +108,6 @@ void GameScene::DrawButtons()
 	DrawText(*FrontBuffer, temp.c_str(), temp.size(), &LIFE_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
 	SelectObject(*FrontBuffer, oldFont);
-
 }
 
 ButtonType GameScene::CheckClick(POINT mpos, int flag)

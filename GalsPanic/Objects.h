@@ -27,6 +27,7 @@ public:
 	ImageObject();
 	~ImageObject() {};
 
+	void InitImageObject(wstring Path, POINT pos);
 	void Update();
 	void Render(HDC front, HDC back);
 };

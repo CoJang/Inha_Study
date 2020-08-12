@@ -2,28 +2,6 @@
 #include "Objects.h"
 #include "MyMap.h"
 
-//class FootPrint : Objects
-//{
-//private:
-//	int r;
-//	POINT Pivot;
-//
-//	int Life;
-//	int LifeTime;
-//	bool IsActive;
-//public:
-//	FootPrint();
-//	~FootPrint() {};
-//
-//	int GetR() { return r; };
-//	void Update(MyMap* input);
-//	bool IsActived() { return IsActive; };
-//	void SetState(bool input) { IsActive = input; };
-//	void SetPos(POINT input) { Pos = input; };
-//
-//	bool SetPixelsRgn(MyMap* input, TileState state, COLORREF color);
-//};
-
 class Player : public Objects
 {
 private:

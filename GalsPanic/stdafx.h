@@ -33,13 +33,13 @@ using namespace std;
 
 #pragma comment(lib, "msimg32.lib")
 
-#define WIN_WIDTH 450
-#define WIN_HEIGHT 800
+#define WIN_WIDTH 630
+#define WIN_HEIGHT 850
 
 #define ElapseTime 33
 
 #define TILESIZE 10
 
-#define FILL RGB(0, 0, 0)
+#define FILL RGB(255, 0, 255)
 #define TEMPFILL RGB(0, 255, 255)
 #define NOTFILL RGB(255, 255, 255)

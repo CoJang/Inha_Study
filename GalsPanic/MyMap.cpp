@@ -26,7 +26,7 @@ MyMap::MyMap()
 	Min = { -1, -1 }; Max = { -1, -1 };
 
 	RECT StartRegion = { 250, 250, 350, 350 };
-	SetPixelsRgn(RGB(0, 0, 0), FILLED, StartRegion);
+	SetPixelsRgn(FILL, FILLED, StartRegion);
 
 	SaveVertex({ StartRegion.left,   StartRegion.top });
 	SaveVertex({ StartRegion.right,  StartRegion.top });
@@ -95,19 +95,6 @@ void MyMap::SetPixelsRgn(COLORREF color, TileState state, RECT Rgn)
 
 void MyMap::Render(HDC front, HDC back)
 {
-	//if (Min.x != -1 && Min.y != -1 &&
-	//	Max.x != -1 && Max.y != -1)
-	//{
-	//	HPEN hPen = CreatePen(PS_INSIDEFRAME | PS_NULL, 0, RGB(255, 0, 0));
-	//	HPEN oldPen = (HPEN)SelectObject(back, hPen);
-
-	//	Rectangle(back, Min.x, Min.y, Max.x, Max.y);
-
-	//	SelectObject(back, oldPen);
-	//	DeleteObject(oldPen);
-	//	DeleteObject(hPen);
-	//}
-
 	for (int y = 0; y < MapSize.y; y++)
 		for (int x = 0; x < MapSize.x; x++)
 			Tiles[x + (y * MapSize.x)].Render(front, back);
@@ -133,8 +120,8 @@ void MapTile::Render(HDC front, HDC back)
 	DeleteObject(hBrush);
 	DeleteObject(hPen);
 }
-
-void MyMap::NonRecursiveFloodFill(POINT pos, TileState check)
+// Position, SrcState, destColor, destState
+void MyMap::NonRecursiveFloodFill(POINT pos, TileState SrcState, COLORREF Color, TileState destState)
 {
 	if (pos.x < 0 || pos.y < 0 ||
 		pos.x >= MapSize.x || pos.y >= MapSize.y) return;
@@ -150,11 +137,11 @@ void MyMap::NonRecursiveFloodFill(POINT pos, TileState check)
 		if (Tiles[x + (y * MapSize.x)].IsChecked) continue;
 		if (x < 0 || y < 0 || x >= MapSize.x || y >= MapSize.y) continue;
 
-		if (Tiles[x + (y * MapSize.x)].state == check ||
+		if (Tiles[x + (y * MapSize.x)].state == SrcState ||
 			Tiles[x + (y * MapSize.x)].state == FILLED)
 		{
-			Tiles[x + (y * MapSize.x)].color = FILL;
-			Tiles[x + (y * MapSize.x)].state = FILLED;
+			Tiles[x + (y * MapSize.x)].color = Color;
+			Tiles[x + (y * MapSize.x)].state = destState;
 			Tiles[x + (y * MapSize.x)].IsChecked = true;
 
 			FloodFillContainer.push({x + 1, y});
@@ -172,7 +159,7 @@ void MyMap::CheckTileState(POINT pos)
 		if (TempFillContainer.empty())
 			TempFillContainer.push_back({ pos.x, pos.y });
 
-		bool IsNotExist = true; // For avoid Overlapping(Duplication)
+		bool IsNotExist = true; // To avoid Overlapping(Duplication)
 		for (int i = 0; i < TempFillContainer.size(); i++)
 		{
 			if (TempFillContainer[i].x == pos.x && TempFillContainer[i].y == pos.y)
@@ -191,42 +178,31 @@ void MyMap::CheckTileState(POINT pos)
 		else if (StartEnd[1].x == -1)
 		{
 			StartEnd[1] = { pos.x, pos.y };
-			FillLine();
+			FillRegion();
 		}
-
-		//if (FilledContainer.empty())
-			//FilledContainer.push_back({ pos.x, pos.y });
-
-		//bool IsNotExist = true; 
-		//for (int i = 0; i < FilledContainer.size(); i++)
-		//{
-		//	if (FilledContainer[i].x == pos.x && FilledContainer[i].y == pos.y)
-		//		IsNotExist = false;
-		//}
-
-		//if (IsNotExist)
-		//	FilledContainer.push_back({ pos.x, pos.y });
 	}
 }
 
-void MyMap::FillLine()
+void MyMap::FillRegion()
 {
 	if (TempFillContainer.size() > 1)
 	{
 		POINT tempPos = TempFillContainer[1];
-
+		
 		// Fill Line
-		NonRecursiveFloodFill(tempPos, TEMP_FILLED);
+		NonRecursiveFloodFill(tempPos, TEMP_FILLED, FILL, FILLED);
 
 		Min = GetVertex(0);
 		Min.x -= 25; Min.y -= 25;
 		Max = GetVertex(1);
 		Max.x += 25; Max.y += 25;
 
-		// Need Fix Here ======================================================================
 		FillRectLine(Min, Max, RECT_REGION);
-		NonRecursiveFloodFill({ (Min.x + 10) / TILESIZE, (Min.y + 10) / TILESIZE }, NOT_FILLED);
-		// Need Fix Here ======================================================================
+
+		// Fill Rectangle's inner
+		NonRecursiveFloodFill({ (Min.x + 10) / TILESIZE, (Min.y + 10) / TILESIZE }, 
+								 NOT_FILLED,	RGB(125, 125, 125), RECT_REGION);
+		CheckRegion(Min, Max);
 
 		TempFillContainer.clear();
 		UnCheckAll();
@@ -236,6 +212,7 @@ void MyMap::FillLine()
 	StartEnd[1] = { -1, -1 };
 }
 
+// Make Temporary Rectangle
 void MyMap::FillRectLine(POINT Min, POINT Max, TileState state)
 {
 	Min.x /= TILESIZE; Min.y /= TILESIZE;
@@ -260,6 +237,29 @@ void MyMap::FillRectLine(POINT Min, POINT Max, TileState state)
 		Tiles[Max.x + (y * MapSize.x)].color = Color;
 		Tiles[Max.x + (y * MapSize.x)].state = state;
 	}
+}
+
+// Reverse Color & Tile State
+void MyMap::CheckRegion(POINT Min, POINT Max)
+{
+	Min.x /= TILESIZE; Min.y /= TILESIZE;
+	Max.x /= TILESIZE; Max.y /= TILESIZE;
+
+	for (int y = Min.y; y <= Max.y; y++)
+		for (int x = Min.x; x <= Max.x; x++)
+		{
+			if (Tiles[x + (y * MapSize.x)].state == RECT_REGION)
+			{
+				Tiles[x + (y * MapSize.x)].color = NOTFILL;
+				Tiles[x + (y * MapSize.x)].state = NOT_FILLED;
+			}
+
+			else if (Tiles[x + (y * MapSize.x)].state != RECT_REGION)
+			{
+				Tiles[x + (y * MapSize.x)].color = FILL;
+				Tiles[x + (y * MapSize.x)].state = FILLED;
+			}
+		}
 }
 
 // flag 0 : Min
@@ -300,64 +300,6 @@ void MyMap::UnCheckAll()
 	for (int y = 0; y < MapSize.y; y++)
 		for (int x = 0; x < MapSize.x; x++)
 			Tiles[x + (y * MapSize.x)].IsChecked = false;
-}
-
-
-void MyMap::CheckFilled()
-{
-	if (TempFillContainer.empty()) return;
-
-	int Min = MapSize.x; int Max = -1;
-
-	for (int y = 0; y < MapSize.y; y++)
-	{
-		for (int x = 0; x < MapSize.x; x++)
-		{
-			MapTile TempTile = Tiles[x + (y * MapSize.x)];
-			if (TempTile.state == TEMP_FILLED && x < Min)
-				Min = x;
-			else if ((TempTile.state == TEMP_FILLED && x > Max))
-				Max = x;
-		}
-
-		for (int x = Min; x < Max; x++)
-		{
-			if (Tiles[x + (y * MapSize.x)].state == NOT_FILLED)
-			{
-				Tiles[x + (y * MapSize.x)].color = FILL;
-				Tiles[x + (y * MapSize.x)].state = FILLED;
-				//FilledContainer.push_back({ x, y });
-			}
-		}
-
-		Min = MapSize.x; Max = -1;
-	}
-
-	Min = MapSize.y; Max = -1;
-
-	for (int x = 0; x < MapSize.x; x++)
-	{
-		for (int y = 0; y < MapSize.y; y++)
-		{
-			MapTile TempTile = Tiles[x + (y * MapSize.x)];
-			if (TempTile.state == TEMP_FILLED && y < Min)
-				Min = y;
-			else if ((TempTile.state == TEMP_FILLED && y > Max))
-				Max = y;
-		}
-
-		for (int y = Min; y < Max; y++)
-		{
-			if (Tiles[x + (y * MapSize.x)].state == NOT_FILLED)
-			{
-				Tiles[x + (y * MapSize.x)].color = FILL;
-				Tiles[x + (y * MapSize.x)].state = FILLED;
-				//FilledContainer.push_back({ x, y });
-			}
-		}
-
-		Min = MapSize.y; Max = -1;
-	}
 }
 
 

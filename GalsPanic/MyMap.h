@@ -57,11 +57,11 @@ public:
 	void Update() {};
 
 	// Color Fill Func.
-	void NonRecursiveFloodFill(POINT pos, TileState state);
-	void CheckTileState(POINT pos);
-	void CheckFilled();
-	void FillLine();
+	void NonRecursiveFloodFill(POINT, TileState, COLORREF, TileState);
 	void FillRectLine(POINT Min, POINT Max, TileState state);
+	void FillRegion();
+	void CheckRegion(POINT Min, POINT Max);
+	void CheckTileState(POINT pos);
 
 	POINT GetVertex(int flag);
 	void UnCheckAll();
