@@ -6,6 +6,7 @@
 #pragma comment(lib, "ws2_32.lib")
 
 #define MAX_LOADSTRING 100
+#define WM_ASYNC WM_USER + 2
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -99,7 +100,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, 0, 300, 300, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -151,6 +152,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				MessageBox(NULL, TEXT("Binding Success"), TEXT("Success"), MB_OK);
 			}
 
+			WSAAsyncSelect(s, hWnd, WM_ASYNC, FD_ACCEPT);
+
 			if (listen(s, 5) == SOCKET_ERROR)
 			{
 				MessageBox(NULL, TEXT("Listen Failed"), TEXT("Error"), MB_OK);
@@ -160,25 +163,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				MessageBox(NULL, TEXT("Listen Success"), TEXT("Success"), MB_OK);
 			}
-
+		}
+		break;
+	case WM_ASYNC:
+		switch (lParam)
+		{
+		case FD_ACCEPT:
 			size = sizeof(c_addr);
-
+			cs = accept(s, (LPSOCKADDR)&c_addr, &size);
+			WSAAsyncSelect(cs, hWnd, WM_ASYNC, FD_READ);
+			break;
+		case FD_READ:
+			msgLen = recv(cs, buff, 128, 0);
+			buff[msgLen] = NULL;
 #ifdef _UNICODE
-				TCHAR wbuff[128];
-#endif 
-				do 
-				{
-					 cs = accept(s, (LPSOCKADDR)&c_addr, &size);
-				} while (cs == INVALID_SOCKET);
-				msgLen = recv(cs, buff, 128, 0);
-				buff[msgLen] = NULL;
-#ifdef _UNICODE
-				msgLen = MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), NULL, NULL);
-				MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), msg, msgLen);
-				wbuff[msgLen] = NULL;
+			msgLen = MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), NULL, NULL);
+			MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), msg, msgLen);
+			msg[msgLen] = NULL;
+			send(cs, buff, strlen(buff), 0);
 #else
-				strcpy_s(msg, buff);
+			strcpy_s(msg, buff);
+			send(cs, msg, strlen(msg), 0);
 #endif
+			InvalidateRgn(hWnd, NULL, TRUE);
+			break;
+		default:
+			break;
 		}
 		break;
     case WM_COMMAND:
