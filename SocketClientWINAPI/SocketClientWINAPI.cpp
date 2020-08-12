@@ -62,12 +62,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 }
 
 
+wstring MakeWStrMsg(SOCKET ID, TCHAR* Msg);
+string  MakeStrMsg(SOCKET ID, char* Msg);
 
-//
-//  FUNCTION: MyRegisterClass()
-//
-//  PURPOSE: Registers the window class.
-//
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
     WNDCLASSEXW wcex;
@@ -89,16 +86,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     return RegisterClassExW(&wcex);
 }
 
-//
-//   FUNCTION: InitInstance(HINSTANCE, int)
-//
-//   PURPOSE: Saves instance handle and creates main window
-//
-//   COMMENTS:
-//
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
-//
+
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
@@ -117,16 +105,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE:  Processes messages for the main window.
-//
-//  WM_COMMAND  - process the application menu
-//  WM_PAINT    - Paint the main window
-//  WM_DESTROY  - post a quit message and return
-//
-//
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static WSADATA wsadata;
@@ -185,9 +164,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-			MoveToEx(hdc, 0, 700, NULL);
-			LineTo(hdc, 700, 700);
-			TextOut(hdc, 0, 715, wbuff, (int)_tcslen(wbuff));
+			MoveToEx(hdc, 0, 680, NULL);
+			LineTo(hdc, 680, 680);
+			TextOut(hdc, 0, 695, wbuff, (int)_tcslen(wbuff));
 			
 			for (int i = 0; i < ChatLog.size(); i++)
 			{
@@ -221,11 +200,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				return 0;
 			}
-			string temp = "Client";
-			temp += buff;
-			wstring wtemp = TEXT("Server : ");
-			wtemp += wbuff;
-			send(s, (LPSTR)buff, msgLen + 1, 0);
+			string temp = MakeStrMsg(s, buff);
+
+			send(s, temp.c_str(), temp.size(), 0);
 			Cnt = 0;
 			memset(buff, 0, sizeof(buff));
 			memset(wbuff, 0, sizeof(wbuff));
@@ -281,4 +258,22 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+wstring MakeWStrMsg(SOCKET ID, TCHAR* Msg)
+{
+	wstring wtemp = TEXT("Client");
+	wtemp += to_wstring(ID);
+	wtemp += TEXT(": ");
+	wtemp += Msg;
+	return wtemp;
+}
+
+string MakeStrMsg(SOCKET ID, char* Msg)
+{
+	string temp = "Client";
+	temp += to_string(ID);
+	temp += ": ";
+	temp += Msg;
+	return temp;
 }

@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "SocketServerWINAPI.h"
 #include <vector>
+#include <string>
 #pragma comment(lib, "ws2_32.lib")
 
 using namespace std;
@@ -61,12 +62,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 }
 
 
+wstring MakeWStrMsg(TCHAR* Msg);
+string  MakeStrMsg(char* Msg);
 
-//
-//  FUNCTION: MyRegisterClass()
-//
-//  PURPOSE: Registers the window class.
-//
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
     WNDCLASSEXW wcex;
@@ -88,16 +86,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     return RegisterClassExW(&wcex);
 }
 
-//
-//   FUNCTION: InitInstance(HINSTANCE, int)
-//
-//   PURPOSE: Saves instance handle and creates main window
-//
-//   COMMENTS:
-//
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
-//
+
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
@@ -116,16 +105,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE:  Processes messages for the main window.
-//
-//  WM_COMMAND  - process the application menu
-//  WM_PAINT    - Paint the main window
-//  WM_DESTROY  - post a quit message and return
-//
-//
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static WSADATA wsadata;
@@ -160,7 +140,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			WSAAsyncSelect(s, hWnd, WM_ASYNC, FD_ACCEPT);
 
-			if (listen(s, 5) == SOCKET_ERROR)
+			if (listen(s, SOMAXCONN) == SOCKET_ERROR)
 			{
 				MessageBox(NULL, TEXT("Listen Failed"), TEXT("Error"), MB_OK);
 				return 0;
@@ -224,9 +204,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
 
-			MoveToEx(hdc, 0, 700, NULL);
-			LineTo(hdc, 700, 700);
-			TextOut(hdc, 0, 715, wbuff, (int)_tcslen(wbuff));
+			MoveToEx(hdc, 0, 680, NULL);
+			LineTo(hdc, 680, 680);
+			TextOut(hdc, 0, 695, wbuff, (int)_tcslen(wbuff));
 
 			for (int i = 0; i < ChatLog.size(); i++)
 			{
@@ -260,10 +240,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				return 0;
 			}
-			string temp = "Server : ";
-			temp += buff;
-			wstring wtemp = TEXT("Server : ");
-			wtemp += wbuff;
+			string temp = MakeStrMsg(buff);
+			wstring wtemp = MakeWStrMsg(wbuff);
 			ChatLog.push_back(wtemp);
 			for (int i = 0; i < ClientList.size(); i++)
 				send(ClientList[i], temp.c_str(), temp.size(), 0);
@@ -302,4 +280,18 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+wstring MakeWStrMsg(TCHAR* Msg)
+{
+	wstring wtemp = TEXT("Server :");
+	wtemp += Msg;
+	return wtemp;
+}
+
+string MakeStrMsg(char* Msg)
+{
+	string temp = "Server :";
+	temp += Msg;
+	return temp;
 }
