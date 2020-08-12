@@ -260,9 +260,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				return 0;
 			}
-			ChatLog.push_back(wbuff);
+			string temp = "Server : ";
+			temp += buff;
+			wstring wtemp = TEXT("Server : ");
+			wtemp += wbuff;
+			ChatLog.push_back(wtemp);
 			for (int i = 0; i < ClientList.size(); i++)
-				send(ClientList[i], (LPSTR)buff, msgLen + 1, 0);
+				send(ClientList[i], temp.c_str(), temp.size(), 0);
 			Cnt = 0;
 			memset(buff, 0, sizeof(buff));
 			memset(wbuff, 0, sizeof(wbuff));

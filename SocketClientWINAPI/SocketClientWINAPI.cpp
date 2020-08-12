@@ -221,7 +221,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				return 0;
 			}
-			//ChatLog.push_back(wbuff);
+			string temp = "Client";
+			temp += buff;
+			wstring wtemp = TEXT("Server : ");
+			wtemp += wbuff;
 			send(s, (LPSTR)buff, msgLen + 1, 0);
 			Cnt = 0;
 			memset(buff, 0, sizeof(buff));
