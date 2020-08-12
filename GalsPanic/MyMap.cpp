@@ -215,11 +215,6 @@ void MyMap::FillLine()
 	{
 		POINT tempPos = TempFillContainer[1];
 
-		string str;
-		DWORD dwWrite;
-		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-
-		
 		// Fill Line
 		NonRecursiveFloodFill(tempPos, TEMP_FILLED);
 
