@@ -7,6 +7,7 @@
 #pragma comment(lib, "ws2_32.lib")
 
 #define MAX_LOADSTRING 100
+#define WM_ASYNC WM_USER + 2
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -100,7 +101,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, 0, 300, 300, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -128,6 +129,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static WSADATA wsadata;
 	static SOCKET s;
 	static SOCKADDR_IN addr = { 0 };
+	static TCHAR msg[512];
+	int size, msgLen;
+	char buff[128];
 
     switch (message)
     {
@@ -138,6 +142,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		addr.sin_port = 20;
 		addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
 
+
 		if (connect(s, (LPSOCKADDR)&addr, sizeof(addr)) == SOCKET_ERROR)
 		{
 			MessageBox(NULL, TEXT("Connect Failed"), TEXT("Error"), MB_OK);
@@ -145,6 +150,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		else
 			MessageBox(NULL, TEXT("Connect Success"), TEXT("Success"), MB_OK);
+
+		WSAAsyncSelect(s, hWnd, WM_ASYNC, FD_READ);
 
 		break;
 	case WM_KEYDOWN:
@@ -172,9 +179,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
+			TextOut(hdc, 0, 0, msg, (int)_tcslen(msg));
             EndPaint(hWnd, &ps);
         }
-        break;
+        break; 
+	case WM_ASYNC:
+			switch (lParam)
+			{
+			case FD_READ:
+				msgLen = recv(s, buff, 128, 0);
+				buff[msgLen] = NULL;
+#ifdef _UNICODE
+				msgLen = MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), NULL, NULL);
+				MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), msg, msgLen);
+				msg[msgLen] = NULL;
+#else
+				strcpy_s(msg, buff);
+#endif
+				InvalidateRgn(hWnd, NULL, TRUE);
+				break;
+			default:
+				break;
+			}
+			break;
     case WM_DESTROY:
 		closesocket(s);
 		WSACleanup();
