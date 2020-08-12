@@ -4,6 +4,9 @@
 #include "stdafx.h"
 #include "SocketClientWINAPI.h"
 #include <WinSock2.h>
+#include <string>
+#include <vector>
+using namespace std;
 #pragma comment(lib, "ws2_32.lib")
 
 #define MAX_LOADSTRING 100
@@ -101,7 +104,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, 300, 300, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, 0, 300, 800, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -130,8 +133,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static SOCKET s;
 	static SOCKADDR_IN addr = { 0 };
 	static TCHAR msg[512];
-	int size, msgLen;
-	char buff[128];
+	static TCHAR wbuff[128];
+	static int Cnt;
+	static int size, msgLen;
+	static char buff[128];
+	static vector<wstring> ChatLog;
 
     switch (message)
     {
@@ -140,6 +146,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		s = socket(AF_INET, SOCK_STREAM, 0);
 		addr.sin_family = AF_INET;
 		addr.sin_port = 20;
+		// local "127.0.0.1" my "165.246.192.68"
+		//addr.sin_addr.S_un.S_addr = inet_addr("165.246.192.66");
 		addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
 
 
@@ -155,7 +163,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		break;
 	case WM_KEYDOWN:
-		send(s, "¾È³ç Server!", 13, 0);
 		break;
     case WM_COMMAND:
         {
@@ -178,11 +185,50 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-			TextOut(hdc, 0, 0, msg, (int)_tcslen(msg));
+			MoveToEx(hdc, 0, 700, NULL);
+			LineTo(hdc, 700, 700);
+			TextOut(hdc, 0, 715, wbuff, (int)_tcslen(wbuff));
+			
+			for (int i = 0; i < ChatLog.size(); i++)
+			{
+				TextOut(hdc, 0, i * 20, ChatLog[i].c_str(), ChatLog[i].size());
+			}
+			
             EndPaint(hWnd, &ps);
         }
         break; 
+	case WM_CHAR:
+		if (wParam != VK_RETURN && wParam != VK_BACK)
+		{
+			wbuff[Cnt++] = wParam;
+			wbuff[Cnt] = NULL;
+
+#ifdef _UNICODE
+			msgLen = WideCharToMultiByte(CP_ACP, 0, wbuff, -1, NULL, 0, NULL, NULL);
+			WideCharToMultiByte(CP_ACP, 0, wbuff, -1, buff, msgLen, NULL, NULL);
+#else
+			strcpy_s(buff, wbuff);
+			msgLen = strlen(buff);
+#endif
+		}
+		else if (wParam == VK_BACK && Cnt > 0)
+		{
+			wbuff[Cnt--] = NULL;
+		}
+		else if (wParam == VK_RETURN)
+		{
+			if (s == INVALID_SOCKET)
+			{
+				return 0;
+			}
+			//ChatLog.push_back(wbuff);
+			send(s, (LPSTR)buff, msgLen + 1, 0);
+			Cnt = 0;
+			memset(buff, 0, sizeof(buff));
+			memset(wbuff, 0, sizeof(wbuff));
+		}
+		InvalidateRgn(hWnd, NULL, TRUE);
+		break;
 	case WM_ASYNC:
 			switch (lParam)
 			{
@@ -196,6 +242,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #else
 				strcpy_s(msg, buff);
 #endif
+				ChatLog.push_back(msg);
 				InvalidateRgn(hWnd, NULL, TRUE);
 				break;
 			default:

@@ -3,7 +3,10 @@
 
 #include "stdafx.h"
 #include "SocketServerWINAPI.h"
+#include <vector>
 #pragma comment(lib, "ws2_32.lib")
+
+using namespace std;
 
 #define MAX_LOADSTRING 100
 #define WM_ASYNC WM_USER + 2
@@ -100,7 +103,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, 300, 300, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, 0, 300, 800, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -127,10 +130,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static WSADATA wsadata;
 	static SOCKET s, cs;
-	static TCHAR msg[512];
+	static TCHAR msg[512], wbuff[128];
 	static SOCKADDR_IN addr = { 0 }, c_addr;
-	int size, msgLen;
-	char buff[128];
+	static int Cnt, size, msgLen;
+	static int PosY = 0;
+	static char buff[128];
+	static vector<wstring> ChatLog;
+	static vector<SOCKET> ClientList;
 
     switch (message)
     {
@@ -172,19 +178,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			size = sizeof(c_addr);
 			cs = accept(s, (LPSOCKADDR)&c_addr, &size);
 			WSAAsyncSelect(cs, hWnd, WM_ASYNC, FD_READ);
+			ClientList.push_back(cs);
 			break;
 		case FD_READ:
-			msgLen = recv(cs, buff, 128, 0);
+			msgLen = recv(wParam, buff, 128, 0);
 			buff[msgLen] = NULL;
+			
 #ifdef _UNICODE
 			msgLen = MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), NULL, NULL);
 			MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), msg, msgLen);
 			msg[msgLen] = NULL;
-			send(cs, buff, strlen(buff), 0);
+
+			for(int i = 0; i < ClientList.size(); i++)
+				send(ClientList[i], buff, strlen(buff), 0);
 #else
 			strcpy_s(msg, buff);
 			send(cs, msg, strlen(msg), 0);
 #endif
+			ChatLog.push_back(msg);
 			InvalidateRgn(hWnd, NULL, TRUE);
 			break;
 		default:
@@ -212,11 +223,52 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-			TextOut(hdc, 0, 0, msg, (int)_tcslen(msg));
+
+			MoveToEx(hdc, 0, 700, NULL);
+			LineTo(hdc, 700, 700);
+			TextOut(hdc, 0, 715, wbuff, (int)_tcslen(wbuff));
+
+			for (int i = 0; i < ChatLog.size(); i++)
+			{
+				TextOut(hdc, 0, i * 20, ChatLog[i].c_str(), ChatLog[i].size());
+			}
+
             EndPaint(hWnd, &ps);
         }
         break;
+	case WM_CHAR:
+		if (wParam != VK_RETURN && wParam != VK_BACK)
+		{
+			wbuff[Cnt++] = wParam;
+			wbuff[Cnt] = NULL;
+
+#ifdef _UNICODE
+			msgLen = WideCharToMultiByte(CP_ACP, 0, wbuff, -1, NULL, 0, NULL, NULL);
+			WideCharToMultiByte(CP_ACP, 0, wbuff, -1, buff, msgLen, NULL, NULL);
+#else
+			strcpy_s(buff, wbuff);
+			msgLen = strlen(buff);
+#endif
+		}
+		else if (wParam == VK_BACK && Cnt > 0)
+		{
+			wbuff[Cnt--] = NULL;
+		}
+		else if (wParam == VK_RETURN)
+		{
+			if (s == INVALID_SOCKET)
+			{
+				return 0;
+			}
+			ChatLog.push_back(wbuff);
+			for (int i = 0; i < ClientList.size(); i++)
+				send(ClientList[i], (LPSTR)buff, msgLen + 1, 0);
+			Cnt = 0;
+			memset(buff, 0, sizeof(buff));
+			memset(wbuff, 0, sizeof(wbuff));
+		}
+		InvalidateRgn(hWnd, NULL, TRUE);
+		break;
     case WM_DESTROY:
 		closesocket(s);
 		WSACleanup();
