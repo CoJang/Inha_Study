@@ -18,8 +18,6 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-int WinServer();
-
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -43,7 +41,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_SOCKETSERVERWINAPI));
 
-	return WinServer();
+	MSG msg;
+
+	// Main message loop:
+	while (GetMessage(&msg, nullptr, 0, 0))
+	{
+		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+
+	return (int)msg.wParam;
 }
 
 
@@ -114,8 +124,63 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static WSADATA wsadata;
+	static SOCKET s, cs;
+	static TCHAR msg[512];
+	static SOCKADDR_IN addr = { 0 }, c_addr;
+	int size, msgLen;
+	char buff[128];
+
     switch (message)
     {
+	case WM_CREATE:
+		{
+			WSAStartup(MAKEWORD(2, 2), &wsadata);
+			s = socket(AF_INET, SOCK_STREAM, 0);
+			addr.sin_family = AF_INET;
+			addr.sin_port = 20;
+			addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+
+			if (bind(s, (LPSOCKADDR)&addr, sizeof(addr)))
+			{
+				MessageBox(NULL, TEXT("Binding Failed"), TEXT("Error"), MB_OK);
+				return 0;
+			}
+			else
+			{
+				MessageBox(NULL, TEXT("Binding Success"), TEXT("Success"), MB_OK);
+			}
+
+			if (listen(s, 5) == SOCKET_ERROR)
+			{
+				MessageBox(NULL, TEXT("Listen Failed"), TEXT("Error"), MB_OK);
+				return 0;
+			}
+			else
+			{
+				MessageBox(NULL, TEXT("Listen Success"), TEXT("Success"), MB_OK);
+			}
+
+			size = sizeof(c_addr);
+
+#ifdef _UNICODE
+				TCHAR wbuff[128];
+#endif 
+				do 
+				{
+					 cs = accept(s, (LPSOCKADDR)&c_addr, &size);
+				} while (cs == INVALID_SOCKET);
+				msgLen = recv(cs, buff, 128, 0);
+				buff[msgLen] = NULL;
+#ifdef _UNICODE
+				msgLen = MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), NULL, NULL);
+				MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), msg, msgLen);
+				wbuff[msgLen] = NULL;
+#else
+				strcpy_s(msg, buff);
+#endif
+		}
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -138,10 +203,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
+			TextOut(hdc, 0, 0, msg, (int)_tcslen(msg));
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
+		closesocket(s);
+		WSACleanup();
         PostQuitMessage(0);
         break;
     default:
@@ -168,48 +236,4 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
-}
-
-int WinServer()
-{
-	WSADATA wsadata;
-	SOCKET s;
-	SOCKADDR_IN addr = { 0 };
-	WSAStartup(MAKEWORD(2, 2), &wsadata);
-	s = socket(AF_INET, SOCK_STREAM, 0);
-	addr.sin_family = AF_INET;
-	addr.sin_port = 20;
-	addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
-
-	if (bind(s, (LPSOCKADDR)&addr, sizeof(addr)))
-	{
-		MessageBox(NULL, TEXT("Binding Failed"), TEXT("Error"), MB_OK);
-		return 0;
-	}
-	else
-	{
-		MessageBox(NULL, TEXT("Binding Success"), TEXT("Success"), MB_OK);
-	}
-
-	if (listen(s, 5) == SOCKET_ERROR)
-	{
-		MessageBox(NULL, TEXT("Listen Failed"), TEXT("Error"), MB_OK);
-		return 0;
-	}
-	else
-	{
-		MessageBox(NULL, TEXT("Listen Success"), TEXT("Success"), MB_OK);
-	}
-
-	do
-	{
-		SOCKADDR_IN c_addr;
-		int size = sizeof(c_addr);
-		accept(s, (LPSOCKADDR)&c_addr, &size);
-	} while (MessageBox(NULL,
-		TEXT("Client Access Confirmed \n Do You Want Terminate Server?"),
-		TEXT("Server Message"), MB_YESNO) == IDNO);
-
-	closesocket(s);
-	WSACleanup();
 }

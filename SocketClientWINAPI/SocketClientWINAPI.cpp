@@ -19,8 +19,6 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-int WinClient();
-
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -44,7 +42,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_SOCKETCLIENTWINAPI));
 
-	return WinClient();
+	MSG msg;
+
+	// Main message loop:
+	while (GetMessage(&msg, nullptr, 0, 0))
+	{
+		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+
+	return (int)msg.wParam;
 }
 
 
@@ -115,8 +125,31 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static WSADATA wsadata;
+	static SOCKET s;
+	static SOCKADDR_IN addr = { 0 };
+
     switch (message)
     {
+	case WM_CREATE:
+		WSAStartup(MAKEWORD(2, 2), &wsadata);
+		s = socket(AF_INET, SOCK_STREAM, 0);
+		addr.sin_family = AF_INET;
+		addr.sin_port = 20;
+		addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+
+		if (connect(s, (LPSOCKADDR)&addr, sizeof(addr)) == SOCKET_ERROR)
+		{
+			MessageBox(NULL, TEXT("Connect Failed"), TEXT("Error"), MB_OK);
+			return 0;
+		}
+		else
+			MessageBox(NULL, TEXT("Connect Success"), TEXT("Success"), MB_OK);
+
+		break;
+	case WM_KEYDOWN:
+		send(s, "¾È³ç Server!", 13, 0);
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -143,6 +176,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY:
+		closesocket(s);
+		WSACleanup();
         PostQuitMessage(0);
         break;
     default:
@@ -169,34 +204,4 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
-}
-
-int WinClient()
-{
-	WSADATA wsadata;
-	SOCKET s;
-	SOCKADDR_IN addr = { 0 };
-
-	WSAStartup(MAKEWORD(2, 2), &wsadata);
-	s = socket(AF_INET, SOCK_STREAM, 0);
-	if (s == INVALID_SOCKET)
-	{
-		MessageBox(NULL, TEXT("Socket Failed"), TEXT("Error"), MB_OK);
-		return 0;
-	}
-	addr.sin_family = AF_INET;
-	addr.sin_port = 20;
-	addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
-
-	if(connect(s, (LPSOCKADDR)&addr, sizeof(addr)) == SOCKET_ERROR)
-	{
-		MessageBox(NULL, TEXT("Connect Failed"), TEXT("Error"), MB_OK);
-		return 0;
-	}
-	else
-		MessageBox(NULL, TEXT("Connect Success"), TEXT("Success"), MB_OK);
-
-	closesocket(s);
-	WSACleanup();
-	return 0;
 }
