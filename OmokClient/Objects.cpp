@@ -26,13 +26,11 @@ void ImageObject::Update()
 
 void ImageObject::Render(HDC front, HDC back)
 {
-	HDC temp = CreateCompatibleDC(back);
 	HBITMAP oldbuffer = (HBITMAP)SelectObject(back, hImage);
 
-	TransparentBlt(back, Pos.x, Pos.y, Sprite_Size.x , Sprite_Size.y,
-		temp, Pos.x, Pos.y, Sprite_Size.x, Sprite_Size.y, RGB(0, 123, 0));
+	TransparentBlt(front, Pos.x, Pos.y, Sprite_Size.x, Sprite_Size.y,
+		back, Pos.x, Pos.y, Sprite_Size.x, Sprite_Size.y, RGB(255, 0, 255));
 
-	SelectObject(temp, oldbuffer);
+	SelectObject(back, oldbuffer);
 	DeleteObject(oldbuffer);
-	DeleteDC(temp);
 }

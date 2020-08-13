@@ -27,5 +27,5 @@ using namespace std;
 #pragma comment(lib, "msimg32.lib")
 
 // TODO: reference additional headers your program requires here
-#define WIN_WIDTH 600
-#define WIN_HEIGHT 800
+#define WIN_WIDTH 800
+#define WIN_HEIGHT 950

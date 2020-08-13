@@ -12,6 +12,7 @@ struct SystemPackit
 };
 
 #define WM_ASYNC WM_USER + 2
+#define MAX_CHAT 5
 
 class ServerClass
 {
@@ -44,5 +45,8 @@ public:
 	wstring MakeWStrMsg(SOCKET ID, TCHAR* Msg);
 	string MakeStrMsg(char* Msg);
 	string MakeStrMsg(SOCKET ID, char* Msg);
+
+	void DrawLine(POINT start, POINT end);
+	void DrawGrid(int Num);
 };
 

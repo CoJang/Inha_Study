@@ -11,13 +11,19 @@ ClientClass::ClientClass()
 	Cnt = 0; size = 0; msgLen = 0;
 
 	GridImage = new ImageObject;
-	GridImage->InitImageObject(TEXT("images/Omok_Ground.bmp"), { 0, 0 });
+	GridImage->InitImageObject(TEXT("images/board.bmp"), { 0, 0 });
+	//WhiteStone = new ImageObject;
+	//WhiteStone->InitImageObject(TEXT("images/white.bmp"), { 0, 0 });
+	//BlackStone = new ImageObject;
+	//BlackStone->InitImageObject(TEXT("images/black.bmp"), { 0, 0 });
 }
 
 
 ClientClass::~ClientClass()
 {
 	delete GridImage;
+	delete WhiteStone;
+	delete BlackStone;
 	closesocket(s);
 	WSACleanup();
 }
@@ -46,16 +52,18 @@ void ClientClass::InitClient(HWND hWnd, HDC * Front, HDC * Back)
 
 void ClientClass::Render()
 {
-	MoveToEx(*FrontBuffer, 0, 680, NULL);
-	LineTo(*FrontBuffer, 680, 680);
-	TextOut(*FrontBuffer, 0, 695, wbuff, (int)_tcslen(wbuff));
+	MoveToEx(*FrontBuffer, 0, 830, NULL);
+	LineTo(*FrontBuffer, 830, 830);
+	TextOut(*FrontBuffer, 0, 845, wbuff, (int)_tcslen(wbuff));
 
 	for (int i = 0; i < ChatLog.size(); i++)
 	{
-		TextOut(*FrontBuffer, 0, i * 20, ChatLog[i].c_str(), ChatLog[i].size());
+		TextOut(*FrontBuffer, 0, WIN_HEIGHT + (i * 20) - 230, ChatLog[i].c_str(), ChatLog[i].size());
 	}
 
 	GridImage->Render(*FrontBuffer, *BackBuffer);
+	//WhiteStone->Render(*FrontBuffer, *BackBuffer);
+	//BlackStone->Render(*FrontBuffer, *BackBuffer);
 }
 
 void ClientClass::ReadMessage(WPARAM wParam)
@@ -69,7 +77,10 @@ void ClientClass::ReadMessage(WPARAM wParam)
 #else
 	 strcpy_s(msg, buff);
 #endif
-	 ChatLog.push_back(msg);
+	 if (ChatLog.size() >= MAX_CHAT)
+		 ChatLog.erase(ChatLog.begin());
+
+	ChatLog.push_back(msg);
 }
 
 void ClientClass::CheckKeyDown(WPARAM wParam)
@@ -98,7 +109,11 @@ void ClientClass::CheckKeyDown(WPARAM wParam)
 			return;
 		}
 
-		send(s, buff, strlen(buff) + 1, 0);
+		// -9 = Chat
+		string temp = to_string(-9);
+		temp += buff;
+
+		send(s, temp.c_str(), temp.size(), 0);
 
 		Cnt = 0;
 		memset(msg, 0, sizeof(msg));
@@ -109,7 +124,9 @@ void ClientClass::CheckKeyDown(WPARAM wParam)
 
 void ClientClass::MouseDown(POINT MousePos)
 {
-	string temp = "MousePosition (";
+	// -8 = System
+	string temp = to_string(-8);
+	temp += "MousePosition (";
 	temp += to_string(MousePos.x);
 	temp += ", ";
 	temp += to_string(MousePos.y);

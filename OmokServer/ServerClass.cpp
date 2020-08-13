@@ -9,7 +9,7 @@ ServerClass::ServerClass()
 	memset(wbuff, 0, sizeof(wbuff));
 
 	GridImage = new ImageObject;
-	GridImage->InitImageObject(TEXT("images/Omok_Ground.bmp"), { 0, 0 });
+	GridImage->InitImageObject(TEXT("images/board.bmp"), { 0, 0 });
 }
 
 
@@ -60,16 +60,17 @@ void ServerClass::InitServer(HWND hWnd, HDC* Front, HDC* Back)
 
 void ServerClass::Render()
 {
-	GridImage->Render(*FrontBuffer, *BackBuffer);
-
-	MoveToEx(*FrontBuffer, 0, 680, NULL);
-	LineTo(*FrontBuffer, 680, 680);
-	TextOut(*FrontBuffer, 0, 695, wbuff, (int)_tcslen(wbuff));
+	MoveToEx(*FrontBuffer, 0, 830, NULL);
+	LineTo(*FrontBuffer, 830, 830);
+	TextOut(*FrontBuffer, 0, 845, wbuff, (int)_tcslen(wbuff));
 
 	for (int i = 0; i < ChatLog.size(); i++)
 	{
-		TextOut(*FrontBuffer, 0, i * 20, ChatLog[i].c_str(), ChatLog[i].size());
+		TextOut(*FrontBuffer, 0, WIN_HEIGHT + (i * 20) - 230, ChatLog[i].c_str(), ChatLog[i].size());
 	}
+
+	//GridImage->Render(*FrontBuffer, *BackBuffer);
+	DrawGrid(19);
 }
 
 void ServerClass::Accept(HWND hWnd)
@@ -93,12 +94,22 @@ void ServerClass::ReadMessage(WPARAM wParam)
 	strcpy_s(msg, buff);
 	send(cs, msg, strlen(msg), 0);
 #endif
-	string temp = MakeStrMsg(cs, buff);
-	for (int i = 0; i < ClientList.size(); i++)
-		send(ClientList[i], temp.c_str(), temp.size(), 0);
+	if (msg[1] == '9')
+	{
+		string temp = MakeStrMsg(cs, buff);
+		for (int i = 0; i < ClientList.size(); i++)
+			send(ClientList[i], temp.c_str(), temp.size(), 0);
+	}
 
-	wstring wtemp = MakeWStrMsg(cs, msg);
-	ChatLog.push_back(wtemp.c_str());
+	if (ChatLog.size() >= MAX_CHAT)
+		ChatLog.erase(ChatLog.begin());
+
+	// 8 = System, 9 = Chat
+	if (msg[1] == '9')
+	{
+		wstring wtemp = MakeWStrMsg(cs, msg);
+		ChatLog.push_back(wtemp.c_str());
+	}
 }
 
 void ServerClass::CheckKeyDown(WPARAM wParam)
@@ -128,9 +139,15 @@ void ServerClass::CheckKeyDown(WPARAM wParam)
 		}
 		string temp = MakeStrMsg(buff);
 		wstring wtemp = MakeWStrMsg(wbuff);
+
+		if (ChatLog.size() >= MAX_CHAT)
+			ChatLog.erase(ChatLog.begin());
+
 		ChatLog.push_back(wtemp);
+
 		for (int i = 0; i < ClientList.size(); i++)
 			send(ClientList[i], temp.c_str(), temp.size(), 0);
+
 		Cnt = 0;
 		memset(msg, 0, sizeof(msg));
 		memset(buff, 0, sizeof(buff));
@@ -147,10 +164,11 @@ wstring ServerClass::MakeWStrMsg(TCHAR* Msg)
 
 wstring ServerClass::MakeWStrMsg(SOCKET ID, TCHAR* Msg)
 {
+	wstring Message(&Msg[2], (int)_tcslen(Msg) - 1);
 	wstring wtemp = TEXT("Client");
 	wtemp += to_wstring(ID);
 	wtemp += TEXT(": ");
-	wtemp += Msg;
+	wtemp += Message;
 	return wtemp;
 }
 
@@ -163,9 +181,29 @@ string ServerClass::MakeStrMsg(char* Msg)
 
 string ServerClass::MakeStrMsg(SOCKET ID, char* Msg)
 {
+	string Message(&Msg[2], strlen(Msg) - 1);
 	string temp = "Client";
 	temp += to_string(ID);
 	temp += ": ";
-	temp += Msg;
+	temp += Message;
 	return temp;
+}
+
+void ServerClass::DrawLine(POINT start, POINT end)
+{
+	MoveToEx(*FrontBuffer, start.x, start.y, NULL);
+	LineTo(*FrontBuffer, end.x, end.y);
+}
+
+void ServerClass::DrawGrid(int Num)
+{
+	int Max_Dist = 700;
+	int Dist = 40;
+
+	for(int x = 0; x < Num * Dist; x += Dist)
+		for (int y = 0; y < Num * Dist; y += Dist)
+		{
+			DrawLine({ x, y }, { x, Max_Dist });
+			DrawLine({ x, y }, { Max_Dist, y });
+		}
 }

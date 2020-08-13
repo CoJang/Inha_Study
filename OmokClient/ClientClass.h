@@ -2,6 +2,7 @@
 #include "Objects.h"
 
 #define WM_ASYNC WM_USER + 2
+#define MAX_CHAT 5
 
 class ClientClass
 {
@@ -19,6 +20,8 @@ private:
 	HDC* BackBuffer;
 	HDC* FrontBuffer;
 	ImageObject* GridImage;
+	ImageObject* WhiteStone;
+	ImageObject* BlackStone;
 public:
 	ClientClass();
 	~ClientClass();
