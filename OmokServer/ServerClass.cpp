@@ -104,15 +104,16 @@ void ServerClass::ReadMessage(WPARAM wParam)
 	if (ChatLog.size() >= MAX_CHAT)
 		ChatLog.erase(ChatLog.begin());
 
-	string temp = MakeStrMsg(cs, buff);
+	string temp = MakeStrMsg(wParam, buff);
 
 	// 8 = System, 9 = Chat
 	if (msg[1] == '9')
 	{
+		// Broadcast Chatting Message
 		for (int i = 0; i < ClientList.size(); i++)
 			send(ClientList[i], temp.c_str(), temp.size(), 0);
 
-		wstring wtemp = MakeWStrMsg(cs, msg);
+		wstring wtemp = MakeWStrMsg(wParam, msg);
 		ChatLog.push_back(wtemp.c_str());
 	}
 	else if (msg[1] == '8')
@@ -130,7 +131,11 @@ void ServerClass::ReadMessage(WPARAM wParam)
 			y += msg[i++];
 		}
 		POINT Pos = { atoi(x.c_str()), atoi(y.c_str()) };
-		StoneContainer.push_back(Pos);
+		WhiteStoneContainer.push_back(Pos);
+
+		// Broadcast System Message
+		for (int i = 0; i < ClientList.size(); i++)
+			send(ClientList[i], buff, strlen(buff) + 1, 0);
 	}
 }
 
@@ -167,6 +172,7 @@ void ServerClass::CheckKeyDown(WPARAM wParam)
 
 		ChatLog.push_back(wtemp);
 
+		// Broadcast Chatting Message
 		for (int i = 0; i < ClientList.size(); i++)
 			send(ClientList[i], temp.c_str(), temp.size(), 0);
 
@@ -179,7 +185,7 @@ void ServerClass::CheckKeyDown(WPARAM wParam)
 
 wstring ServerClass::MakeWStrMsg(TCHAR* Msg)
 {
-	wstring wtemp = TEXT("Server :");
+	wstring wtemp = TEXT("Server: ");
 	wtemp += Msg;
 	return wtemp;
 }
@@ -196,18 +202,17 @@ wstring ServerClass::MakeWStrMsg(SOCKET ID, TCHAR* Msg)
 
 string ServerClass::MakeStrMsg(char* Msg)
 {
-	string temp = "Server: ";
+	string temp = "Server: -9";
 	temp += Msg;
 	return temp;
 }
 
 string ServerClass::MakeStrMsg(SOCKET ID, char* Msg)
 {
-	string Message(&Msg[2], strlen(Msg) - 1);
 	string temp = "Client";
 	temp += to_string(ID);
 	temp += ": ";
-	temp += Message;
+	temp += Msg;
 	return temp;
 }
 

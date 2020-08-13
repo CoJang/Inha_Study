@@ -21,9 +21,6 @@ private:
 private:
 	HDC* BackBuffer;
 	HDC* FrontBuffer;
-	ImageObject* GridImage;
-	ImageObject* WhiteStone;
-	ImageObject* BlackStone;
 public:
 	ClientClass();
 	~ClientClass();
@@ -36,5 +33,10 @@ public:
 
 	void DrawLine(POINT start, POINT end);
 	void DrawGrid(POINT pos, int Num);
+
+	wstring MakeWStrMsg(TCHAR* Msg);
+	wstring ParseMessage(TCHAR* Msg);
+
+	void DrawCircle(POINT pos, int R);
 };
 

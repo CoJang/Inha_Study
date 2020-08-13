@@ -10,20 +10,11 @@ ClientClass::ClientClass()
 	memset(wbuff, 0, sizeof(wbuff));
 	Cnt = 0; size = 0; msgLen = 0;
 
-	GridImage = new ImageObject;
-	GridImage->InitImageObject(TEXT("images/board.bmp"), { 0, 0 });
-	//WhiteStone = new ImageObject;
-	//WhiteStone->InitImageObject(TEXT("images/white.bmp"), { 0, 0 });
-	//BlackStone = new ImageObject;
-	//BlackStone->InitImageObject(TEXT("images/black.bmp"), { 0, 0 });
 }
 
 
 ClientClass::~ClientClass()
 {
-	delete GridImage;
-	delete WhiteStone;
-	delete BlackStone;
 	closesocket(s);
 	WSACleanup();
 }
@@ -61,11 +52,13 @@ void ClientClass::Render()
 		TextOut(*FrontBuffer, 0, WIN_HEIGHT + (i * 20) - 205, ChatLog[i].c_str(), ChatLog[i].size());
 	}
 
-	//GridImage->Render(*FrontBuffer, *BackBuffer);
-	//WhiteStone->Render(*FrontBuffer, *BackBuffer);
-	//BlackStone->Render(*FrontBuffer, *BackBuffer);
-
 	DrawGrid({ 25, 25 }, 19);
+
+	for (int i = 0; i < WhiteStoneContainer.size(); i++)
+		DrawCircle(WhiteStoneContainer[i], 20);
+
+	for (int i = 0; i < BlackStoneContainer.size(); i++)
+		DrawCircle(BlackStoneContainer[i], 20);
 }
 
 void ClientClass::ReadMessage(WPARAM wParam)
@@ -79,10 +72,8 @@ void ClientClass::ReadMessage(WPARAM wParam)
 #else
 	 strcpy_s(msg, buff);
 #endif
-	 if (ChatLog.size() >= MAX_CHAT)
-		 ChatLog.erase(ChatLog.begin());
 
-	ChatLog.push_back(msg);
+	 ParseMessage(msg);
 }
 
 void ClientClass::CheckKeyDown(WPARAM wParam)
@@ -128,11 +119,9 @@ void ClientClass::MouseDown(POINT MousePos)
 {
 	// -8 = System
 	string temp = to_string(-8);
-	//temp += "MousePosition (";
 	temp += to_string(MousePos.x);
 	temp += ", ";
 	temp += to_string(MousePos.y);
-	//temp += ")";
 
 	send(s, temp.c_str(), temp.size(), 0);
 }
@@ -154,5 +143,61 @@ void ClientClass::DrawGrid(POINT pos, int Num)
 			DrawLine({ x, y }, { x, Max_Dist });
 			DrawLine({ x, y }, { Max_Dist, y });
 		}
+}
+
+wstring ClientClass::MakeWStrMsg(TCHAR* Msg)
+{
+	wstring wtemp = Msg;
+	return wtemp;
+}
+
+// 8 = System, 9 = Chat
+wstring ClientClass::ParseMessage(TCHAR* Msg)
+{
+	int i = 0;
+	while (Msg[i] != '-')
+	{
+		i++;
+	}
+	i += 1;
+
+	wstring wtemp;
+
+	if (Msg[i] == '8')
+	{
+		string x, y;
+		int j = 2;
+		while (msg[j] != ',')
+		{
+			x += msg[j++];
+		}
+
+		j = j + 2;
+		while (msg[j] != '\0')
+		{
+			y += msg[j++];
+		}
+		POINT Pos = { atoi(x.c_str()), atoi(y.c_str()) };
+		WhiteStoneContainer.push_back(Pos);
+	}
+	else if (Msg[i] == '9') // Remove Flag
+	{
+		if (ChatLog.size() >= MAX_CHAT)
+			ChatLog.erase(ChatLog.begin());
+
+		wstring front(&Msg[0], i - 1);
+		wstring back(&Msg[i + 1], (int)_tcslen(Msg) - 1);
+
+		wtemp = front + back;
+
+		ChatLog.push_back(wtemp.c_str());
+	}
+
+	return wtemp;
+}
+
+void ClientClass::DrawCircle(POINT pos, int R)
+{
+	Ellipse(*FrontBuffer, pos.x - R, pos.y - R, pos.x + R, pos.y + R);
 }
 
