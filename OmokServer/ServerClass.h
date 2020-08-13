@@ -26,7 +26,8 @@ private:
 	char buff[128];
 	vector<wstring> ChatLog;
 	vector<SOCKET> ClientList;
-
+	vector<POINT> WhiteStoneContainer;
+	vector<POINT> BlackStoneContainer;
 private:
 	HDC* BackBuffer;
 	HDC* FrontBuffer;
@@ -47,6 +48,7 @@ public:
 	string MakeStrMsg(SOCKET ID, char* Msg);
 
 	void DrawLine(POINT start, POINT end);
-	void DrawGrid(int Num);
+	void DrawGrid(POINT pos, int Num);
+	void DrawCircle(POINT pos, int R);
 };
 

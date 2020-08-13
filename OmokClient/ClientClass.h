@@ -16,6 +16,8 @@ private:
 	int size, msgLen;
 	char buff[128];
 	vector<wstring> ChatLog;
+	vector<POINT> WhiteStoneContainer;
+	vector<POINT> BlackStoneContainer;
 private:
 	HDC* BackBuffer;
 	HDC* FrontBuffer;
@@ -31,5 +33,8 @@ public:
 	void ReadMessage(WPARAM wParam);
 	void CheckKeyDown(WPARAM wParam);
 	void MouseDown(POINT MousePos);
+
+	void DrawLine(POINT start, POINT end);
+	void DrawGrid(POINT pos, int Num);
 };
 

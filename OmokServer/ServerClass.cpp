@@ -60,17 +60,23 @@ void ServerClass::InitServer(HWND hWnd, HDC* Front, HDC* Back)
 
 void ServerClass::Render()
 {
-	MoveToEx(*FrontBuffer, 0, 830, NULL);
-	LineTo(*FrontBuffer, 830, 830);
-	TextOut(*FrontBuffer, 0, 845, wbuff, (int)_tcslen(wbuff));
+	MoveToEx(*FrontBuffer, 0, 845, NULL);
+	LineTo(*FrontBuffer, 845, 845);
+	TextOut(*FrontBuffer, 0, 860, wbuff, (int)_tcslen(wbuff));
 
 	for (int i = 0; i < ChatLog.size(); i++)
 	{
-		TextOut(*FrontBuffer, 0, WIN_HEIGHT + (i * 20) - 230, ChatLog[i].c_str(), ChatLog[i].size());
+		TextOut(*FrontBuffer, 0, WIN_HEIGHT + (i * 20) - 205, ChatLog[i].c_str(), ChatLog[i].size());
 	}
 
 	//GridImage->Render(*FrontBuffer, *BackBuffer);
-	DrawGrid(19);
+	DrawGrid({25, 25}, 19);
+
+	for (int i = 0; i < WhiteStoneContainer.size(); i++)
+		DrawCircle(WhiteStoneContainer[i], 20);
+
+	for (int i = 0; i < BlackStoneContainer.size(); i++)
+		DrawCircle(BlackStoneContainer[i], 20);
 }
 
 void ServerClass::Accept(HWND hWnd)
@@ -94,21 +100,37 @@ void ServerClass::ReadMessage(WPARAM wParam)
 	strcpy_s(msg, buff);
 	send(cs, msg, strlen(msg), 0);
 #endif
-	if (msg[1] == '9')
-	{
-		string temp = MakeStrMsg(cs, buff);
-		for (int i = 0; i < ClientList.size(); i++)
-			send(ClientList[i], temp.c_str(), temp.size(), 0);
-	}
 
 	if (ChatLog.size() >= MAX_CHAT)
 		ChatLog.erase(ChatLog.begin());
 
+	string temp = MakeStrMsg(cs, buff);
+
 	// 8 = System, 9 = Chat
 	if (msg[1] == '9')
 	{
+		for (int i = 0; i < ClientList.size(); i++)
+			send(ClientList[i], temp.c_str(), temp.size(), 0);
+
 		wstring wtemp = MakeWStrMsg(cs, msg);
 		ChatLog.push_back(wtemp.c_str());
+	}
+	else if (msg[1] == '8')
+	{
+		string x, y;
+		int i = 2;
+		while (msg[i] != ',')
+		{
+			x += msg[i++];
+		}
+		
+		i = i + 2;
+		while (msg[i] != '\0')
+		{
+			y += msg[i++];
+		}
+		POINT Pos = { atoi(x.c_str()), atoi(y.c_str()) };
+		StoneContainer.push_back(Pos);
 	}
 }
 
@@ -174,7 +196,7 @@ wstring ServerClass::MakeWStrMsg(SOCKET ID, TCHAR* Msg)
 
 string ServerClass::MakeStrMsg(char* Msg)
 {
-	string temp = "Server :";
+	string temp = "Server: ";
 	temp += Msg;
 	return temp;
 }
@@ -195,15 +217,20 @@ void ServerClass::DrawLine(POINT start, POINT end)
 	LineTo(*FrontBuffer, end.x, end.y);
 }
 
-void ServerClass::DrawGrid(int Num)
+void ServerClass::DrawGrid(POINT pos, int Num)
 {
 	int Max_Dist = 700;
 	int Dist = 40;
 
-	for(int x = 0; x < Num * Dist; x += Dist)
-		for (int y = 0; y < Num * Dist; y += Dist)
+	for(int x = pos.x; x < Num * Dist + pos.x; x += Dist)
+		for (int y = pos.y; y < Num * Dist + pos.y; y += Dist)
 		{
 			DrawLine({ x, y }, { x, Max_Dist });
 			DrawLine({ x, y }, { Max_Dist, y });
 		}
+}
+
+void ServerClass::DrawCircle(POINT pos, int R)
+{
+	Ellipse(*FrontBuffer, pos.x - R, pos.y - R, pos.x + R, pos.y + R);
 }
