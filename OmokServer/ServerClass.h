@@ -28,10 +28,12 @@ private:
 	vector<SOCKET> ClientList;
 	vector<POINT> WhiteStoneContainer;
 	vector<POINT> BlackStoneContainer;
+
+	// 19 * 19
+	//POINT Tiles[361];
 private:
 	HDC* BackBuffer;
 	HDC* FrontBuffer;
-	ImageObject* GridImage;
 public:
 	ServerClass();
 	~ServerClass();

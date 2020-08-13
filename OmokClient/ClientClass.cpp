@@ -12,7 +12,6 @@ ClientClass::ClientClass()
 
 }
 
-
 ClientClass::~ClientClass()
 {
 	closesocket(s);
@@ -57,8 +56,16 @@ void ClientClass::Render()
 	for (int i = 0; i < WhiteStoneContainer.size(); i++)
 		DrawCircle(WhiteStoneContainer[i], 20);
 
+	HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+	HBRUSH oldBrush = (HBRUSH)SelectObject(*FrontBuffer, hBrush);
+
 	for (int i = 0; i < BlackStoneContainer.size(); i++)
 		DrawCircle(BlackStoneContainer[i], 20);
+
+	SelectObject(*FrontBuffer, oldBrush);
+	DeleteObject(oldBrush);
+	DeleteObject(hBrush);
+
 }
 
 void ClientClass::ReadMessage(WPARAM wParam)
@@ -145,12 +152,6 @@ void ClientClass::DrawGrid(POINT pos, int Num)
 		}
 }
 
-wstring ClientClass::MakeWStrMsg(TCHAR* Msg)
-{
-	wstring wtemp = Msg;
-	return wtemp;
-}
-
 // 8 = System, 9 = Chat
 wstring ClientClass::ParseMessage(TCHAR* Msg)
 {
@@ -163,7 +164,7 @@ wstring ClientClass::ParseMessage(TCHAR* Msg)
 
 	wstring wtemp;
 
-	if (Msg[i] == '8')
+	if (Msg[i] == '8') // Extract Point
 	{
 		string x, y;
 		int j = 2;

@@ -34,7 +34,6 @@ public:
 	void DrawLine(POINT start, POINT end);
 	void DrawGrid(POINT pos, int Num);
 
-	wstring MakeWStrMsg(TCHAR* Msg);
 	wstring ParseMessage(TCHAR* Msg);
 
 	void DrawCircle(POINT pos, int R);

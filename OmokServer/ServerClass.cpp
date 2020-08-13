@@ -7,16 +7,11 @@ ServerClass::ServerClass()
 	memset(msg, 0, sizeof(msg));
 	memset(buff, 0, sizeof(buff));
 	memset(wbuff, 0, sizeof(wbuff));
-
-	GridImage = new ImageObject;
-	GridImage->InitImageObject(TEXT("images/board.bmp"), { 0, 0 });
 }
 
 
 ServerClass::~ServerClass()
 {
-	delete GridImage;
-
 	for (int i = 0; i < ClientList.size(); i++)
 		closesocket(ClientList[i]);
 
@@ -69,20 +64,27 @@ void ServerClass::Render()
 		TextOut(*FrontBuffer, 0, WIN_HEIGHT + (i * 20) - 205, ChatLog[i].c_str(), ChatLog[i].size());
 	}
 
-	//GridImage->Render(*FrontBuffer, *BackBuffer);
 	DrawGrid({25, 25}, 19);
 
 	for (int i = 0; i < WhiteStoneContainer.size(); i++)
 		DrawCircle(WhiteStoneContainer[i], 20);
 
+	HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+	HBRUSH oldBrush = (HBRUSH)SelectObject(*FrontBuffer, hBrush);
+
 	for (int i = 0; i < BlackStoneContainer.size(); i++)
 		DrawCircle(BlackStoneContainer[i], 20);
+
+	SelectObject(*FrontBuffer, oldBrush);
+	DeleteObject(oldBrush);
+	DeleteObject(hBrush);
 }
 
 void ServerClass::Accept(HWND hWnd)
 {
 	size = sizeof(c_addr);
 	cs = accept(s, (LPSOCKADDR)&c_addr, &size);
+	if (cs == SOCKET_ERROR) return;
 	WSAAsyncSelect(cs, hWnd, WM_ASYNC, FD_READ);
 	ClientList.push_back(cs);
 }
