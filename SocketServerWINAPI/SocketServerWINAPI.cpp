@@ -64,6 +64,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 wstring MakeWStrMsg(TCHAR* Msg);
 string  MakeStrMsg(char* Msg);
+string  MakeStrMsg(SOCKET ID, char* Msg);
 
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
@@ -161,23 +162,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			ClientList.push_back(cs);
 			break;
 		case FD_READ:
-			msgLen = recv(wParam, buff, 128, 0);
-			buff[msgLen] = NULL;
+			{
+				msgLen = recv(wParam, buff, 128, 0);
+				buff[msgLen] = NULL;
 			
 #ifdef _UNICODE
-			msgLen = MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), NULL, NULL);
-			MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), msg, msgLen);
-			msg[msgLen] = NULL;
-
-			for(int i = 0; i < ClientList.size(); i++)
-				send(ClientList[i], buff, strlen(buff), 0);
+				msgLen = MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), NULL, NULL);
+				MultiByteToWideChar(CP_ACP, 0, buff, strlen(buff), msg, msgLen);
+				msg[msgLen] = NULL;
 #else
-			strcpy_s(msg, buff);
-			send(cs, msg, strlen(msg), 0);
+				strcpy_s(msg, buff);
+				send(cs, msg, strlen(msg), 0);
 #endif
-			ChatLog.push_back(msg);
-			InvalidateRgn(hWnd, NULL, TRUE);
-			break;
+				string temp = MakeStrMsg(cs, buff);
+				for (int i = 0; i < ClientList.size(); i++)
+					send(ClientList[i], temp.c_str(), temp.size(), 0);
+
+				ChatLog.push_back(msg);
+				InvalidateRgn(hWnd, NULL, TRUE);
+				break;
+			}
 		default:
 			break;
 		}
@@ -292,6 +296,15 @@ wstring MakeWStrMsg(TCHAR* Msg)
 string MakeStrMsg(char* Msg)
 {
 	string temp = "Server :";
+	temp += Msg;
+	return temp;
+}
+
+string MakeStrMsg(SOCKET ID, char* Msg)
+{
+	string temp = "Client";
+	temp += to_string(ID);
+	temp += ": ";
 	temp += Msg;
 	return temp;
 }

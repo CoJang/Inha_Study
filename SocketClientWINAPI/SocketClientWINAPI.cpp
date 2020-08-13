@@ -194,15 +194,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			wbuff[Cnt--] = NULL;
 		}
-		else if (wParam == VK_RETURN)
+		else if (wParam == VK_RETURN && Cnt > 0)
 		{
 			if (s == INVALID_SOCKET)
 			{
 				return 0;
 			}
-			string temp = MakeStrMsg(s, buff);
-
-			send(s, temp.c_str(), temp.size(), 0);
+			//string temp = MakeStrMsg(s, buff);
+			//send(s, temp.c_str(), temp.size(), 0);
+			send(s, buff, strlen(buff) + 1, 0);
 			Cnt = 0;
 			memset(buff, 0, sizeof(buff));
 			memset(wbuff, 0, sizeof(wbuff));
