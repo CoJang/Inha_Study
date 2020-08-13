@@ -1,6 +1,9 @@
 # Inha_study_API
 
-Map Pixel 칠할 때 
-FillRect(), SetBitmapBits() 사용해보기.
+== Network Omok ==
 
-현재 SetPixel은 너무 느려서 쓸 수 없음.
+ToDo :
+1. 교점위에 돌 놓기.
+2. 서버 -> 클라이언트로 전송한 좌표에 돌 놓기.
+3. 차례 구분하기.
+4. 차례가 아니면 입력 막기.
