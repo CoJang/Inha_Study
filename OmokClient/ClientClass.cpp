@@ -150,6 +150,21 @@ void ClientClass::DrawGrid(POINT pos, int Num)
 			DrawLine({ x, y }, { x, Max_Dist });
 			DrawLine({ x, y }, { Max_Dist, y });
 		}
+
+	HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+	HBRUSH oldBrush = (HBRUSH)SelectObject(*FrontBuffer, hBrush);
+
+	for (int x = 145; x <= 625; x += 240)
+	{
+		for (int y = 145; y <= 625; y += 240)
+		{
+			DrawCircle({ x, y }, 5);
+		}
+	}
+
+	SelectObject(*FrontBuffer, oldBrush);
+	DeleteObject(oldBrush);
+	DeleteObject(hBrush);
 }
 
 // 8 = System, 9 = Chat

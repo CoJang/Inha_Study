@@ -136,8 +136,10 @@ void ServerClass::ReadMessage(WPARAM wParam)
 		}
 		POINT Pos = { atoi(x.c_str()), atoi(y.c_str()) };
 		Pos = CircleClickCheck(Pos);
-		WhiteStoneContainer.push_back(Pos);
 
+		if (Pos.x == -1 || Pos.y == -1) return;
+
+		WhiteStoneContainer.push_back(Pos);
 		string temp = StonePosFix(Pos);
 
 		// Broadcast System Message
@@ -271,6 +273,21 @@ void ServerClass::DrawGrid(POINT pos, int Num)
 			DrawLine({ x, y }, { Max_Dist, y });
 		}
 	}
+
+	HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+	HBRUSH oldBrush = (HBRUSH)SelectObject(*FrontBuffer, hBrush);
+
+	for (int x = 3; x < 19; x += 6)
+	{
+		for (int y = 3; y < 19; y += 6)
+		{
+			DrawCircle(Tiles[x][y].Pos, 5);
+		}
+	}
+
+	SelectObject(*FrontBuffer, oldBrush);
+	DeleteObject(oldBrush);
+	DeleteObject(hBrush);
 }
 
 void ServerClass::DrawCircle(POINT pos, int R)
@@ -289,7 +306,7 @@ void ServerClass::InitTile(POINT pos, int Num)
 	{
 		for (int y = pos.y; y < Num * Dist + pos.y; y += Dist)
 		{
-			Tiles[i][j++ % 19].Pos = { x, y };
+			Tiles[i][j % 19].Pos = { x, y };
 			Tiles[i][j++ % 19].IsUsing = false;
 		}
 		i++;
