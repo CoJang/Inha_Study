@@ -139,7 +139,16 @@ void ServerClass::ReadMessage(WPARAM wParam)
 
 		if (Pos.x == -1 || Pos.y == -1) return;
 
-		WhiteStoneContainer.push_back(Pos);
+		if (ClientList.size() > 1)
+		{
+			if (wParam == ClientList[1])
+				WhiteStoneContainer.push_back(Pos);
+			else if (wParam == ClientList[0])
+				BlackStoneContainer.push_back(Pos);
+		}
+		else
+			BlackStoneContainer.push_back(Pos);
+
 		string temp = StonePosFix(Pos);
 
 		// Broadcast System Message
@@ -195,10 +204,8 @@ void ServerClass::CheckKeyDown(WPARAM wParam)
 POINT ServerClass::CircleClickCheck(POINT MousePos)
 {
 	for (int x = 0; x < 19; x++)
-	{
 		for (int y = 0; y < 19; y++)
 		{
-			
 			float distance = sqrt(pow(Tiles[x][y].Pos.x - MousePos.x, 2)
 								+ pow(Tiles[x][y].Pos.y - MousePos.y, 2));
 
@@ -207,7 +214,6 @@ POINT ServerClass::CircleClickCheck(POINT MousePos)
 				return POINT{ Tiles[x][y].Pos.x, Tiles[x][y].Pos.y };
 			}
 		}
-	}
 
 	return POINT{ -1, -1 };
 }
