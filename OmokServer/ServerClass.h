@@ -14,6 +14,12 @@ struct SystemPackit
 #define WM_ASYNC WM_USER + 2
 #define MAX_CHAT 5
 
+struct Tile
+{
+	POINT Pos;
+	bool IsUsing;
+};
+
 class ServerClass
 {
 private:
@@ -30,7 +36,7 @@ private:
 	vector<POINT> BlackStoneContainer;
 
 	// 19 * 19
-	//POINT Tiles[361];
+	Tile Tiles[19][19];
 private:
 	HDC* BackBuffer;
 	HDC* FrontBuffer;
@@ -43,14 +49,17 @@ public:
 	void Accept(HWND hWnd);
 	void ReadMessage(WPARAM wParam);
 	void CheckKeyDown(WPARAM wParam);
+	POINT CircleClickCheck(POINT MousePos);
 
 	wstring MakeWStrMsg(TCHAR* Msg);
 	wstring MakeWStrMsg(SOCKET ID, TCHAR* Msg);
 	string MakeStrMsg(char* Msg);
 	string MakeStrMsg(SOCKET ID, char* Msg);
+	string StonePosFix(POINT pos);
 
 	void DrawLine(POINT start, POINT end);
 	void DrawGrid(POINT pos, int Num);
 	void DrawCircle(POINT pos, int R);
+	void InitTile(POINT pos, int Num);
 };
 

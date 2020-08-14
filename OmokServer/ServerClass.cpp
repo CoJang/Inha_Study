@@ -7,6 +7,8 @@ ServerClass::ServerClass()
 	memset(msg, 0, sizeof(msg));
 	memset(buff, 0, sizeof(buff));
 	memset(wbuff, 0, sizeof(wbuff));
+
+	InitTile({ 25, 25 }, 19);
 }
 
 
@@ -133,11 +135,14 @@ void ServerClass::ReadMessage(WPARAM wParam)
 			y += msg[i++];
 		}
 		POINT Pos = { atoi(x.c_str()), atoi(y.c_str()) };
+		Pos = CircleClickCheck(Pos);
 		WhiteStoneContainer.push_back(Pos);
+
+		string temp = StonePosFix(Pos);
 
 		// Broadcast System Message
 		for (int i = 0; i < ClientList.size(); i++)
-			send(ClientList[i], buff, strlen(buff) + 1, 0);
+			send(ClientList[i], temp.c_str(), temp.size(), 0);
 	}
 }
 
@@ -185,6 +190,26 @@ void ServerClass::CheckKeyDown(WPARAM wParam)
 	}
 }
 
+POINT ServerClass::CircleClickCheck(POINT MousePos)
+{
+	for (int x = 0; x < 19; x++)
+	{
+		for (int y = 0; y < 19; y++)
+		{
+			
+			float distance = sqrt(pow(Tiles[x][y].Pos.x - MousePos.x, 2)
+								+ pow(Tiles[x][y].Pos.y - MousePos.y, 2));
+
+			if (distance <= 20)
+			{
+				return POINT{ Tiles[x][y].Pos.x, Tiles[x][y].Pos.y };
+			}
+		}
+	}
+
+	return POINT{ -1, -1 };
+}
+
 wstring ServerClass::MakeWStrMsg(TCHAR* Msg)
 {
 	wstring wtemp = TEXT("Server: ");
@@ -218,6 +243,15 @@ string ServerClass::MakeStrMsg(SOCKET ID, char* Msg)
 	return temp;
 }
 
+string ServerClass::StonePosFix(POINT pos)
+{
+	string temp = to_string(-8);
+	temp += to_string(pos.x);
+	temp += ", ";
+	temp += to_string(pos.y);
+	return temp;
+}
+
 void ServerClass::DrawLine(POINT start, POINT end)
 {
 	MoveToEx(*FrontBuffer, start.x, start.y, NULL);
@@ -229,15 +263,36 @@ void ServerClass::DrawGrid(POINT pos, int Num)
 	int Max_Dist = 700;
 	int Dist = 40;
 
-	for(int x = pos.x; x < Num * Dist + pos.x; x += Dist)
+	for (int x = pos.x; x < Num * Dist + pos.x; x += Dist)
+	{
 		for (int y = pos.y; y < Num * Dist + pos.y; y += Dist)
 		{
 			DrawLine({ x, y }, { x, Max_Dist });
 			DrawLine({ x, y }, { Max_Dist, y });
 		}
+	}
 }
 
 void ServerClass::DrawCircle(POINT pos, int R)
 {
 	Ellipse(*FrontBuffer, pos.x - R, pos.y - R, pos.x + R, pos.y + R);
+}
+
+void ServerClass::InitTile(POINT pos, int Num)
+{
+	int Max_Dist = 700;
+	int Dist = 40;
+
+	int i(0), j(0);
+
+	for (int x = pos.x; x < Num * Dist + pos.x; x += Dist)
+	{
+		for (int y = pos.y; y < Num * Dist + pos.y; y += Dist)
+		{
+			Tiles[i][j++ % 19].Pos = { x, y };
+			Tiles[i][j++ % 19].IsUsing = false;
+		}
+		i++;
+	}
+
 }
