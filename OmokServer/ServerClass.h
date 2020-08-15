@@ -55,7 +55,7 @@ public:
 	wstring MakeWStrMsg(SOCKET ID, TCHAR* Msg);
 	string MakeStrMsg(char* Msg);
 	string MakeStrMsg(SOCKET ID, char* Msg);
-	string StonePosFix(POINT pos);
+	string StonePosFix(POINT pos, int flag);
 
 	void DrawLine(POINT start, POINT end);
 	void DrawGrid(POINT pos, int Num);

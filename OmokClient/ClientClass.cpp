@@ -182,19 +182,28 @@ wstring ClientClass::ParseMessage(TCHAR* Msg)
 	if (Msg[i] == '8') // Extract Point
 	{
 		string x, y;
-		int j = 2;
+		int j = 2; int flag = -1;
 		while (msg[j] != ',')
 		{
 			x += msg[j++];
 		}
 
-		j = j + 2;
-		while (msg[j] != '\0')
+		j++;
+		while (msg[j] != ',')
 		{
 			y += msg[j++];
 		}
+
+		while (msg[j] != '\0')
+		{
+			flag = msg[j++];
+		}
 		POINT Pos = { atoi(x.c_str()), atoi(y.c_str()) };
-		WhiteStoneContainer.push_back(Pos);
+
+		if (flag == 49)
+			WhiteStoneContainer.push_back(Pos);
+		else if (flag == 48)
+			BlackStoneContainer.push_back(Pos);
 	}
 	else if (Msg[i] == '9') // Remove Flag
 	{

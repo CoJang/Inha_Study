@@ -129,27 +129,34 @@ void ServerClass::ReadMessage(WPARAM wParam)
 			x += msg[i++];
 		}
 		
-		i = i + 2;
+		i++;
 		while (msg[i] != '\0')
 		{
 			y += msg[i++];
 		}
-		POINT Pos = { atoi(x.c_str()), atoi(y.c_str()) };
-		Pos = CircleClickCheck(Pos);
+
+		int ColorFlag = 0;
+		POINT Pos = CircleClickCheck({ atoi(x.c_str()), atoi(y.c_str()) });
 
 		if (Pos.x == -1 || Pos.y == -1) return;
 
 		if (ClientList.size() > 1)
 		{
 			if (wParam == ClientList[1])
+			{
 				WhiteStoneContainer.push_back(Pos);
+				ColorFlag = 1;
+			}
 			else if (wParam == ClientList[0])
+			{
 				BlackStoneContainer.push_back(Pos);
+				ColorFlag = 0;
+			}
 		}
 		else
 			BlackStoneContainer.push_back(Pos);
 
-		string temp = StonePosFix(Pos);
+		string temp = StonePosFix(Pos, ColorFlag);
 
 		// Broadcast System Message
 		for (int i = 0; i < ClientList.size(); i++)
@@ -211,7 +218,13 @@ POINT ServerClass::CircleClickCheck(POINT MousePos)
 
 			if (distance <= 20)
 			{
-				return POINT{ Tiles[x][y].Pos.x, Tiles[x][y].Pos.y };
+				if (!Tiles[x][y].IsUsing)
+				{
+					Tiles[x][y].IsUsing = true;
+					return POINT{ Tiles[x][y].Pos.x, Tiles[x][y].Pos.y };
+				}
+				else
+					return POINT{ -1, -1 };
 			}
 		}
 
@@ -251,12 +264,17 @@ string ServerClass::MakeStrMsg(SOCKET ID, char* Msg)
 	return temp;
 }
 
-string ServerClass::StonePosFix(POINT pos)
+// flag 0 = Black Stone, flag 1 = White Stone
+string ServerClass::StonePosFix(POINT pos, int flag)
 {
 	string temp = to_string(-8);
+
 	temp += to_string(pos.x);
 	temp += ", ";
 	temp += to_string(pos.y);
+	temp += ", ";
+	temp += to_string(flag);
+
 	return temp;
 }
 
