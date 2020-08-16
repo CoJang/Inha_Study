@@ -9,7 +9,7 @@ ClientClass::ClientClass()
 	memset(buff, 0, sizeof(buff));
 	memset(wbuff, 0, sizeof(wbuff));
 	Cnt = 0; size = 0; msgLen = 0;
-
+	IsMyTurn = false;
 }
 
 ClientClass::~ClientClass()
@@ -65,7 +65,6 @@ void ClientClass::Render()
 	SelectObject(*FrontBuffer, oldBrush);
 	DeleteObject(oldBrush);
 	DeleteObject(hBrush);
-
 }
 
 void ClientClass::ReadMessage(WPARAM wParam)

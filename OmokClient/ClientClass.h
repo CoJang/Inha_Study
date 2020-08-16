@@ -12,12 +12,12 @@ private:
 	SOCKADDR_IN addr;
 	TCHAR msg[512];
 	TCHAR wbuff[128];
-	int Cnt;
-	int size, msgLen;
+	int Cnt, size, msgLen;
 	char buff[128];
 	vector<wstring> ChatLog;
 	vector<POINT> WhiteStoneContainer;
 	vector<POINT> BlackStoneContainer;
+	bool IsMyTurn;
 private:
 	HDC* BackBuffer;
 	HDC* FrontBuffer;

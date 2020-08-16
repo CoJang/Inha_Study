@@ -17,7 +17,7 @@ struct SystemPackit
 struct Tile
 {
 	POINT Pos;
-	bool IsUsing;
+	int IsUsing;
 };
 
 class ServerClass
@@ -28,7 +28,6 @@ private:
 	TCHAR msg[512], wbuff[128];
 	SOCKADDR_IN addr = { 0 }, c_addr;
 	int Cnt, size, msgLen;
-	int PosY = 0;
 	char buff[128];
 	vector<wstring> ChatLog;
 	vector<SOCKET> ClientList;
@@ -37,6 +36,8 @@ private:
 
 	// 19 * 19
 	Tile Tiles[19][19];
+	bool IsWhiteTurn;
+	POINT GridPos;
 private:
 	HDC* BackBuffer;
 	HDC* FrontBuffer;
@@ -49,7 +50,8 @@ public:
 	void Accept(HWND hWnd);
 	void ReadMessage(WPARAM wParam);
 	void CheckKeyDown(WPARAM wParam);
-	POINT CircleClickCheck(POINT MousePos);
+	POINT CircleClickCheck(POINT MousePos, int ColorFlag);
+	bool CheckVictory(POINT StonePos, int CheckColor);
 
 	wstring MakeWStrMsg(TCHAR* Msg);
 	wstring MakeWStrMsg(SOCKET ID, TCHAR* Msg);

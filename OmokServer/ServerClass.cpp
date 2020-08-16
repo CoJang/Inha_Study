@@ -3,11 +3,13 @@
 
 ServerClass::ServerClass()
 {
-	Cnt = 0; size = 0; msgLen = 0; PosY = 0;
+	Cnt = 0; size = 0; msgLen = 0;
 	memset(msg, 0, sizeof(msg));
 	memset(buff, 0, sizeof(buff));
 	memset(wbuff, 0, sizeof(wbuff));
 
+	IsWhiteTurn = false;
+	GridPos = { 25, 25 };
 	InitTile({ 25, 25 }, 19);
 }
 
@@ -104,6 +106,7 @@ void ServerClass::ReadMessage(WPARAM wParam)
 	strcpy_s(msg, buff);
 	send(cs, msg, strlen(msg), 0);
 #endif
+	int ColorFlag = -1;
 
 	if (ChatLog.size() >= MAX_CHAT)
 		ChatLog.erase(ChatLog.begin());
@@ -122,6 +125,19 @@ void ServerClass::ReadMessage(WPARAM wParam)
 	}
 	else if (msg[1] == '8')
 	{
+		// Check Player's Turn
+		if (ClientList.size() > 1)
+		{
+			if (wParam == ClientList[0] && IsWhiteTurn)
+				return;
+			else if (wParam == ClientList[1] && !IsWhiteTurn)
+				return;
+			else if (wParam == ClientList[0] && !IsWhiteTurn)
+				ColorFlag = 0;
+			else if (wParam == ClientList[1] && IsWhiteTurn)
+				ColorFlag = 1;
+		}
+
 		string x, y;
 		int i = 2;
 		while (msg[i] != ',')
@@ -135,27 +151,25 @@ void ServerClass::ReadMessage(WPARAM wParam)
 			y += msg[i++];
 		}
 
-		int ColorFlag = 0;
-		POINT Pos = CircleClickCheck({ atoi(x.c_str()), atoi(y.c_str()) });
+		POINT Pos = CircleClickCheck({ atoi(x.c_str()), atoi(y.c_str()) }, ColorFlag);
 
 		if (Pos.x == -1 || Pos.y == -1) return;
 
 		if (ClientList.size() > 1)
 		{
-			if (wParam == ClientList[1])
+			if (ColorFlag == 1)
 			{
 				WhiteStoneContainer.push_back(Pos);
-				ColorFlag = 1;
+				IsWhiteTurn = false;
+				cout << "White Put Stone" << Pos.x  << Pos.y << endl;
 			}
-			else if (wParam == ClientList[0])
+			else if (ColorFlag == 0)
 			{
 				BlackStoneContainer.push_back(Pos);
-				ColorFlag = 0;
+				IsWhiteTurn = true;
+				cout << "Black Put Stone" << Pos.x << Pos.y << endl;
 			}
 		}
-		else
-			BlackStoneContainer.push_back(Pos);
-
 		string temp = StonePosFix(Pos, ColorFlag);
 
 		// Broadcast System Message
@@ -208,7 +222,8 @@ void ServerClass::CheckKeyDown(WPARAM wParam)
 	}
 }
 
-POINT ServerClass::CircleClickCheck(POINT MousePos)
+// ColorFlag -1 = Unused, 0 = White, 1 = Black
+POINT ServerClass::CircleClickCheck(POINT MousePos, int ColorFlag)
 {
 	for (int x = 0; x < 19; x++)
 		for (int y = 0; y < 19; y++)
@@ -218,9 +233,9 @@ POINT ServerClass::CircleClickCheck(POINT MousePos)
 
 			if (distance <= 20)
 			{
-				if (!Tiles[x][y].IsUsing)
+				if (Tiles[x][y].IsUsing == -1)
 				{
-					Tiles[x][y].IsUsing = true;
+					Tiles[x][y].IsUsing = ColorFlag;
 					return POINT{ Tiles[x][y].Pos.x, Tiles[x][y].Pos.y };
 				}
 				else
@@ -229,6 +244,25 @@ POINT ServerClass::CircleClickCheck(POINT MousePos)
 		}
 
 	return POINT{ -1, -1 };
+}
+
+////////////////////////////////// Work First ////////////////////////////////////
+bool ServerClass::CheckVictory(POINT StonePos, int CheckColor)
+{
+	int Cnt = 0;
+
+	// if Black Stone
+	if (CheckColor == 0)
+	{
+
+	}
+	// if White Stone
+	else if (CheckColor == 1)
+	{
+
+	}
+
+	return false;
 }
 
 wstring ServerClass::MakeWStrMsg(TCHAR* Msg)
@@ -266,7 +300,7 @@ string ServerClass::MakeStrMsg(SOCKET ID, char* Msg)
 
 // flag 0 = Black Stone, flag 1 = White Stone
 string ServerClass::StonePosFix(POINT pos, int flag)
-{
+{	// temp = "-8Posx, Posy, flag"
 	string temp = to_string(-8);
 
 	temp += to_string(pos.x);
@@ -331,7 +365,7 @@ void ServerClass::InitTile(POINT pos, int Num)
 		for (int y = pos.y; y < Num * Dist + pos.y; y += Dist)
 		{
 			Tiles[i][j % 19].Pos = { x, y };
-			Tiles[i][j++ % 19].IsUsing = false;
+			Tiles[i][j++ % 19].IsUsing = -1;
 		}
 		i++;
 	}
