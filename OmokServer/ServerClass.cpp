@@ -46,7 +46,7 @@ void ServerClass::InitServer(HWND hWnd, HDC* Front, HDC* Back)
 
 	WSAAsyncSelect(s, hWnd, WM_ASYNC, FD_ACCEPT);
 
-	if (listen(s, SOMAXCONN) == SOCKET_ERROR)
+	if (listen(s, 5) == SOCKET_ERROR)
 	{
 		MessageBox(NULL, TEXT("Listen Failed"), TEXT("Error"), MB_OK);
 		return;
@@ -161,20 +161,43 @@ void ServerClass::ReadMessage(WPARAM wParam)
 			{
 				WhiteStoneContainer.push_back(Pos);
 				IsWhiteTurn = false;
-				cout << "White Put Stone" << Pos.x  << Pos.y << endl;
 			}
 			else if (ColorFlag == 0)
 			{
 				BlackStoneContainer.push_back(Pos);
 				IsWhiteTurn = true;
-				cout << "Black Put Stone" << Pos.x << Pos.y << endl;
 			}
 		}
-		string temp = StonePosFix(Pos, ColorFlag);
+
+		string SystemMsg = StonePosFix(Pos, ColorFlag);
 
 		// Broadcast System Message
 		for (int i = 0; i < ClientList.size(); i++)
-			send(ClientList[i], temp.c_str(), temp.size(), 0);
+			send(ClientList[i], SystemMsg.c_str(), SystemMsg.size(), 0);
+
+		if (CheckVictory(Pos, ColorFlag))
+		{
+			wstring WinMsg;
+			if (ColorFlag == 0)
+			{
+				WinMsg = TEXT("System: Black Win!");
+				SystemMsg = "Server: -9Black Win!";
+			}
+			else
+			{
+				WinMsg = TEXT("System: White Win!");
+				SystemMsg = "Server: -9White Win!";
+			}
+
+			ChatLog.push_back(WinMsg.c_str());
+
+			////////////////////////// 임시 방편 /////////////////////
+			Sleep(1000);
+			/////////////////////////////////////////////////////////
+			
+			for (int i = 0; i < ClientList.size(); i++)
+				send(ClientList[i], SystemMsg.c_str(), SystemMsg.size(), 0);
+		}
 	}
 }
 
@@ -246,20 +269,83 @@ POINT ServerClass::CircleClickCheck(POINT MousePos, int ColorFlag)
 	return POINT{ -1, -1 };
 }
 
-////////////////////////////////// Work First ////////////////////////////////////
 bool ServerClass::CheckVictory(POINT StonePos, int CheckColor)
 {
 	int Cnt = 0;
+	POINT index = { (StonePos.x - 25) / 40, (StonePos.y - 25) / 40 };
 
-	// if Black Stone
-	if (CheckColor == 0)
+	int x(0), y(0);
 	{
+		// Check X axis
+		for (x = 0; x < 19; x++)
+		{
+			if (Tiles[x][index.y].IsUsing == CheckColor)
+				Cnt++;
+			else
+				Cnt = 0;
 
-	}
-	// if White Stone
-	else if (CheckColor == 1)
-	{
+			if (Cnt > 4) return true;
+		}
 
+		// Check Y axis
+		Cnt = 0;
+		for (y = 0; y < 19; y++)
+		{
+			if (Tiles[index.x][y].IsUsing == CheckColor)
+				Cnt++;
+			else
+				Cnt = 0;
+
+			if (Cnt > 4) return true;
+		}
+
+		// Find Start index [ -X, +Y ]
+		x = index.x, y = index.y;
+		while (1)
+		{
+			if (x == 0 || x == 18 || y == 0 || y == 18)
+				break;
+			x--; y++;
+		}
+
+		// Check -X +Y axis
+		Cnt = 0;
+		while (1)
+		{
+			if (Tiles[x++][y--].IsUsing == CheckColor)
+				Cnt++;
+			else
+				Cnt = 0;
+
+			if (Cnt > 4) return true;
+
+			if (x < 0 || x > 18 || y < 0 || y > 18)
+				break;
+		}
+
+		// Find Start index [ +X, +Y ]
+		x = index.x, y = index.y;
+		while (1)
+		{
+			if (x == 0 || x == 18 || y == 0 || y == 18)
+				break;
+			x++; y++;
+		}
+
+		// Check +X +Y axis
+		Cnt = 0;
+		while (1)
+		{
+			if (Tiles[x--][y--].IsUsing == CheckColor)
+				Cnt++;
+			else
+				Cnt = 0;
+
+			if (Cnt > 4) return true;
+
+			if (x < 0 || x > 18 || y < 0 || y > 18)
+				break;
+		}
 	}
 
 	return false;
