@@ -137,6 +137,8 @@ void ServerClass::ReadMessage(WPARAM wParam)
 			else if (wParam == ClientList[1] && IsWhiteTurn)
 				ColorFlag = 1;
 		}
+		else
+			return;
 
 		string x, y;
 		int i = 2;

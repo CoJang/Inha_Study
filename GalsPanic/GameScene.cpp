@@ -51,7 +51,14 @@ void GameScene::Render()
 	// Hide again & Use BackBuffer again
 	HBITMAP BackBitmap1 = CreateCompatibleBitmap(*FrontBuffer, WIN_WIDTH, WIN_HEIGHT);
 	HBITMAP oldBitmap1 = (HBITMAP)SelectObject(*BackBuffer, BackBitmap1);
-	PatBlt(*BackBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT, BLACKNESS);
+
+	HBRUSH hBrush = CreateSolidBrush(RGB(100, 100, 100));
+	HBRUSH oldBrush = (HBRUSH)SelectObject(*BackBuffer, hBrush);
+	//PatBlt(*BackBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT, BLACKNESS);
+	Rectangle(*BackBuffer, 0, 0, WIN_WIDTH, WIN_HEIGHT);
+	SelectObject(*BackBuffer, oldBrush);
+	DeleteObject(oldBrush);
+	DeleteObject(hBrush);
 	
 	// Render Target : BackBuffer
 	Map->Render(*FrontBuffer, *BackBuffer);
