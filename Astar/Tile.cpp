@@ -7,6 +7,7 @@ Tile::Tile()
 	 CostToDist(-1),
 	 TotalCost(-1),
 	 Pos({0, 0}),
+	 Parents({-1, -1}),
 	 color(RGB(255, 255, 255)),
 	 IsObstacle(false){}
 

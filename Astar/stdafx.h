@@ -26,4 +26,4 @@ using namespace std;
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 800
 
-#define TILE_SIZE 40
+#define TILE_SIZE 80

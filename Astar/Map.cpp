@@ -76,6 +76,9 @@ void Map::SetStartGoal(POINT MousePos)
 // Need Fix
 void Map::UpdateNearValue(POINT index)
 {
+	if (Tiles[index.x + (index.y * MapSize.x)].Parents.x == -1)
+		Tiles[index.x + (index.y * MapSize.x)].Parents = index;
+
 	POINT Parent = Tiles[index.x + (index.y * MapSize.x)].Parents;
 	int ParentG = Tiles[Parent.x + (Parent.y * MapSize.x)].CostFromStart;
 
