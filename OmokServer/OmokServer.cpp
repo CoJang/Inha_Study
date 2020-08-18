@@ -118,7 +118,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Server = new ServerClass;
 		Server->InitServer(hWnd, &BackBuffer[0], &BackBuffer[1]);
-		SetTimer(hWnd, 99, 60, NULL);
+		//SetTimer(hWnd, 99, 60, NULL);
 		break;
     case WM_COMMAND:
         {
@@ -172,7 +172,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		InvalidateRgn(hWnd, NULL, FALSE);
 		break;
 	case WM_TIMER:
-		InvalidateRgn(hWnd, NULL, FALSE);
+		//InvalidateRgn(hWnd, NULL, FALSE);
 		break;
     case WM_DESTROY:
         PostQuitMessage(0);

@@ -126,7 +126,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Client = new ClientClass;
 		Client->InitClient(hWnd, &BackBuffer[0], &BackBuffer[1]);
-		SetTimer(hWnd, 99, 60, NULL);
+		//SetTimer(hWnd, 99, 60, NULL);
 		MousePos = { 0, 0 };
 		break;
     case WM_COMMAND:
@@ -182,7 +182,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Client->MouseDown(MousePos);
 		break;
 	case WM_TIMER:
-		InvalidateRgn(hWnd, NULL, FALSE);
+		//InvalidateRgn(hWnd, NULL, FALSE);
 		break;
     case WM_DESTROY:
         PostQuitMessage(0);

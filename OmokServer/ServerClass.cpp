@@ -32,7 +32,7 @@ void ServerClass::InitServer(HWND hWnd, HDC* Front, HDC* Back)
 	s = socket(AF_INET, SOCK_STREAM, 0);
 	addr.sin_family = AF_INET;
 	addr.sin_port = 20;
-	addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+	addr.sin_addr.S_un.S_addr = inet_addr("61.101.25.157");
 
 	if (bind(s, (LPSOCKADDR)&addr, sizeof(addr)))
 	{
