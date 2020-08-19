@@ -148,6 +148,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		map.SetStartGoal({ LOWORD(lParam), HIWORD(lParam) });
 		InvalidateRgn(hWnd, NULL, true);
 		break;
+	case WM_RBUTTONUP:
+		map.SetObstacle({ LOWORD(lParam), HIWORD(lParam) });
+		InvalidateRgn(hWnd, NULL, true);
+		break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
