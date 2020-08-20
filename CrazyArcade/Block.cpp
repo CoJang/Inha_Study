@@ -11,7 +11,7 @@ Block::~Block()
 {
 }
 
-void Block::Init(wstring Path, bool Passable, bool Destructible, POINT pivot)
+void Block::Init(wstring Path, bool Passable, bool Destructible, POINT pos, POINT pivot)
 {
 	hImage = (HBITMAP)LoadImage(NULL, Path.c_str(), IMAGE_BITMAP,
 		0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
@@ -20,6 +20,10 @@ void Block::Init(wstring Path, bool Passable, bool Destructible, POINT pivot)
 	Sprite_Size.x = bitImage.bmWidth;
 	Sprite_Size.y = bitImage.bmHeight;
 	Pivot = pivot;
+	Pos = pos;
+
+	Pos.x -= Pivot.x;
+	Pos.y -= Pivot.y;
 
 	Anim_Frame_Max = bitImage.bmWidth / Sprite_Size.x - 1;
 	Anim_Frame_Min = 0;

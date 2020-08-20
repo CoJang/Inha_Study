@@ -16,6 +16,7 @@ public:
 	~Map();
 
 	void LoadingTiles();
+	void LoadingBlocks();
 	void Render(HDC front, HDC back);
 };
 

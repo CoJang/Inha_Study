@@ -17,7 +17,7 @@ public:
 	Block();
 	~Block();
 
-	void Init(wstring Path, bool Passable, bool IsDestructible, POINT pivot);
+	void Init(wstring Path, bool Passable, bool IsDestructible, POINT pos, POINT pivot);
 	void Render(HDC front, HDC back);
 	void UpdateFrame();
 };
