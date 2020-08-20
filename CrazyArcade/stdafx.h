@@ -33,6 +33,7 @@ using namespace std;
 
 #pragma comment(lib, "msimg32.lib")
 
+#define FILTER RGB(255, 0, 255)
 #define WIN_WIDTH 1056
 #define WIN_HEIGHT 839
 

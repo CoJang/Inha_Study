@@ -2,6 +2,7 @@
 #include "Map.h"
 
 #define TILE_PIVOT {-26, -53}
+#define OBS_BLOCK_PIVOT {-25, -50}
 
 Map::Map()
 {
@@ -17,82 +18,59 @@ Map::~Map()
 
 void Map::LoadingTiles()
 {
-#pragma region LoadImages
-	//Tiles[0].InitTile(TEXT("images/map/SandBlockYellow.bmp"), false, true, { 0, -4 });
-	//Tiles[1].InitTile(TEXT("images/map/SandBlockBuff.bmp"), false, true, { 0, -4 });
-	//Tiles[2].InitTile(TEXT("images/map/SandBox.bmp"), false, true, { 0, -5 });
+	FrameImage.Init(TEXT("images/Frame/play_bg.bmp"), { 0, 0 }, { 0, 0 });
 
-	//Tiles[3].InitTile(TEXT("images/map/SandCactiGreen.bmp"), false, false, { 0, -19 });
-	//Tiles[4].InitTile(TEXT("images/map/SandCactiGreenBold.bmp"), false, false, { 0, -19 });
-	//Tiles[5].InitTile(TEXT("images/map/SandCactiTea.bmp"), false, false, { 0, -5 });
+// 14 * 12  [10 kinds]
+#pragma region SetTiles
+	int TileSets[MAP_WIDTH * MAP_HEIGHT] = 
+	{   
+		5, 6, 7, 8, 9, 10,  12, 12, 12,  10, 9, 8, 7, 6, 5,
+		5, 6, 7, 8, 9, 10,  13, 14, 13,  10, 9, 8, 7, 6, 5,
+		5, 6, 7, 8, 9, 10,  13, 14, 13,  10, 9, 8, 7, 6, 5,
+		5, 6, 7, 8, 9, 10,  13, 14, 13,  10, 9, 8, 7, 6, 5,
+		5, 6, 7, 8, 9, 10,  13, 14, 13,  10, 9, 8, 7, 6, 5,
+		4, 2, 2, 1, 1, 2,   1,  1,  1,   2, 2, 1, 1, 2, 3,
+		4, 2, 2, 1, 1, 2,   1,  1,  1,   2, 2, 1, 1, 2, 3,
+		4, 2, 2, 1, 1, 2,   1,  1,  1,   2, 2, 1, 1, 2, 3,
+		5, 6, 7, 8, 9, 10,  13, 14, 13,   10, 9, 8, 7, 6, 5,
+		5, 6, 7, 8, 9, 10,  13, 14, 13,   10, 9, 8, 7, 6, 5,
+		5, 6, 7, 8, 9, 10,  13, 14, 13,   10, 9, 8, 7, 6, 5,
+		5, 6, 7, 8, 9, 10,  13, 14, 13,   10, 9, 8, 7, 6, 5,
+		5, 6, 7, 8, 9, 10,  11, 11, 11,   10, 9, 8, 7, 6, 5,
+	};
 
-	//Tiles[6].InitTile(TEXT("images/map/SandGround.bmp"), true, false, { 0, 0 });
+	for(int x = 0; x < MAP_WIDTH; x++)
+		for (int y = 0; y < MAP_HEIGHT; y++)
+		{
+			int tileNum = TileSets[x + (y * MAP_WIDTH)];
+			wstring Path = TEXT("images/map/forest/Tiles/tile_");
+			Path += to_wstring(tileNum); Path += TEXT(".bmp");
 
-	//Tiles[7].InitTile(TEXT("images/map/SandHouseBlue.bmp"), false, false, { 0, -23 });
-	//Tiles[8].InitTile(TEXT("images/map/SandHouseGreen.bmp"), false, false, { 0, -23 });
-	//Tiles[9].InitTile(TEXT("images/map/SandHouseTea.bmp"), false, false, { 0, -23 });
-
-	//Tiles[10].InitTile(TEXT("images/map/SandOasis.bmp"), false, false, { 0, -5 });
-	//Tiles[11].InitTile(TEXT("images/map/SandOasisAni.bmp"), false, false, { 0, -5 });
-
-	//Tiles[12].InitTile(TEXT("images/map/SandShopBlue.bmp"), false, false, { 0, -5 });
-	//Tiles[13].InitTile(TEXT("images/map/SandShopRed.bmp"), false, false, { 0, -5 });
-	//Tiles[14].InitTile(TEXT("images/map/SandShopYellow.bmp"), false, false, { 0, -5 });
-
-	//Tiles[15].InitTile(TEXT("images/map/SandStone.bmp"), false, true, { 0, -5 });
-
-	//Tiles[16].InitTile(TEXT("images/map/SandTentBlue.bmp"), false, false, { 0, -5 });
-	//Tiles[17].InitTile(TEXT("images/map/SandTentRed.bmp"), false, false, { 0, -5 });
-	//Tiles[18].InitTile(TEXT("images/map/SandTentYellow.bmp"), false, false, { 0, -5 });
-
-	//Tiles[19].InitTile(TEXT("images/map/SandTree.bmp"), false, false, { 0, -5 });
-	//Tiles[20].InitTile(TEXT("images/map/SandTreeGreen.bmp"), false, false, { 0, -5 });
-	//Tiles[21].InitTile(TEXT("images/map/SandTreeYellow.bmp"), false, false, { 0, -5 });
-
-	//Tiles[22].InitTile(TEXT("images/map/TownBlockRed.bmp"), false, true, { 0, -5 });
-	//Tiles[23].InitTile(TEXT("images/map/TownBlockYellow.bmp"), false, true, { 0, -5 });
-	//Tiles[24].InitTile(TEXT("images/map/TownBox.bmp"), false, true, { 0, -5 });
-
-	//Tiles[25].InitTile(TEXT("images/map/TownBush.bmp"), false, true, { 0, -5 });
-
-	//Tiles[26].InitTile(TEXT("images/map/TownGround.bmp"), true, true, { 0, -5 });
-
-	//Tiles[27].InitTile(TEXT("images/map/TownHouseBlue.bmp"), false, true, { 0, -5 });
-	//Tiles[28].InitTile(TEXT("images/map/TownHouseRed.bmp"), false, true, { 0, -5 });
-	//Tiles[29].InitTile(TEXT("images/map/TownHouseYellow.bmp"), false, true, { 0, -5 });
-
-	//Tiles[30].InitTile(TEXT("images/map/TownTree.bmp"), false, true, { 0, -5 });
-
-	//Tiles[31].InitTile(TEXT("images/map/TownWindmill.bmp"), false, true, { 0, -5 });
-	//Tiles[32].InitTile(TEXT("images/map/TownWindmillAni.bmp"), false, true, { 0, -5 });
+			Tiles[x + (y * MAP_WIDTH)].Init(Path.c_str(), { x * 52, y * 52 }, TILE_PIVOT);
+		}
 #pragma endregion
-	FrameImage.InitTile(TEXT("images/Frame/play_bg.bmp"), false, false, { 0, 0 });
-	FrameImage.SetPos({ 0, 0 });
 
-	//Tiles[0].InitTile(TEXT("images/map/forest/Blocks/block_1_pop.bmp"), true, true, { 5, 0 });
-	//Tiles[0].SetPos({ 25, 35 });
+// 14 * 12  [10 kinds]
+#pragma region SetBlocks
+	//Tiles[6].InitTile(TEXT("images/map/forest/Obstacle/object_1.bmp"), false, false, OBS_BLOCK_PIVOT);
+	//Tiles[6].SetPos({ 0, 0 });
 
-	//Tiles[1].InitTile(TEXT("images/map/forest/Obstacle/object_1.bmp"), true, true, { 0, 0 });
-	//Tiles[1].SetPos({ 85, 35 });
+	//Tiles[7].InitTile(TEXT("images/map/forest/Obstacle/object_2.bmp"), false, false, OBS_BLOCK_PIVOT);
+	//Tiles[7].SetPos({ 52, 0 });
 
-	Tiles[2].InitTile(TEXT("images/map/forest/Tiles/tile_1.bmp"), true, true, TILE_PIVOT);
-	Tiles[2].SetPos({ 0, 0 });
+	//Tiles[8].InitTile(TEXT("images/map/forest/Obstacle/object_3.bmp"), false, false, OBS_BLOCK_PIVOT);
+	//Tiles[8].SetPos({ 104, 0 });
+#pragma endregion
 
-	Tiles[3].InitTile(TEXT("images/map/forest/Tiles/tile_1.bmp"), true, true, { -26, -53 });
-	Tiles[3].SetPos({ 0, 52 * 12 });
 
-	Tiles[4].InitTile(TEXT("images/map/forest/Tiles/tile_1.bmp"), true, true, { -26, -53 });
-	Tiles[4].SetPos({ 52 * 14, 0 });
 
-	Tiles[5].InitTile(TEXT("images/map/forest/Tiles/tile_1.bmp"), true, true, { -26, -53 });
-	Tiles[5].SetPos({ 52 * 14, 52 * 12 });
 }
 
 void Map::Render(HDC front, HDC back)
 {
 	FrameImage.Render(front, back);
 
-	for (int i = 0; i < MAP_SIZE; i++)
+	for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++)
 	{
 		Tiles[i].Render(front, back);
 	}
