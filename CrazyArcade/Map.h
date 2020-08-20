@@ -1,15 +1,14 @@
 #pragma once
 #include "Tile.h"
 
-#define MAP_SIZE 6
+#define MAP_WIDTH 14
+#define MAP_HEIGHT 12
 
 class Map
 {
 private:
-	HBITMAP hTiles[33];
-	BITMAP bitTiles[33];
-	Tile* tempTile;
-	wstring path[33];
+	Tile FrameImage;
+	Tile* Tiles;
 public:
 	Map();
 	~Map();

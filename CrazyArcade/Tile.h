@@ -14,6 +14,7 @@ private:
 	BITMAP bitImage;
 
 	POINT Sprite_Size;
+	POINT Pivot;
 	POINT Start;
 
 	int Anim_Frame_Max;
@@ -24,7 +25,9 @@ public:
 	Tile();
 	~Tile();
 	
-	void InitTile(wstring path, POINT pos);
+	//wstring path, bool Passable, bool Destructible, POINT pivot
+	void InitTile(wstring, bool, bool, POINT);
+	inline void SetPos(POINT pos) { Pos = pos; Pos.x -= Pivot.x; Pos.y -= Pivot.y;};
 
 	void Render(HDC front, HDC back);
 };
