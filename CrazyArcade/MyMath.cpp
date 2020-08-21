@@ -27,3 +27,16 @@ POINT CramersRule(POINT P1, POINT P2, POINT P3, POINT P4)
 
 	return CrossPoint;
 }
+
+bool RRCollision(const RECT* rt1, const RECT* rt2)
+{
+	if (rt1->right > rt2->left &&
+		rt1->left < rt2->right &&
+		rt1->bottom > rt2->top &&
+		rt1->top < rt2->bottom)
+	{
+		return true;
+	}
+
+	return false;
+}

@@ -61,7 +61,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		{
 			// Key Down Sequence
 			//singleton.GetSceneManager()->GetInstance()->Update();
-			//singleton.GetSceneManager()->GetInstance()->CheckKeyDown();
+			singleton.GetSceneManager()->GetInstance()->CheckKeyDown();
 		}
 	}
 
@@ -143,7 +143,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_PAINT:
         {
-		float startTime = GetTickCount();
+		double startTime = GetTickCount();
 			PAINTSTRUCT ps;
 			hdc = BeginPaint(hWnd, &ps);
 			BackBitmap = CreateCompatibleBitmap(hdc, WIN_WIDTH, WIN_HEIGHT);
@@ -151,14 +151,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PatBlt(BackBuffer[0], 0, 0, WIN_WIDTH, WIN_HEIGHT, WHITENESS);
 
 			singleton.GetSceneManager()->GetInstance()->Update();
-			singleton.GetSceneManager()->GetInstance()->Render();
 			singleton.GetSceneManager()->GetInstance()->CheckKeyDown();
+			singleton.GetSceneManager()->GetInstance()->Render();
 
 			BitBlt(hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT, BackBuffer[0], 0, 0, SRCCOPY);
 			SelectObject(BackBuffer[0], oldBitmap);
 
 			EndPaint(hWnd, &ps);
-		float endTime = GetTickCount();
+		double endTime = GetTickCount();
 		cout << endTime - startTime << endl;
         }
         break;

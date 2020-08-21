@@ -2,27 +2,26 @@
 #include "Tile.h"
 #include "Block.h"
 
-#define MAP_WIDTH 15
-#define MAP_HEIGHT 13
-
 class Map
 {
 private:
 	Tile FrameImage;
+	Tile BackTiles;
 	
 	Block* Blocks;
 	HBITMAP* BlockImages;
 	BITMAP* BlockBitmaps;
-
-	Tile* Tiles;
-	HBITMAP* TileImages;
-	BITMAP* TileBitmaps;
 public:
 	Map();
 	~Map();
 
 	void LoadingTiles();
 	void LoadingBlocks();
-	void Render(HDC front, HDC back);
+
+	// 플레이어와 상호작용하여 렌더 순서를 바꾸는게 필요(앞, 뒤 판정)
+	void FrontRender(HDC front, HDC back);
+	void BackRender(HDC front, HDC back, bool ColliderDraw);
+
+	inline Block* GetBlocks() { return Blocks; };
 };
 

@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "Block.h"
+#include "MyMath.h"
 #include "Player.h"
 
 
@@ -19,8 +21,14 @@ Player::Player()
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
 	Dir = { 0, 0 }; Speed = 10;
-}
 
+	ColPivot = { 26, 48 };
+	PlayerColliderSize = 36;
+	CharSize = 1.1f;
+
+	MaxBomb = 1;
+	BombPower = 1;
+}
 
 Player::~Player()
 {
@@ -59,19 +67,47 @@ void Player::SetPlayerDir(POINT dir)
 	else // idle
 	{
 		Anim_Frame_Cur = Anim_Frame_Min;
-		Dir.x = 0, Dir.y = 0;
+	}
+}
+
+void Player::Collision(Block * Blocks)
+{
+	RECT BlockArea;
+
+	for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++)
+	{
+		if (Blocks[i].GetPassable() || Blocks[i].GetDestructible() == false)
+			continue;
+
+		BlockArea = Blocks[i].GetArea();
+
+		if (RRCollision(&Collider, &BlockArea))
+		{
+			Pos.x -= Speed * Dir.x;
+			Pos.y -= Speed * Dir.y;
+
+			Collider = { Pos.x - PlayerColliderSize / 2 + ColPivot.x,
+						 Pos.y - PlayerColliderSize / 2 + ColPivot.y,
+						 Pos.x + PlayerColliderSize / 2 + ColPivot.x,
+						 Pos.y + PlayerColliderSize / 2 + ColPivot.y };
+		}
 	}
 }
 
 void Player::Update()
 {
-	UpdateFrame();
-
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
 
+	UpdateFrame();
+
 	Pos.x += Speed * Dir.x;
 	Pos.y += Speed * Dir.y;
+
+	Collider = { Pos.x - PlayerColliderSize / 2 + ColPivot.x,
+				 Pos.y - PlayerColliderSize / 2 + ColPivot.y,
+				 Pos.x + PlayerColliderSize / 2 + ColPivot.x,
+				 Pos.y + PlayerColliderSize / 2 + ColPivot.y };
 }
 
 void Player::UpdateFrame()
@@ -82,12 +118,18 @@ void Player::UpdateFrame()
 		Anim_Frame_Cur = Anim_Frame_Min;
 }
 
-void Player::Render(HDC front, HDC back)
+void Player::Render(HDC front, HDC back, bool ColliderDraw)
 {
 	HBITMAP oldbuffer = (HBITMAP)SelectObject(back, hImage);
 
-	TransparentBlt(front, Pos.x, Pos.y, Sprite_Size.x, Sprite_Size.y,
+	TransparentBlt(front, Pos.x, Pos.y, 
+		Sprite_Size.x * CharSize,
+		Sprite_Size.y * CharSize,
 		back, Start.x, Start.y, Sprite_Size.x, Sprite_Size.y, FILTER);
+
+	if(ColliderDraw)
+		Rectangle(front, Collider.left, Collider.top, 
+						 Collider.right, Collider.bottom);
 
 	SelectObject(back, oldbuffer);
 	DeleteObject(oldbuffer);

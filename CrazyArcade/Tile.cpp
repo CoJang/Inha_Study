@@ -48,8 +48,8 @@ void Tile::Render(HDC front, HDC back)
 {
 	HBITMAP oldbuffer = (HBITMAP)SelectObject(back, hImage);
 
-	TransparentBlt(front, Pos.x, Pos.y, Sprite_Size.x, Sprite_Size.y,
-		back, 0, 0, Sprite_Size.x, Sprite_Size.y, FILTER);
+	BitBlt(front, Pos.x, Pos.y, Sprite_Size.x, Sprite_Size.y,
+		back, 0, 0, SRCCOPY);
 
 	SelectObject(back, oldbuffer);
 	DeleteObject(oldbuffer);

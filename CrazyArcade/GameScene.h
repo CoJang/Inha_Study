@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "Bomb.h"
 #include "Player.h"
 #include "Map.h"
 
@@ -16,6 +17,8 @@ private:
 
 	Player* MainChar;
 	Map* map;
+
+	bool ColliderDrawMode;
 public:
 	GameScene();
 	~GameScene();

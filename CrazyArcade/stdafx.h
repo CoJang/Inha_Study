@@ -39,7 +39,10 @@ using namespace std;
 #endif
 
 #define FILTER RGB(255, 0, 255)
+
 #define WIN_WIDTH 1056
 #define WIN_HEIGHT 839
+#define MAP_WIDTH 15
+#define MAP_HEIGHT 13
 
-#define ElapseTime 33
+#define ElapseTime 17

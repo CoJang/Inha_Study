@@ -17,7 +17,9 @@ GameScene::GameScene()
 
 	map = new Map;
 	MainChar = new Player;
-	MainChar->InitPlayer({ 0, 0 }, {-26, -26});
+	MainChar->InitPlayer({ 52, 0 }, {-26, -26});
+
+	ColliderDrawMode = false;
 }
 
 GameScene::~GameScene()
@@ -28,8 +30,9 @@ GameScene::~GameScene()
 
 void GameScene::Render()
 {
-	map->Render(*FrontBuffer, *BackBuffer);
-	MainChar->Render(*FrontBuffer, *BackBuffer);
+	map->FrontRender(*FrontBuffer, *BackBuffer);
+	map->BackRender(*FrontBuffer, *BackBuffer, ColliderDrawMode);
+	MainChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 }
 
 void GameScene::Update()
@@ -37,6 +40,7 @@ void GameScene::Update()
 	Timer += ElapseTime;
 
 	MainChar->Update();
+	MainChar->Collision(map->GetBlocks());
 }
 
 void GameScene::ResetScene()
@@ -83,5 +87,10 @@ void GameScene::CheckKeyDown()
 	else
 	{
 		MainChar->SetPlayerDir({ 0, 0 });
+	}
+
+	if (GetAsyncKeyState(VK_TAB) & 0x0001)
+	{
+		ColliderDrawMode ^= true;
 	}
 }
