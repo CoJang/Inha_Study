@@ -8,7 +8,12 @@
 Map::Map()
 {
 	Tiles = new Tile[MAP_WIDTH * MAP_HEIGHT];
+	TileImages = new HBITMAP[14];
+	TileBitmaps = new BITMAP[14];
+
 	Blocks = new Block[MAP_WIDTH * MAP_HEIGHT];
+	BlockImages = new HBITMAP[13];
+	BlockBitmaps = new BITMAP[13];
 	LoadingTiles();
 	LoadingBlocks();
 }
@@ -16,8 +21,12 @@ Map::Map()
 
 Map::~Map()
 {
-	delete[] Blocks;
 	delete[] Tiles;
+	delete[] TileImages;
+	delete[] TileBitmaps;
+	delete[] Blocks;
+	delete[] BlockImages;
+	delete[] BlockBitmaps;
 }
 
 void Map::LoadingTiles()
@@ -27,6 +36,16 @@ void Map::LoadingTiles()
 
 // 15 * 13  [10 kinds]
 #pragma region SetTiles
+	wstring Path;
+	for (int i = 0; i < 13; i++)
+	{
+		Path = TEXT("images/map/forest/Tiles/tile_");
+		Path += to_wstring(i + 1); Path += TEXT(".bmp");
+		TileImages[i] = (HBITMAP)LoadImage(NULL, Path.c_str(), IMAGE_BITMAP,
+			0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		GetObject(TileImages[i], sizeof(BITMAP), &TileBitmaps[i]);
+	}
+
 	int TileSets[MAP_WIDTH * MAP_HEIGHT] = 
 	{   
 		5, 6, 7, 8, 9, 10,  12, 8, 12,  10, 9, 8, 7, 6, 5,
@@ -47,11 +66,9 @@ void Map::LoadingTiles()
 	for(int x = 0; x < MAP_WIDTH; x++)
 		for (int y = 0; y < MAP_HEIGHT; y++)
 		{
-			int tileNum = TileSets[x + (y * MAP_WIDTH)];
-			wstring Path = TEXT("images/map/forest/Tiles/tile_");
-			Path += to_wstring(tileNum); Path += TEXT(".bmp");
-
+			int ImageIndex = TileSets[x + (y * MAP_WIDTH)] - 1;
 			Tiles[x + (y * MAP_WIDTH)].Init(Path.c_str(), { x * 52, y * 52 }, TILE_PIVOT);
+			Tiles[x + (y * MAP_WIDTH)].SetImage(TileImages[ImageIndex], TileBitmaps[ImageIndex]);
 		}
 #pragma endregion
 }
@@ -60,6 +77,24 @@ void Map::LoadingBlocks()
 {
 // 15 * 13  [4 kinds]
 #pragma region SetBlocks
+	wstring Path;
+	for (int i = 0; i < 4; i++)
+	{
+		Path = TEXT("images/map/forest/Obstacle/Block_");
+		Path += to_wstring(i + 1); Path += TEXT(".bmp");
+		BlockImages[i] = (HBITMAP)LoadImage(NULL, Path.c_str() , IMAGE_BITMAP,
+				0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+			GetObject(BlockImages[i], sizeof(BITMAP), &BlockBitmaps[i]);
+	}
+	for (int i = 4; i < 13; i++)
+	{
+		Path = TEXT("images/map/forest/Blocks/block_");
+		Path += to_wstring(i + 1); Path += TEXT(".bmp");
+		BlockImages[i] = (HBITMAP)LoadImage(NULL, Path.c_str(), IMAGE_BITMAP,
+			0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		GetObject(BlockImages[i], sizeof(BITMAP), &BlockBitmaps[i]);
+	}
+	
 	int BlockSets[MAP_WIDTH * MAP_HEIGHT] =
 	{
 		3,  0,  9,  0,  9,  0,   0,  8,  0,   0,  9,  0,  9,  0,  3,
@@ -82,30 +117,28 @@ void Map::LoadingBlocks()
 	for (int x = 0; x < MAP_WIDTH; x++)
 		for (int y = 0; y < MAP_HEIGHT; y++)
 		{
-			int BlockNum = BlockSets[x + (y * MAP_WIDTH)];
-			wstring Path = TEXT("images/map/forest/Obstacle/Block_");
-			Path += to_wstring(BlockNum); Path += TEXT(".bmp");
+			int ImageIndex = BlockSets[x + (y * MAP_WIDTH)] - 1;
 
-			if (BlockNum < 5)
+			if (ImageIndex < 4)
 			{
-				if (BlockNum == 0) continue;
+				if (ImageIndex == -1) continue;
 
-				if(BlockNum == 4)
-					Blocks[x + (y * MAP_WIDTH)].Init(Path.c_str(),
-						false, false, { x * 52, y * 52 }, TILE_PIVOT);
+				if (ImageIndex == 3)
+				{
+					Blocks[x + (y * MAP_WIDTH)].Init(false, false, { x * 52, y * 52 }, TILE_PIVOT);
+					Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
+				}
 				else
-					Blocks[x + (y * MAP_WIDTH)].Init(Path.c_str(),
-						false, false, { x * 52, y * 52 }, OBSTACLE_PIVOT);
+				{
+					Blocks[x + (y * MAP_WIDTH)].Init(false, false, { x * 52, y * 52 }, OBSTACLE_PIVOT);
+					Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
+				}
 			}
 			else
 			{
-				Path = TEXT("images/map/forest/Blocks/block_");
-				Path += to_wstring(BlockNum); Path += TEXT(".bmp");
-
-				Blocks[x + (y * MAP_WIDTH)].Init(Path.c_str(),
-					false, true, { x * 52, y * 52 }, BLOCK_PIVOT);
+				Blocks[x + (y * MAP_WIDTH)].Init(false, true, { x * 52, y * 52 }, BLOCK_PIVOT);
+				Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
 			}
-
 		}
 #pragma endregion
 }

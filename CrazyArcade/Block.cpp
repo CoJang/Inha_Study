@@ -11,19 +11,28 @@ Block::~Block()
 {
 }
 
-void Block::Init(wstring Path, bool Passable, bool Destructible, POINT pos, POINT pivot)
+void Block::Init(bool Passable, bool Destructible, POINT pos, POINT pivot)
 {
-	hImage = (HBITMAP)LoadImage(NULL, Path.c_str(), IMAGE_BITMAP,
-		0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hImage, sizeof(BITMAP), &bitImage);
-
-	Sprite_Size.x = bitImage.bmWidth;
-	Sprite_Size.y = bitImage.bmHeight;
+	//hImage = (HBITMAP)LoadImage(NULL, Path.c_str(), IMAGE_BITMAP,
+	//	0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	//GetObject(hImage, sizeof(BITMAP), &bitImage);
 	Pivot = pivot;
 	Pos = pos;
 
 	Pos.x -= Pivot.x;
 	Pos.y -= Pivot.y;
+
+	IsPassable = Passable;
+	IsDestructible = Destructible;
+}
+
+void Block::SetImage(HBITMAP & image, BITMAP & bitmap)
+{
+	hImage = image;
+	bitImage = bitmap;
+
+	Sprite_Size.x = bitImage.bmWidth;
+	Sprite_Size.y = bitImage.bmHeight;
 
 	Anim_Frame_Max = bitImage.bmWidth / Sprite_Size.x - 1;
 	Anim_Frame_Min = 0;
@@ -32,9 +41,6 @@ void Block::Init(wstring Path, bool Passable, bool Destructible, POINT pos, POIN
 
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
-
-	IsPassable = Passable;
-	IsDestructible = Destructible;
 }
 
 void Block::Render(HDC front, HDC back)

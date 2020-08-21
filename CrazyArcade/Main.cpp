@@ -6,6 +6,7 @@
 #define MAX_LOADSTRING 100
 
 // Global Variables:
+extern Singleton singleton;
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
@@ -59,6 +60,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		else
 		{
 			// Key Down Sequence
+			//singleton.GetSceneManager()->GetInstance()->Update();
+			//singleton.GetSceneManager()->GetInstance()->CheckKeyDown();
 		}
 	}
 
@@ -104,8 +107,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-extern Singleton singleton;
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static HDC hdc;
@@ -116,6 +117,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 	case WM_CREATE:
 		{
+			SetTimer(hWnd, 100, ElapseTime, NULL);
 			BackBuffer[0] = CreateCompatibleDC(hdc);
 			BackBuffer[1] = CreateCompatibleDC(BackBuffer[0]);
 
@@ -141,6 +143,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_PAINT:
         {
+		float startTime = GetTickCount();
 			PAINTSTRUCT ps;
 			hdc = BeginPaint(hWnd, &ps);
 			BackBitmap = CreateCompatibleBitmap(hdc, WIN_WIDTH, WIN_HEIGHT);
@@ -149,14 +152,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			singleton.GetSceneManager()->GetInstance()->Update();
 			singleton.GetSceneManager()->GetInstance()->Render();
-			//singleton.GetSceneManager()->GetInstance()->CheckKeyDown(wParam);
+			singleton.GetSceneManager()->GetInstance()->CheckKeyDown();
 
 			BitBlt(hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT, BackBuffer[0], 0, 0, SRCCOPY);
 			SelectObject(BackBuffer[0], oldBitmap);
 
 			EndPaint(hWnd, &ps);
+		float endTime = GetTickCount();
+		cout << endTime - startTime << endl;
         }
         break;
+	case WM_TIMER:
+		InvalidateRect(hWnd, NULL, false);
+		break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;

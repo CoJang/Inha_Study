@@ -17,7 +17,8 @@ public:
 	Block();
 	~Block();
 
-	void Init(wstring Path, bool Passable, bool IsDestructible, POINT pos, POINT pivot);
+	void Init(bool Passable, bool IsDestructible, POINT pos, POINT pivot);
+	void SetImage(HBITMAP & image, BITMAP & bitmap);
 	void Render(HDC front, HDC back);
 	void UpdateFrame();
 };

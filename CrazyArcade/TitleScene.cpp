@@ -81,7 +81,7 @@ ButtonType TitleScene::CheckClick(POINT mpos, int flag)
 	return UNKNOWN;
 }
 
-void TitleScene::CheckKeyDown(WPARAM wParam)
+void TitleScene::CheckKeyDown()
 {
 
 }

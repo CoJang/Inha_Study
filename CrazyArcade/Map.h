@@ -9,8 +9,14 @@ class Map
 {
 private:
 	Tile FrameImage;
-	Tile* Tiles;
+	
 	Block* Blocks;
+	HBITMAP* BlockImages;
+	BITMAP* BlockBitmaps;
+
+	Tile* Tiles;
+	HBITMAP* TileImages;
+	BITMAP* TileBitmaps;
 public:
 	Map();
 	~Map();

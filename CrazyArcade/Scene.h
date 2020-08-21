@@ -39,7 +39,7 @@ public:
 
 	virtual void DrawButtons() {};
 	virtual ButtonType CheckClick(POINT mpos, int flag) { return UNKNOWN; };
-	virtual void CheckKeyDown(WPARAM wParam) { };
+	virtual void CheckKeyDown() { };
 
 	int GetType() { return type; };
 	void SetType(SceneType input) { type = input; };

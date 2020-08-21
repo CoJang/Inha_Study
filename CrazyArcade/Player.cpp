@@ -18,6 +18,7 @@ Player::Player()
 
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
+	Dir = { 0, 0 }; Speed = 10;
 }
 
 
@@ -32,6 +33,53 @@ void Player::InitPlayer(POINT pos, POINT pivot)
 
 	Pos.x -= Pivot.x;
 	Pos.y -= Pivot.y;
+}
+
+void Player::SetPlayerDir(POINT dir)
+{
+	Dir = dir;
+
+	// Left
+	if (Dir.x == 1)
+	{
+		Anim_Frame_Flag = 3;
+	} // Right
+	else if (Dir.x == -1)
+	{
+		Anim_Frame_Flag = 2;
+	}// Up
+	else if (Dir.y == -1)
+	{
+		Anim_Frame_Flag = 0;
+	}// Down
+	else if (Dir.y == 1)
+	{
+		Anim_Frame_Flag = 1;
+	}
+	else // idle
+	{
+		Anim_Frame_Cur = Anim_Frame_Min;
+		Dir.x = 0, Dir.y = 0;
+	}
+}
+
+void Player::Update()
+{
+	UpdateFrame();
+
+	Start.x = Anim_Frame_Cur * Sprite_Size.x;
+	Start.y = Anim_Frame_Flag * Sprite_Size.y;
+
+	Pos.x += Speed * Dir.x;
+	Pos.y += Speed * Dir.y;
+}
+
+void Player::UpdateFrame()
+{
+	Anim_Frame_Cur++;
+
+	if (Anim_Frame_Cur > Anim_Frame_Max)
+		Anim_Frame_Cur = Anim_Frame_Min;
 }
 
 void Player::Render(HDC front, HDC back)

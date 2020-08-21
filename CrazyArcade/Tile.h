@@ -7,7 +7,9 @@ public:
 	Tile();
 	~Tile();
 	
-	void Init(wstring Path, POINT pos, POINT pivot);
+	void Init(POINT pos, POINT pivot);
+	void Init(wstring path, POINT pos, POINT pivot);
+	void SetImage(HBITMAP & image, BITMAP & bitmap);
 	void Render(HDC front, HDC back);
 };
 

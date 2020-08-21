@@ -24,7 +24,7 @@ public:
 	void ShowID();
 	void DrawButtons();
 	ButtonType CheckClick(POINT mpos, int flag);
-	void CheckKeyDown(WPARAM wParam);
+	void CheckKeyDown();
 
 	void Render();
 	void Update();

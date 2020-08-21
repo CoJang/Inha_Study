@@ -17,7 +17,7 @@ GameScene::GameScene()
 
 	map = new Map;
 	MainChar = new Player;
-	MainChar->InitPlayer({ 0,0 }, {0, 0});
+	MainChar->InitPlayer({ 0, 0 }, {-26, -26});
 }
 
 GameScene::~GameScene()
@@ -35,6 +35,8 @@ void GameScene::Render()
 void GameScene::Update()
 {
 	Timer += ElapseTime;
+
+	MainChar->Update();
 }
 
 void GameScene::ResetScene()
@@ -60,26 +62,26 @@ ButtonType GameScene::CheckClick(POINT mpos, int flag)
 	return UNKNOWN;
 }
 
-//void GameScene::CheckKeyDown(WPARAM wParam)
-//{
-//	if (GetKeyState(VK_LEFT) & 0x8000)
-//	{
-//		MainChar->SetPlayerDir({ -1, 0 });
-//	}
-//	else if (GetKeyState(VK_DOWN) & 0x8000)
-//	{
-//		MainChar->SetPlayerDir({ 0, 1 });
-//	}
-//	else if (GetKeyState(VK_RIGHT) & 0x8000)
-//	{
-//		MainChar->SetPlayerDir({ 1, 0 });
-//	}
-//	else if (GetKeyState(VK_UP) & 0x8000)
-//	{
-//		MainChar->SetPlayerDir({ 0, -1 });
-//	}
-//	else
-//	{
-//		MainChar->SetPlayerDir({ 0, 0 });
-//	}
-//}
+void GameScene::CheckKeyDown()
+{
+	if (GetKeyState(VK_LEFT) & 0x8000)
+	{
+		MainChar->SetPlayerDir({ -1, 0 });
+	}
+	else if (GetKeyState(VK_DOWN) & 0x8000)
+	{
+		MainChar->SetPlayerDir({ 0, 1 });
+	}
+	else if (GetKeyState(VK_RIGHT) & 0x8000)
+	{
+		MainChar->SetPlayerDir({ 1, 0 });
+	}
+	else if (GetKeyState(VK_UP) & 0x8000)
+	{
+		MainChar->SetPlayerDir({ 0, -1 });
+	}
+	else
+	{
+		MainChar->SetPlayerDir({ 0, 0 });
+	}
+}

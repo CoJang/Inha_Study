@@ -32,6 +32,11 @@ using namespace std;
 #include "MyMath.h"
 
 #pragma comment(lib, "msimg32.lib")
+#ifdef UNICODE
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#else
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif
 
 #define FILTER RGB(255, 0, 255)
 #define WIN_WIDTH 1056
