@@ -15,8 +15,9 @@ GameScene::GameScene()
 
 	Timer = 0;
 
-	MainChar = new Player;
 	map = new Map;
+	MainChar = new Player;
+	MainChar->InitPlayer({ 0,0 }, {0, 0});
 }
 
 GameScene::~GameScene()
@@ -27,8 +28,8 @@ GameScene::~GameScene()
 
 void GameScene::Render()
 {
-	MainChar->Render(*FrontBuffer);
 	map->Render(*FrontBuffer, *BackBuffer);
+	MainChar->Render(*FrontBuffer, *BackBuffer);
 }
 
 void GameScene::Update()

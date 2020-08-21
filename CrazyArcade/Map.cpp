@@ -2,7 +2,8 @@
 #include "Map.h"
 
 #define TILE_PIVOT {-26, -53}
-#define BLOCK_PIVOT {-26, -39}
+#define OBSTACLE_PIVOT {-26, -39}
+#define BLOCK_PIVOT {-18, -36}
 
 Map::Map()
 {
@@ -61,21 +62,21 @@ void Map::LoadingBlocks()
 #pragma region SetBlocks
 	int BlockSets[MAP_WIDTH * MAP_HEIGHT] =
 	{
-		3, 9, 9, 9, 9, 9,  9, 9, 9,  9, 9, 9, 9, 9, 3,
-		9, 9, 9, 9, 9, 9,  2, 9, 2,  9, 9, 9, 9, 9, 9,
-		9, 9, 4, 0, 0, 9,  9, 9, 9,  9, 4, 0, 0, 9, 9,
-		9, 9, 0, 0, 0, 9,  9, 1, 9,  9, 0, 0, 0, 9, 9,
-		9, 9, 9, 9, 9, 9,  9, 9, 9,  9, 9, 9, 9, 9, 9,
+		3,  0,  9,  0,  9,  0,   0,  8,  0,   0,  9,  0,  9,  0,  3,
+		0,  0,  0,  5,  5,  0,   2, 11,  2,   0,  5,  5,  0,  0,  0,
+		7,  6,  4,  0,  0,  6,  11, 12, 11,   6,  4,  0,  0,  6,  7,
+		0,  6,  0,  0,  0,  6,   8,  1,  8,   6,  0,  0,  0,  6,  0,
+		7,  0,  5,  5,  0,  0,   0, 12,  0,   0,  0,  5,  5,  0,  7,
 
-		9, 2, 9, 9, 9, 9,  9, 1, 9,  9, 9, 9, 9, 2, 9,
-		9, 9, 9, 1, 9, 1,  9, 9, 9,  1, 9, 1, 9, 9, 9,
-		9, 2, 9, 9, 9, 9,  9, 1, 9,  9, 9, 9, 9, 2, 9,
+		0,  2, 11,  8,  5,  0,   8,  1,  8,   0,  5,  8, 11,  2,  0,
+		8, 11, 12,  1, 10,  1,  12, 13, 12,   1, 10,  1, 12, 11,  8,
+		0,  2, 11,  8,  5,  0,   8,  1,  8,   0,  5,  8, 11,  2,  0,
 
-		9, 9, 9, 9, 9, 9,  9, 9, 9,  9, 9, 9, 9, 9, 9,
-		9, 9, 4, 0, 0, 9,  9, 1, 9,  9, 4, 0, 0, 9, 9,
-		9, 9, 0, 0, 0, 9,  9, 9, 9,  9, 0, 0, 0, 9, 9,
-		9, 9, 9, 9, 9, 9,  2, 9, 2,  9, 9, 9, 9, 9, 9,
-		3, 9, 9, 9, 9, 9,  9, 9, 9,  9, 9, 9, 9, 9, 3
+		7,  0,  5,  5,  0,  0,   0, 12,  0,   0,  0,  5,  5,  0,  7,
+		0,  6,  4,  0,  0,  6,   8,  1,  8,   6,  4,  0,  0,  6,  0,
+		7,  6,  0,  0,  0,  6,  11, 12, 11,   6,  0,  0,  0,  6,  7,
+		0,  0,  0,  5,  5,  0,   2, 11,  2,   0,  5,  5,  0,  0,  0,
+		3,  0,  9,  0,  9,  0,   0,  8,  0,   0,  9,  0,  9,  0,  3
 	};
 
 	for (int x = 0; x < MAP_WIDTH; x++)
@@ -85,12 +86,26 @@ void Map::LoadingBlocks()
 			wstring Path = TEXT("images/map/forest/Obstacle/Block_");
 			Path += to_wstring(BlockNum); Path += TEXT(".bmp");
 
-			if(BlockNum == 4)
-				Blocks[x + (y * MAP_WIDTH)].Init(Path.c_str(),
-					false, false, { x * 52, y * 52 }, TILE_PIVOT);
+			if (BlockNum < 5)
+			{
+				if (BlockNum == 0) continue;
+
+				if(BlockNum == 4)
+					Blocks[x + (y * MAP_WIDTH)].Init(Path.c_str(),
+						false, false, { x * 52, y * 52 }, TILE_PIVOT);
+				else
+					Blocks[x + (y * MAP_WIDTH)].Init(Path.c_str(),
+						false, false, { x * 52, y * 52 }, OBSTACLE_PIVOT);
+			}
 			else
+			{
+				Path = TEXT("images/map/forest/Blocks/block_");
+				Path += to_wstring(BlockNum); Path += TEXT(".bmp");
+
 				Blocks[x + (y * MAP_WIDTH)].Init(Path.c_str(),
-					false, false, { x * 52, y * 52 }, BLOCK_PIVOT);
+					false, true, { x * 52, y * 52 }, BLOCK_PIVOT);
+			}
+
 		}
 #pragma endregion
 }
