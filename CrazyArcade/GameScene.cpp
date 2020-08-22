@@ -30,7 +30,7 @@ GameScene::~GameScene()
 
 void GameScene::Render()
 {
-	map->FrontRender(*FrontBuffer, *BackBuffer);
+	map->FrontRender(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 	map->BackRender(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 	MainChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 }
@@ -92,5 +92,10 @@ void GameScene::CheckKeyDown()
 	if (GetAsyncKeyState(VK_TAB) & 0x0001)
 	{
 		ColliderDrawMode ^= true;
+	}
+
+	if (GetAsyncKeyState(VK_SPACE) & 0x0001)
+	{
+		MainChar->PutBomb();
 	}
 }

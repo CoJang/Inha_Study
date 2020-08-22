@@ -34,6 +34,12 @@
     <Filter Include="Source Files\Player">
       <UniqueIdentifier>{2b70436f-262b-4ce3-a9fc-20dfeb5a5528}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Bomb">
+      <UniqueIdentifier>{9d4df095-cac6-49d1-ae5b-226d17353e1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object">
+      <UniqueIdentifier>{0a9a32f5-5ca1-4546-9532-a095cf649530}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -66,9 +72,6 @@
     <ClInclude Include="SceneManager.h">
       <Filter>Source Files\SceneManager</Filter>
     </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>Source Files\Map</Filter>
-    </ClInclude>
     <ClInclude Include="MyMath.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
@@ -78,14 +81,14 @@
     <ClInclude Include="Map.h">
       <Filter>Source Files\Map</Filter>
     </ClInclude>
-    <ClInclude Include="MapObjects.h">
-      <Filter>Source Files\Map</Filter>
-    </ClInclude>
     <ClInclude Include="Block.h">
       <Filter>Source Files\Map</Filter>
     </ClInclude>
     <ClInclude Include="Bomb.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Bomb</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects.h">
+      <Filter>Source Files\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -110,9 +113,6 @@
     <ClCompile Include="SceneManager.cpp">
       <Filter>Source Files\SceneManager</Filter>
     </ClCompile>
-    <ClCompile Include="Tile.cpp">
-      <Filter>Source Files\Map</Filter>
-    </ClCompile>
     <ClCompile Include="MyMath.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
@@ -122,14 +122,14 @@
     <ClCompile Include="Map.cpp">
       <Filter>Source Files\Map</Filter>
     </ClCompile>
-    <ClCompile Include="MapObjects.cpp">
-      <Filter>Source Files\Map</Filter>
-    </ClCompile>
     <ClCompile Include="Block.cpp">
       <Filter>Source Files\Map</Filter>
     </ClCompile>
     <ClCompile Include="Bomb.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Bomb</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects.cpp">
+      <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

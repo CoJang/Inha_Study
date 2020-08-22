@@ -33,6 +33,6 @@ public:
 	void Update();
 	void UpdateFrame();
 	void Render(HDC front, HDC back, bool ColliderDraw);
-
+	inline RECT GetArea() { return Collider; };
 };
 

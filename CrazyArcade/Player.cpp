@@ -26,12 +26,18 @@ Player::Player()
 	PlayerColliderSize = 36;
 	CharSize = 1.1f;
 
-	MaxBomb = 1;
+	MaxBomb = 3;
 	BombPower = 1;
 }
 
 Player::~Player()
 {
+	for (Bomb* B : BombBag)
+	{
+		delete B;
+	}
+
+	BombBag.clear();
 }
 
 void Player::InitPlayer(POINT pos, POINT pivot)
@@ -76,22 +82,46 @@ void Player::Collision(Block * Blocks)
 
 	for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++)
 	{
-		if (Blocks[i].GetPassable() || Blocks[i].GetDestructible() == false)
+		if (!Blocks[i].GetColliderState())
 			continue;
 
-		BlockArea = Blocks[i].GetArea();
+		BlockArea = Blocks[i].GetCollider();
 
 		if (RRCollision(&Collider, &BlockArea))
 		{
-			Pos.x -= Speed * Dir.x;
-			Pos.y -= Speed * Dir.y;
-
-			Collider = { Pos.x - PlayerColliderSize / 2 + ColPivot.x,
-						 Pos.y - PlayerColliderSize / 2 + ColPivot.y,
-						 Pos.x + PlayerColliderSize / 2 + ColPivot.x,
-						 Pos.y + PlayerColliderSize / 2 + ColPivot.y };
+			RewindMove();
 		}
 	}
+
+	for (Bomb* B : BombBag)
+	{
+		BlockArea = B->GetArea();
+
+		if (RRCollision(&Collider, &BlockArea))
+		{
+			RewindMove();
+		}
+	}
+}
+
+void Player::PutBomb()
+{
+	if (BombBag.size() < MaxBomb)
+	{
+		Bomb* NewBomb = new Bomb(1, Pos, BombPower);
+		BombBag.push_back(NewBomb);
+	}
+}
+
+void Player::RewindMove()
+{
+	Pos.x -= Speed * Dir.x;
+	Pos.y -= Speed * Dir.y;
+
+	Collider = { Pos.x - PlayerColliderSize / 2 + ColPivot.x,
+				 Pos.y - PlayerColliderSize / 2 + ColPivot.y,
+				 Pos.x + PlayerColliderSize / 2 + ColPivot.x,
+				 Pos.y + PlayerColliderSize / 2 + ColPivot.y };
 }
 
 void Player::Update()
@@ -108,6 +138,12 @@ void Player::Update()
 				 Pos.y - PlayerColliderSize / 2 + ColPivot.y,
 				 Pos.x + PlayerColliderSize / 2 + ColPivot.x,
 				 Pos.y + PlayerColliderSize / 2 + ColPivot.y };
+
+	if (!BombBag.empty())
+		for (Bomb* B : BombBag)
+		{
+			B->Update();
+		}
 }
 
 void Player::UpdateFrame()
@@ -133,4 +169,10 @@ void Player::Render(HDC front, HDC back, bool ColliderDraw)
 
 	SelectObject(back, oldbuffer);
 	DeleteObject(oldbuffer);
+
+	if(!BombBag.empty())
+		for (Bomb* B : BombBag)
+		{
+			B->Render(front, back, ColliderDraw);
+		}
 }

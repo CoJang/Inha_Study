@@ -13,7 +13,7 @@ private:
 // Game Attri
 	int MaxBomb;
 	int BombPower;
-	vector<Bomb> BombBag;
+	vector<Bomb*> BombBag;
 // Collision
 	RECT Collider;
 	int PlayerColliderSize;
@@ -38,5 +38,8 @@ public:
 	void InitPlayer(POINT pos, POINT pivot);
 	void SetPlayerDir(POINT dir);
 	void Collision(Block * Blocks);
+
+	void PutBomb();
+	void RewindMove();
 };
 

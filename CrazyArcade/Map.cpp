@@ -10,7 +10,7 @@ Map::Map()
 	Blocks = new Block[MAP_WIDTH * MAP_HEIGHT];
 	BlockImages = new HBITMAP[13];
 	BlockBitmaps = new BITMAP[13];
-	LoadingTiles();
+	LoadingBackground();
 	LoadingBlocks();
 }
 
@@ -22,49 +22,11 @@ Map::~Map()
 	delete[] BlockBitmaps;
 }
 
-void Map::LoadingTiles()
+void Map::LoadingBackground()
 {
 	// BackGround Frame
 	FrameImage.Init(TEXT("images/Frame/play_bg.bmp"), { 0, 0 }, { 0, 0 });
 	BackTiles.Init(TEXT("images/map/forest/Tiles/BackTile.bmp"), { 0, 0 }, TILE_PIVOT);
-
-// 15 * 13  [10 kinds]
-#pragma region SetTiles
-	//wstring Path;
-	//for (int i = 0; i < 13; i++)
-	//{
-	//	Path = TEXT("images/map/forest/Tiles/tile_");
-	//	Path += to_wstring(i + 1); Path += TEXT(".bmp");
-	//	TileImages[i] = (HBITMAP)LoadImage(NULL, Path.c_str(), IMAGE_BITMAP,
-	//		0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	//	GetObject(TileImages[i], sizeof(BITMAP), &TileBitmaps[i]);
-	//}
-
-	//int TileSets[MAP_WIDTH * MAP_HEIGHT] = 
-	//{   
-	//	5, 6, 7, 8, 9, 10,  12, 8, 12,  10, 9, 8, 7, 6, 5,
-	//	5, 6, 7, 8, 9, 10,  13, 8, 13,  10, 9, 8, 7, 6, 5,
-	//	5, 6, 7, 8, 9, 10,  13, 8, 13,  10, 9, 8, 7, 6, 5,
-	//	5, 6, 7, 8, 9, 10,  13, 8, 13,  10, 9, 8, 7, 6, 5,
-	//	5, 6, 7, 8, 9, 10,  13, 8, 13,  10, 9, 8, 7, 6, 5,
-	//	4, 2, 2, 1, 1, 2,   1,  9,  1,  2, 2, 1, 1, 2, 3,
-	//	6, 5, 10, 9, 7, 6,  7,  9,  7,  6, 7, 9, 10, 5, 6,
-	//	4, 2, 2, 1, 1, 2,   1,  9,  1,  2, 2, 1, 1, 2, 3,
-	//	5, 6, 7, 8, 9, 10,  13, 8, 13, 10, 9, 8, 7, 6, 5,
-	//	5, 6, 7, 8, 9, 10,  13, 8, 13, 10, 9, 8, 7, 6, 5,
-	//	5, 6, 7, 8, 9, 10,  13, 8, 13, 10, 9, 8, 7, 6, 5,
-	//	5, 6, 7, 8, 9, 10,  13, 8, 13, 10, 9, 8, 7, 6, 5,
-	//	5, 6, 7, 8, 9, 10,  11, 8, 11, 10, 9, 8, 7, 6, 5,
-	//};
-
-	//for(int x = 0; x < MAP_WIDTH; x++)
-	//	for (int y = 0; y < MAP_HEIGHT; y++)
-	//	{
-	//		int ImageIndex = TileSets[x + (y * MAP_WIDTH)] - 1;
-	//		Tiles[x + (y * MAP_WIDTH)].Init(Path.c_str(), { x * 52, y * 52 }, TILE_PIVOT);
-	//		Tiles[x + (y * MAP_WIDTH)].SetImage(TileImages[ImageIndex], TileBitmaps[ImageIndex]);
-	//	}
-#pragma endregion
 }
 
 void Map::LoadingBlocks()
@@ -118,34 +80,54 @@ void Map::LoadingBlocks()
 			{
 				if (ImageIndex == -1) continue;
 
-				if (ImageIndex == 3)
+				if (ImageIndex == 3) // pond
 				{
-					Blocks[x + (y * MAP_WIDTH)].Init(false, false, { x * 52, y * 52 }, TILE_PIVOT);
+					Blocks[x + (y * MAP_WIDTH)].Init({ x * 52, y * 52 }, TILE_PIVOT);
+					Blocks[x + (y * MAP_WIDTH)].InitCollider({ 78, 48 }, 128, 94);
+					Blocks[x + (y * MAP_WIDTH)].InitAnimation();
 					Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
+					Blocks[x + (y * MAP_WIDTH)].SetColliderState(true); 
+					Blocks[x + (y * MAP_WIDTH)].SetDestructible(false);
 				}
 				else
 				{
-					Blocks[x + (y * MAP_WIDTH)].Init(false, false, { x * 52, y * 52 }, OBSTACLE_PIVOT);
+					Blocks[x + (y * MAP_WIDTH)].Init({ x * 52, y * 52 }, OBSTACLE_PIVOT);
+					Blocks[x + (y * MAP_WIDTH)].InitCollider({ -1, -1 }, -1);
+					Blocks[x + (y * MAP_WIDTH)].InitAnimation();
 					Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
+					Blocks[x + (y * MAP_WIDTH)].SetColliderState(true);
+					Blocks[x + (y * MAP_WIDTH)].SetDestructible(false);
 				}
 			}
 			else if(ImageIndex == 13)
 			{
-				Blocks[x + (y * MAP_WIDTH)].Init(false, true, { x * 52, y * 52 }, BLOCK_PIVOT);
+				continue;
 			}
 			else
 			{
-				Blocks[x + (y * MAP_WIDTH)].Init(false, false, { x * 52, y * 52 }, BLOCK_PIVOT);
+				Blocks[x + (y * MAP_WIDTH)].Init({ x * 52, y * 52 }, BLOCK_PIVOT);
 				Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
+				Blocks[x + (y * MAP_WIDTH)].InitCollider({ 34, 36 }, -1);
+				Blocks[x + (y * MAP_WIDTH)].InitAnimation();
+				Blocks[x + (y * MAP_WIDTH)].SetColliderState(true);
+				Blocks[x + (y * MAP_WIDTH)].SetDestructible(true);
 			}
 		}
 #pragma endregion
 }
 
-void Map::FrontRender(HDC front, HDC back)
+void Map::Update()
 {
-	FrameImage.Render(front, back);
-	BackTiles.Render(front, back);
+	for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++)
+	{
+		Blocks[i].Update();
+	}
+}
+
+void Map::FrontRender(HDC front, HDC back, bool ColliderDraw)
+{
+	FrameImage.Render(front, back, ColliderDraw);
+	BackTiles.Render(front, back, ColliderDraw);
 }
 
 void Map::BackRender(HDC front, HDC back, bool ColliderDraw)

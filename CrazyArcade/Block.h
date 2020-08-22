@@ -1,33 +1,20 @@
 #pragma once
-#include "MapObjects.h"
+#include "Objects.h"
 
-#define ColliderSize 48
-
-class Block : public MapObjects
+class Block : public AnimObject
 {
 private:
-	bool IsPassable;
 	bool IsDestructible;
 
-	RECT Collider;
-	POINT ColPivot;
-
-	POINT Start;
-	int Anim_Frame_Max;
-	int Anim_Frame_Min;
-	int Anim_Frame_Cur;
-	int Anim_Frame_Flag;
 public:
 	Block();
 	~Block();
 
-	void Init(bool Passable, bool IsDestructible, POINT pos, POINT pivot);
-	void SetImage(HBITMAP & image, BITMAP & bitmap);
 	void Render(HDC front, HDC back, bool ColliderDraw);
+	void Update();
 	void UpdateFrame();
 
-	inline RECT GetArea() { return Collider; };
+	inline void SetDestructible(bool destructible) { IsDestructible = destructible; };
 	inline bool GetDestructible() { return IsDestructible; };
-	inline bool GetPassable() { return IsPassable; };
 };
 

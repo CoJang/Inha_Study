@@ -22,17 +22,12 @@ Bomb::Bomb(int Owner, POINT pos, int power)
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
 
 	Pos = pos;
-	Pivot = { -26, -52 };
+	Pivot = { 0, -18 };
 	ColPivot = { 26, 36 };
 	BombColliderSize = 36;
 
 	Pos.x -= Pivot.x;
 	Pos.y -= Pivot.y;
-
-	Collider = { Pos.x - BombColliderSize / 2 + ColPivot.x,
-				 Pos.y - BombColliderSize / 2 + ColPivot.y,
-				 Pos.x + BombColliderSize / 2 + ColPivot.x,
-				 Pos.y + BombColliderSize / 2 + ColPivot.y };
 
 	Power = power;
 	PlayerNum = Owner;
@@ -54,6 +49,12 @@ void Bomb::UpdateFrame()
 {
 	if (Anim_Timer > Anim_Speed)
 	{
+		// To Avoid Trap in Bomb, Set Collider in Hear
+		Collider = { Pos.x - BombColliderSize / 2 + ColPivot.x,
+					 Pos.y - BombColliderSize / 2 + ColPivot.y,
+					 Pos.x + BombColliderSize / 2 + ColPivot.x,
+					 Pos.y + BombColliderSize / 2 + ColPivot.y };
+
 		Anim_Frame_Cur++;
 		Anim_Timer = 0;
 	}
