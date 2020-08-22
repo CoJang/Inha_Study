@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Objects.h"
 #include "Block.h"
 #include "MyMath.h"
 #include "Player.h"
@@ -23,10 +24,10 @@ Player::Player()
 	Dir = { 0, 0 }; Speed = 10;
 
 	ColPivot = { 26, 48 };
-	PlayerColliderSize = 36;
-	CharSize = 1.1f;
+	ColliderSize = { 36, 36 };
+	ImageScale = 1.1f;
 
-	MaxBomb = 3;
+	MaxBomb = 5;
 	BombPower = 1;
 }
 
@@ -42,11 +43,11 @@ Player::~Player()
 
 void Player::InitPlayer(POINT pos, POINT pivot)
 {
-	Pivot = pivot;
+	ImagePivot = pivot;
 	Pos = pos;
 
-	Pos.x -= Pivot.x;
-	Pos.y -= Pivot.y;
+	Pos.x -= ImagePivot.x;
+	Pos.y -= ImagePivot.y;
 }
 
 void Player::SetPlayerDir(POINT dir)
@@ -87,7 +88,7 @@ void Player::Collision(Block * Blocks)
 
 		BlockArea = Blocks[i].GetCollider();
 
-		if (RRCollision(&Collider, &BlockArea))
+		if (RRCollision(&ColliderBox, &BlockArea))
 		{
 			RewindMove();
 		}
@@ -95,9 +96,9 @@ void Player::Collision(Block * Blocks)
 
 	for (Bomb* B : BombBag)
 	{
-		BlockArea = B->GetArea();
+		BlockArea = B->GetCollider();
 
-		if (RRCollision(&Collider, &BlockArea))
+		if (RRCollision(&ColliderBox, &BlockArea))
 		{
 			RewindMove();
 		}
@@ -118,10 +119,10 @@ void Player::RewindMove()
 	Pos.x -= Speed * Dir.x;
 	Pos.y -= Speed * Dir.y;
 
-	Collider = { Pos.x - PlayerColliderSize / 2 + ColPivot.x,
-				 Pos.y - PlayerColliderSize / 2 + ColPivot.y,
-				 Pos.x + PlayerColliderSize / 2 + ColPivot.x,
-				 Pos.y + PlayerColliderSize / 2 + ColPivot.y };
+	ColliderBox = { Pos.x - ColliderSize.x / 2 + ColPivot.x,
+					Pos.y - ColliderSize.y / 2 + ColPivot.y,
+					Pos.x + ColliderSize.x / 2 + ColPivot.x,
+					Pos.y + ColliderSize.y / 2 + ColPivot.y };
 }
 
 void Player::Update()
@@ -134,10 +135,10 @@ void Player::Update()
 	Pos.x += Speed * Dir.x;
 	Pos.y += Speed * Dir.y;
 
-	Collider = { Pos.x - PlayerColliderSize / 2 + ColPivot.x,
-				 Pos.y - PlayerColliderSize / 2 + ColPivot.y,
-				 Pos.x + PlayerColliderSize / 2 + ColPivot.x,
-				 Pos.y + PlayerColliderSize / 2 + ColPivot.y };
+	ColliderBox = { Pos.x - ColliderSize.x / 2 + ColPivot.x,
+					Pos.y - ColliderSize.y / 2 + ColPivot.y,
+					Pos.x + ColliderSize.x / 2 + ColPivot.x,
+					Pos.y + ColliderSize.y / 2 + ColPivot.y };
 
 	if (!BombBag.empty())
 		for (Bomb* B : BombBag)
@@ -146,29 +147,9 @@ void Player::Update()
 		}
 }
 
-void Player::UpdateFrame()
-{
-	Anim_Frame_Cur++;
-
-	if (Anim_Frame_Cur > Anim_Frame_Max)
-		Anim_Frame_Cur = Anim_Frame_Min;
-}
-
 void Player::Render(HDC front, HDC back, bool ColliderDraw)
 {
-	HBITMAP oldbuffer = (HBITMAP)SelectObject(back, hImage);
-
-	TransparentBlt(front, Pos.x, Pos.y, 
-		Sprite_Size.x * CharSize,
-		Sprite_Size.y * CharSize,
-		back, Start.x, Start.y, Sprite_Size.x, Sprite_Size.y, FILTER);
-
-	if(ColliderDraw)
-		Rectangle(front, Collider.left, Collider.top, 
-						 Collider.right, Collider.bottom);
-
-	SelectObject(back, oldbuffer);
-	DeleteObject(oldbuffer);
+	AnimObject::Render(front, back, ColliderDraw);
 
 	if(!BombBag.empty())
 		for (Bomb* B : BombBag)

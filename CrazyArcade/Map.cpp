@@ -56,8 +56,8 @@ void Map::LoadingBlocks()
 	{
 		3,  0,  9,  0,  9,  0,   0,  8,  0,   0,  9,  0,  9,  0,  3,
 		0,  0,  0,  5,  5,  0,   2, 11,  2,   0,  5,  5,  0,  0,  0,
-		7,  6,  4, 14, 14,  6,  11, 12, 11,   6,  4, 14, 14,  6,  7,
-		0,  6, 14, 14, 14,  6,   8,  1,  8,   6, 14, 14, 14,  6,  0,
+		7,  6,  4,  0,  0,  6,  11, 12, 11,   6,  4,  0,  0,  6,  7,
+		0,  6,  0,  0,  0,  6,   8,  1,  8,   6,  0,  0,  0,  6,  0,
 		7,  0,  5,  5,  0,  0,   0, 12,  0,   0,  0,  5,  5,  0,  7,
 
 		0,  2, 11,  8,  5,  0,   8,  1,  8,   0,  5,  8, 11,  2,  0,
@@ -65,8 +65,8 @@ void Map::LoadingBlocks()
 		0,  2, 11,  8,  5,  0,   8,  1,  8,   0,  5,  8, 11,  2,  0,
 
 		7,  0,  5,  5,  0,  0,   0, 12,  0,   0,  0,  5,  5,  0,  7,
-		0,  6,  4, 14, 14,  6,   8,  1,  8,   6,  4, 14, 14,  6,  0,
-		7,  6, 14, 14, 14,  6,  11, 12, 11,   6, 14, 14, 14,  6,  7,
+		0,  6,  4,  0,  0,  6,   8,  1,  8,   6,  4,  0,  0,  6,  0,
+		7,  6,  0,  0,  0,  6,  11, 12, 11,   6,  0,  0,  0,  6,  7,
 		0,  0,  0,  5,  5,  0,   2, 11,  2,   0,  5,  5,  0,  0,  0,
 		3,  0,  9,  0,  9,  0,   0,  8,  0,   0,  9,  0,  9,  0,  3
 	};
@@ -76,32 +76,22 @@ void Map::LoadingBlocks()
 		{
 			int ImageIndex = BlockSets[x + (y * MAP_WIDTH)] - 1;
 
-			if (ImageIndex < 4)
-			{
-				if (ImageIndex == -1) continue;
+			if (ImageIndex == -1) continue;
 
+			if (ImageIndex < 4) // UnDestructable & Only Collision
+			{
 				if (ImageIndex == 3) // pond
 				{
 					Blocks[x + (y * MAP_WIDTH)].Init({ x * 52, y * 52 }, TILE_PIVOT);
 					Blocks[x + (y * MAP_WIDTH)].InitCollider({ 78, 48 }, 128, 94);
-					Blocks[x + (y * MAP_WIDTH)].InitAnimation();
 					Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
-					Blocks[x + (y * MAP_WIDTH)].SetColliderState(true); 
-					Blocks[x + (y * MAP_WIDTH)].SetDestructible(false);
 				}
 				else
 				{
 					Blocks[x + (y * MAP_WIDTH)].Init({ x * 52, y * 52 }, OBSTACLE_PIVOT);
 					Blocks[x + (y * MAP_WIDTH)].InitCollider({ -1, -1 }, -1);
-					Blocks[x + (y * MAP_WIDTH)].InitAnimation();
 					Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
-					Blocks[x + (y * MAP_WIDTH)].SetColliderState(true);
-					Blocks[x + (y * MAP_WIDTH)].SetDestructible(false);
 				}
-			}
-			else if(ImageIndex == 13)
-			{
-				continue;
 			}
 			else
 			{
@@ -109,7 +99,6 @@ void Map::LoadingBlocks()
 				Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
 				Blocks[x + (y * MAP_WIDTH)].InitCollider({ 34, 36 }, -1);
 				Blocks[x + (y * MAP_WIDTH)].InitAnimation();
-				Blocks[x + (y * MAP_WIDTH)].SetColliderState(true);
 				Blocks[x + (y * MAP_WIDTH)].SetDestructible(true);
 			}
 		}

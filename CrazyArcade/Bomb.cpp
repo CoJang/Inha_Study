@@ -9,7 +9,7 @@ Bomb::Bomb(int Owner, POINT pos, int power)
 	
 	Sprite_Size.x = bitImage.bmWidth / 3;
 	Sprite_Size.y = bitImage.bmHeight;
-	BombSize = 1.2f;
+	ImageScale = 1.2f;
 
 	Anim_Frame_Max = bitImage.bmWidth / Sprite_Size.x - 1;
 	Anim_Frame_Min = 0;
@@ -22,15 +22,16 @@ Bomb::Bomb(int Owner, POINT pos, int power)
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
 
 	Pos = pos;
-	Pivot = { 0, -18 };
-	ColPivot = { 26, 36 };
-	BombColliderSize = 36;
+	ImagePivot = { 0, -18 };
+	ColPivot = { 26, 24 };
+	ColliderSize = { 36, 36 };
 
-	Pos.x -= Pivot.x;
-	Pos.y -= Pivot.y;
+	Pos.x -= ImagePivot.x;
+	Pos.y -= ImagePivot.y;
 
 	Power = power;
 	PlayerNum = Owner;
+	IsDetonated = false;
 }
 
 Bomb::~Bomb()
@@ -39,6 +40,11 @@ Bomb::~Bomb()
 
 void Bomb::Update()
 {
+	Timer += ElapseTime;
+
+	if (Timer > DETONATE_TIME)
+		IsDetonated = true;
+
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
 
@@ -47,40 +53,20 @@ void Bomb::Update()
 
 void Bomb::UpdateFrame()
 {
+	Anim_Timer += ElapseTime;
+
 	if (Anim_Timer > Anim_Speed)
 	{
 		// To Avoid Trap in Bomb, Set Collider in Hear
-		Collider = { Pos.x - BombColliderSize / 2 + ColPivot.x,
-					 Pos.y - BombColliderSize / 2 + ColPivot.y,
-					 Pos.x + BombColliderSize / 2 + ColPivot.x,
-					 Pos.y + BombColliderSize / 2 + ColPivot.y };
+		ColliderBox = { Pos.x - ColliderSize.x / 2 + ColPivot.x,
+						Pos.y - ColliderSize.y / 2 + ColPivot.y,
+						Pos.x + ColliderSize.x / 2 + ColPivot.x,
+						Pos.y + ColliderSize.y / 2 + ColPivot.y };
 
 		Anim_Frame_Cur++;
 		Anim_Timer = 0;
 	}
-	else
-	{
-		Anim_Timer += ElapseTime;
-	}
 
 	if (Anim_Frame_Cur > Anim_Frame_Max)
 		Anim_Frame_Cur = Anim_Frame_Min;
-}
-
-void Bomb::Render(HDC front, HDC back, bool ColliderDraw)
-{
-	HBITMAP oldbuffer = (HBITMAP)SelectObject(back, hImage);
-
-	TransparentBlt(front, Pos.x, Pos.y, 
-					Sprite_Size.x * BombSize,
-					Sprite_Size.y * BombSize,
-					back, Start.x, Start.y,
-					Sprite_Size.x, Sprite_Size.y, FILTER);
-
-	if (ColliderDraw)
-		Rectangle(front, Collider.left, Collider.top,
-						 Collider.right, Collider.bottom);
-
-	SelectObject(back, oldbuffer);
-	DeleteObject(oldbuffer);
 }

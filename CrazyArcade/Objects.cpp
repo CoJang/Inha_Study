@@ -106,13 +106,13 @@ void Objects::TransRender(HDC front, HDC back, bool colliderdraw)
 
 AnimObject::AnimObject()
 {
+	Anim_Timer = 0;
 	Start = { 0, 0 };
+	ImageScale = 1.0f;
 }
 
 void AnimObject::InitAnimation()
 {
-	Anim_Timer = 0;
-
 	Anim_Frame_Max = bitImage.bmWidth / Sprite_Size.x - 1;
 	Anim_Frame_Min = 0;
 	Anim_Frame_Cur = Anim_Frame_Min;
@@ -120,8 +120,6 @@ void AnimObject::InitAnimation()
 
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
-
-	ImageScale = 1.0f;
 }
 
 void AnimObject::Update()

@@ -14,8 +14,8 @@ public:
 	Map();
 	~Map();
 
-	void LoadingBackground();
 	void LoadingBlocks();
+	void LoadingBackground();
 
 	void Update();
 

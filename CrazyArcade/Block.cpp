@@ -7,6 +7,9 @@ Block::Block()
 	ImagePivot = { 0, 0 };
 	ColPivot = { 26, 36 };
 	ColliderSize = {48, 48};
+
+	IsColliderActive = true;
+	IsDestructible = false;
 }
 
 Block::~Block()
