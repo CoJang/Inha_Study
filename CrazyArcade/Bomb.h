@@ -17,5 +17,9 @@ public:
 
 	void Update();
 	void UpdateFrame();
+	POINT RePosition(POINT pos);
+
+	inline bool GetBombState() { return IsDetonated; };
+	inline void Detonate() { IsDetonated = true; };
 };
 

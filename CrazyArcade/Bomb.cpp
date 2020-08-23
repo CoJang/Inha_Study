@@ -3,35 +3,22 @@
 
 Bomb::Bomb(int Owner, POINT pos, int power)
 {
-	hImage = (HBITMAP)LoadImage(NULL, TEXT("images/effect/Popo.bmp"), IMAGE_BITMAP,
-		0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hImage, sizeof(BITMAP), &bitImage);
-	
+	AnimObject::Init(TEXT("images/effect/Popo.bmp"), RePosition(pos), { -26, -52 });
+
 	Sprite_Size.x = bitImage.bmWidth / 3;
 	Sprite_Size.y = bitImage.bmHeight;
 	ImageScale = 1.2f;
 
-	Anim_Frame_Max = bitImage.bmWidth / Sprite_Size.x - 1;
-	Anim_Frame_Min = 0;
-	Anim_Frame_Cur = Anim_Frame_Min;
-	Anim_Frame_Flag = 0;
-	Anim_Timer = 0;
+	AnimObject::InitAnimation();
 	Anim_Speed = 180;
 
-	Start.x = Anim_Frame_Cur * Sprite_Size.x;
-	Start.y = Anim_Frame_Flag * Sprite_Size.y;
-
-	Pos = pos;
-	ImagePivot = { 0, -18 };
-	ColPivot = { 26, 24 };
-	ColliderSize = { 36, 36 };
-
-	Pos.x -= ImagePivot.x;
-	Pos.y -= ImagePivot.y;
+	AnimObject::InitCollider({ 26, 24 }, 36);
+	IsColliderActive = false;
 
 	Power = power;
 	PlayerNum = Owner;
 	IsDetonated = false;
+	Timer = 0;
 }
 
 Bomb::~Bomb()
@@ -57,16 +44,35 @@ void Bomb::UpdateFrame()
 
 	if (Anim_Timer > Anim_Speed)
 	{
-		// To Avoid Trap in Bomb, Set Collider in Hear
-		ColliderBox = { Pos.x - ColliderSize.x / 2 + ColPivot.x,
-						Pos.y - ColliderSize.y / 2 + ColPivot.y,
-						Pos.x + ColliderSize.x / 2 + ColPivot.x,
-						Pos.y + ColliderSize.y / 2 + ColPivot.y };
-
 		Anim_Frame_Cur++;
 		Anim_Timer = 0;
+		IsColliderActive = true;
 	}
 
 	if (Anim_Frame_Cur > Anim_Frame_Max)
 		Anim_Frame_Cur = Anim_Frame_Min;
+}
+
+// Set In Tile
+POINT Bomb::RePosition(POINT pos)
+{
+	for (int i = 0; i < MAP_WIDTH; i++)
+	{
+		if (i * 52 < pos.x && pos.x < (i + 1) * 52)
+		{
+			pos.x = i * 52;
+			break;
+		}
+	}
+
+	for (int i = 0; i < MAP_HEIGHT; i++)
+	{
+		if (i * 52 < pos.y && pos.y < (i + 1) * 52)
+		{
+			pos.y = i * 52;
+			break;
+		}
+	}
+
+	return pos;
 }

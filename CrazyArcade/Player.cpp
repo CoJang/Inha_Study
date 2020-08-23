@@ -96,7 +96,10 @@ void Player::Collision(Block * Blocks)
 
 	for (Bomb* B : BombBag)
 	{
-		BlockArea = B->GetCollider();
+		if (B->GetColliderState())
+			BlockArea = B->GetCollider();
+		else
+			continue;
 
 		if (RRCollision(&ColliderBox, &BlockArea))
 		{
@@ -140,11 +143,17 @@ void Player::Update()
 					Pos.x + ColliderSize.x / 2 + ColPivot.x,
 					Pos.y + ColliderSize.y / 2 + ColPivot.y };
 
-	if (!BombBag.empty())
-		for (Bomb* B : BombBag)
+
+	for (int i = 0; i < BombBag.size(); i++)
+	{
+		BombBag[i]->Update();
+
+		if (BombBag[i]->GetBombState())
 		{
-			B->Update();
+			delete BombBag[i];
+			BombBag.erase(BombBag.begin() + i);
 		}
+	}
 }
 
 void Player::Render(HDC front, HDC back, bool ColliderDraw)
