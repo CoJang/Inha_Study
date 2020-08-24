@@ -25,7 +25,7 @@ public:
 	POINT RePosition(POINT pos);
 	void Explosion();
 
-	void InitWave(int index, int flag);
+	bool InitWave(int index, int flag);
 
 	inline bool GetBombState() { return IsDetonated; };
 	inline void Detonate() { IsDetonated = true; };

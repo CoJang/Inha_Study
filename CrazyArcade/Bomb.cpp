@@ -57,19 +57,13 @@ void Bomb::Update()
 			if (RRCollision(&PLAYER->GetCollider(), &Waves->GetCollider()))
 				cout << "Player Hit!" << endl;
 
-			Block* blocks = BLOCKS;
-
-			for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++)
+			for (int i = 0; i < BLOCK_VECTOR.size(); i++)
 			{
-				if (!blocks[i].GetColliderState() || !blocks[i].GetDestructible())
-					continue;
-
-				RECT BlockArea = blocks[i].GetCollider();
-
-				if (RRCollision(& Waves->GetCollider(), &BlockArea))
+				if (RRCollision(&Waves->GetCollider(), &BLOCK_VECTOR[i]->GetCollider()))
 				{
-					blocks[i].SetPos({ -1, -1 });
-					blocks[i].SetColliderState(false);
+					BLOCK_VECTOR[i]->SetPos({ -1, -1 });
+					BLOCK_VECTOR[i]->SetColliderState(false);
+					BLOCK_VECTOR.erase(BLOCK_VECTOR.begin() + i);
 				}
 			}
 		}
@@ -136,12 +130,13 @@ void Bomb::Explosion()
 		for (int i = 0; i < Power; i++)
 		{
 			// Skiped Details [Update Later]
-			InitWave(i, Flag);
+			if (!InitWave(i, Flag))
+				break;
 		}
 	}
 }
 
-void Bomb::InitWave(int index, int flag)
+bool Bomb::InitWave(int index, int flag)
 {
 	POINT WavePos = Pos;
 	if (flag == 0) WavePos = { Pos.x, Pos.y - 52 * (index + 1) };
@@ -156,5 +151,14 @@ void Bomb::InitWave(int index, int flag)
 	Wave->SetAnimSpeed(WAVE_ANIM_SPEED);
 	Wave->SetImageSize(1.3f);
 	Wave->InitCollider({ 26, 24 }, 36);
+
+	for(Block* block : OBSTACLE_VECTOR)
+		if (RRCollision(&Wave->GetCollider(), &block->GetCollider()))
+		{
+			delete Wave;
+			return false;
+		}
+
 	BombWaves.push_back(Wave);
+	return true;
 }

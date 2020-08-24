@@ -97,6 +97,8 @@ void Map::LoadingBlocks()
 					Blocks[x + (y * MAP_WIDTH)].InitCollider({ -1, -1 }, -1);
 					Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
 				}
+
+				OBSTACLE_VECTOR.push_back(&Blocks[x + (y * MAP_WIDTH)]);
 			}
 			else
 			{
@@ -105,6 +107,8 @@ void Map::LoadingBlocks()
 				Blocks[x + (y * MAP_WIDTH)].InitCollider({ 34, 36 }, -1);
 				Blocks[x + (y * MAP_WIDTH)].InitAnimation();
 				Blocks[x + (y * MAP_WIDTH)].SetDestructible(true);
+
+				BLOCK_VECTOR.push_back(&Blocks[x + (y * MAP_WIDTH)]);
 			}
 		}
 #pragma endregion

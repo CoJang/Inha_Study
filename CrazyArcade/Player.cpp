@@ -83,21 +83,19 @@ void Player::SetPlayerDir(POINT dir)
 
 void Player::Collision()
 {
-	RECT BlockArea;
-
-	for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++)
+	for (Block* block : BLOCK_VECTOR)
 	{
-		if (!BLOCKS[i].GetColliderState())
-			continue;
-
-		BlockArea = BLOCKS[i].GetCollider();
-
-		if (RRCollision(&ColliderBox, &BlockArea))
-		{
+		if (RRCollision(&ColliderBox, &block->GetCollider()))
 			RewindMove();
-		}
 	}
 
+	for (Block* block : OBSTACLE_VECTOR)
+	{
+		if (RRCollision(&ColliderBox, &block->GetCollider()))
+			RewindMove();
+	}
+
+	RECT BlockArea;
 	for (Bomb* B : BombBag)
 	{
 		if (B->GetColliderState())
