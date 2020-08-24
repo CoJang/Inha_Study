@@ -2,8 +2,10 @@
 #include "Objects.h"
 #include "Block.h"
 #include "MyMath.h"
+#include "CollisionManager.h"
 #include "Player.h"
 
+extern Singleton* singleton;
 
 Player::Player()
 {
@@ -28,7 +30,9 @@ Player::Player()
 	ImageScale = 1.1f;
 
 	MaxBomb = 5;
-	BombPower = 1;
+	BombPower = 2;
+
+	singleton->GetCollisionManager()->SetPlayer(this);
 }
 
 Player::~Player()
@@ -77,16 +81,16 @@ void Player::SetPlayerDir(POINT dir)
 	}
 }
 
-void Player::Collision(Block * Blocks)
+void Player::Collision()
 {
 	RECT BlockArea;
 
 	for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++)
 	{
-		if (!Blocks[i].GetColliderState())
+		if (!BLOCKS[i].GetColliderState())
 			continue;
 
-		BlockArea = Blocks[i].GetCollider();
+		BlockArea = BLOCKS[i].GetCollider();
 
 		if (RRCollision(&ColliderBox, &BlockArea))
 		{

@@ -1,10 +1,20 @@
 #pragma once
 #include "Player.h"
-#include "Block.h"
-#include <vector>
+#include "Map.h"
 
 class CollisionManager
 {
-	vector
+private:
+	Player* MainChar;
+	Map* map;
+
+public:
+	CollisionManager();
+	~CollisionManager();
+
+	inline void SetPlayer(Player* instance) { MainChar = instance; };
+	inline void SetMap(Map* instance) { map = instance; };
+	inline Player* GetPlayer() { return MainChar; };
+	inline Map* GetMap() { return map; };
 };
 

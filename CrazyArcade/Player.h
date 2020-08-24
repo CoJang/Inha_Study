@@ -22,7 +22,7 @@ public:
 	void Render(HDC front, HDC back, bool ColliderDraw);
 	void InitPlayer(POINT pos, POINT pivot);
 	void SetPlayerDir(POINT dir);
-	void Collision(Block * Blocks);
+	void Collision();
 
 	void PutBomb();
 	void RewindMove();

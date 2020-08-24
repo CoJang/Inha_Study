@@ -6,7 +6,7 @@
 #define MAX_LOADSTRING 100
 
 // Global Variables:
-extern Singleton singleton;
+extern Singleton* singleton;
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
@@ -61,7 +61,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		{
 			// Key Down Sequence
 			//singleton.GetSceneManager()->GetInstance()->Update();
-			singleton.GetSceneManager()->GetInstance()->CheckKeyDown();
+			singleton->GetSceneManager()->GetInstance()->CheckKeyDown();
 		}
 	}
 
@@ -117,11 +117,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 	case WM_CREATE:
 		{
+			singleton = new Singleton;
 			SetTimer(hWnd, 100, ElapseTime, NULL);
 			BackBuffer[0] = CreateCompatibleDC(hdc);
 			BackBuffer[1] = CreateCompatibleDC(BackBuffer[0]);
 
-			singleton.InitSingleton(&BackBuffer[0], &BackBuffer[1]);
+			singleton->InitSingleton(&BackBuffer[0], &BackBuffer[1]);
 		}
 		break;
     case WM_COMMAND:
@@ -150,9 +151,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			oldBitmap = (HBITMAP)SelectObject(BackBuffer[0], BackBitmap);
 			PatBlt(BackBuffer[0], 0, 0, WIN_WIDTH, WIN_HEIGHT, WHITENESS);
 
-			singleton.GetSceneManager()->GetInstance()->Update();
-			singleton.GetSceneManager()->GetInstance()->CheckKeyDown();
-			singleton.GetSceneManager()->GetInstance()->Render();
+			singleton->GetSceneManager()->GetInstance()->Update();
+			singleton->GetSceneManager()->GetInstance()->CheckKeyDown();
+			singleton->GetSceneManager()->GetInstance()->Render();
 
 			BitBlt(hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT, BackBuffer[0], 0, 0, SRCCOPY);
 			SelectObject(BackBuffer[0], oldBitmap);

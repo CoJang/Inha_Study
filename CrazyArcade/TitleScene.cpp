@@ -2,7 +2,7 @@
 #include "SceneManager.h"
 #include "TitleScene.h"
 
-extern Singleton singleton;
+extern Singleton* singleton;
 
 TitleScene::TitleScene()
 {
@@ -76,7 +76,7 @@ ButtonType TitleScene::CheckClick(POINT mpos, int flag)
 	if (mpos.x < START_Rect.right && mpos.x > START_Rect.left &&
 		mpos.y < START_Rect.bottom && mpos.y > START_Rect.top)
 	{
-		if(flag == 0) singleton.GetSceneManager()->NextScene();
+		if(flag == 0) singleton->GetSceneManager()->NextScene();
 	}
 	return UNKNOWN;
 }

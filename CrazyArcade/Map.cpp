@@ -1,9 +1,12 @@
 #include "stdafx.h"
+#include "CollisionManager.h"
 #include "Map.h"
 
 #define TILE_PIVOT {-26, -53}
 #define OBSTACLE_PIVOT {-26, -39}
 #define BLOCK_PIVOT {-18, -36}
+
+extern Singleton* singleton;
 
 Map::Map()
 {
@@ -12,6 +15,8 @@ Map::Map()
 	BlockBitmaps = new BITMAP[13];
 	LoadingBackground();
 	LoadingBlocks();
+
+	singleton->GetCollisionManager()->SetMap(this);
 }
 
 
