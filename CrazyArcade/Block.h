@@ -8,7 +8,6 @@ private:
 
 public:
 	Block();
-	~Block();
 
 	void Render(HDC front, HDC back, bool ColliderDraw);
 	void Update();

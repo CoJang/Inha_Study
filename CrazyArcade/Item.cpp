@@ -17,6 +17,7 @@ Item::Item(POINT pos, int itemtype)
 
 	Type = itemtype;
 	IsUpper = true;
+	Waterproof = true;
 	Timer = 0;
 }
 
@@ -28,7 +29,7 @@ void Item::Update()
 {
 	Timer += ElapseTime;
 
-	if (Timer >= 200)
+	if (Timer % 200 < 17)
 	{
 		if (IsUpper)
 		{
@@ -40,8 +41,11 @@ void Item::Update()
 			Pos.y += 5;
 			IsUpper = true;
 		}
+	}
 
-		Timer = 0;
+	if (Timer >= 330)
+	{
+		Waterproof = false;
 	}
 
 	AnimObject::Update();

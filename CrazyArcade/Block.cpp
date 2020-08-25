@@ -16,10 +16,6 @@ Block::Block()
 	IsDestructible = false;
 }
 
-Block::~Block()
-{
-}
-
 void Block::Render(HDC front, HDC back, bool ColliderDraw)
 {
 	if (Pos.x == -1 || Pos.y == -1) return;
@@ -41,6 +37,7 @@ void Block::CreateItem()
 {
 	int RandomNum = GenerateRandomNum(0, 4);
 	if (RandomNum == 0 || RandomNum == 4) return;
+
 	Item* tempItem = new Item(Pos, RandomNum);
 	ITEM_VECTOR.push_back(tempItem);
 }

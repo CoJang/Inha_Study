@@ -16,7 +16,7 @@ protected:
 	bool IsColliderActive;
 public:
 	Objects();
-	virtual ~Objects() {};
+	virtual ~Objects() { DeleteObject(hImage); };
 
 	virtual void Init(wstring path, POINT pos, POINT pivot);
 
@@ -52,7 +52,7 @@ protected:
 	float ImageScale;
 public:
 	AnimObject();
-	virtual ~AnimObject() {};
+	virtual ~AnimObject() { DeleteObject(hImage); };
 
 	virtual void InitAnimation();
 	virtual void InitAnimation(int minframe, int framelimit, 

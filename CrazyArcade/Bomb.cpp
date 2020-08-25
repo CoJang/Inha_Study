@@ -57,14 +57,16 @@ void Bomb::Update()
 			if (RRCollision(&PLAYER->GetCollider(), &Waves->GetCollider()))
 				cout << "Player Hit!" << endl;
 
-			//for (int i = 0; i < ITEM_VECTOR.size(); i++)
-			//{
-			//	if (RRCollision(&Waves->GetCollider(), &ITEM_VECTOR[i]->GetCollider()))
-			//	{
-			//		delete ITEM_VECTOR[i];
-			//		ITEM_VECTOR.erase(ITEM_VECTOR.begin() + i);
-			//	}
-			//}
+			for (int i = 0; i < ITEM_VECTOR.size(); i++)
+			{
+				if (ITEM_VECTOR[i]->GetState()) continue;
+
+				if (RRCollision(&Waves->GetCollider(), &ITEM_VECTOR[i]->GetCollider()))
+				{
+					delete ITEM_VECTOR[i];
+					ITEM_VECTOR.erase(ITEM_VECTOR.begin() + i);
+				}
+			}
 
 			for (int i = 0; i < BLOCK_VECTOR.size(); i++)
 			{
@@ -103,7 +105,9 @@ void Bomb::Render(HDC front, HDC back, bool colliderdraw)
 		{
 			Waves->Render(front, back, colliderdraw);
 			if (Timer >= WAVE_ANIM_SPEED * 14)
+			{
 				IsDetonated = true;
+			}
 		}
 }
 
