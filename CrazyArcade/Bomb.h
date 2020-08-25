@@ -17,5 +17,8 @@ public:
 
 	void Update();
 	void UpdateFrame();
+
+	inline bool IsBombExplode() { return IsDetonated; };
+	inline void SetBombState(bool state) { IsDetonated = state; };
 };
 

@@ -141,9 +141,14 @@ void Player::Update()
 					Pos.y + ColliderSize.y / 2 + ColPivot.y };
 
 	if (!BombBag.empty())
-		for (Bomb* B : BombBag)
+		for(int i = 0; i < BombBag.size(); i++)
 		{
-			B->Update();
+			BombBag[i]->Update();
+			if (BombBag[i]->IsBombExplode())
+			{
+				delete BombBag[i];
+				BombBag.erase(BombBag.begin() + i);
+			}
 		}
 }
 

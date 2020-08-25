@@ -32,6 +32,7 @@ Bomb::Bomb(int Owner, POINT pos, int power)
 	Power = power;
 	PlayerNum = Owner;
 	IsDetonated = false;
+	Timer = 0;
 }
 
 Bomb::~Bomb()
