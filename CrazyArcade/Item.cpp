@@ -4,9 +4,12 @@
 
 extern Singleton* singleton;
 
-Item::Item(ItemType itemtype)
+Item::Item(POINT pos, int itemtype)
 {
-	AnimObject::Init(TEXT("images/items/Gift1.bmp"), { 0, 52 }, { -26, -48 });
+	wstring Path = TEXT("images/items/Gift");
+	Path += to_wstring(itemtype); Path += TEXT(".bmp");
+
+	AnimObject::Init(Path.c_str(), pos, { -11, -12 });
 	AnimObject::InitAnimation(0, 2, 3, 1, 0);
 	AnimObject::InitCollider({ 24, 24 }, 32);
 	AnimObject::SetImageSize(1.1f);

@@ -14,6 +14,8 @@ public:
 	void Update();
 	void UpdateFrame();
 
+	void CreateItem();
+
 	inline void SetDestructible(bool destructible) { IsDestructible = destructible; };
 	inline bool GetDestructible() { return IsDestructible; };
 };

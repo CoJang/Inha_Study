@@ -5,6 +5,10 @@
 
 class Block;
 
+#define BOMB_LIMIT 9
+#define SPEED_LIMIT 15
+#define POWER_LIMIT 5
+
 class Player : public AnimObject
 {
 private:
@@ -16,7 +20,7 @@ private:
 	int MaxBomb;
 	int BombPower;
 	vector<Bomb*> BombBag;
-	vector<ItemType*> ItemBag;
+	vector<int*> ItemBag;
 public:
 	Player();
 	~Player();
@@ -29,6 +33,6 @@ public:
 
 	void PutBomb();
 	void RewindMove();
-	void GetItem(ItemType);
+	void GetItem(int);
 };
 

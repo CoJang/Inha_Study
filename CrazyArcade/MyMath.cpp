@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "MyMath.h"
+#include <random>
+#include <time.h>
 
 // src = center point,  dest = output
 void RotatePoint(POINT & dest, POINT & src, float angle, int r)
@@ -39,4 +41,15 @@ bool RRCollision(const RECT* rt1, const RECT* rt2)
 	}
 
 	return false;
+}
+
+int GenerateRandomNum(int minRange, int maxRange)
+{
+	srand(time(NULL));
+
+	random_device rd;
+	mt19937_64 gen(rd());
+	uniform_int_distribution<int> randNum(minRange, maxRange);
+
+	return randNum(gen);
 }

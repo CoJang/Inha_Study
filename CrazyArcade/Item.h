@@ -1,24 +1,17 @@
 #pragma once
 #include "Objects.h"
 
-enum ItemType
-{
-	WATER_BOMB,
-	ROLLER_SKATE,
-	FLASK
-};
-
 class Item : public AnimObject
 {
 private:
-	ItemType Type;
+	int Type;
 	bool IsUpper;
 	int Timer;
 public:
-	Item(ItemType itemtype);
+	Item(POINT pos, int itemtype);
 	~Item();
 
 	void Update();
-	ItemType GetType() { return Type; };
+	int GetType() { return Type; };
 };
 

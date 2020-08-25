@@ -142,22 +142,32 @@ void Player::RewindMove()
 					Pos.y + ColliderSize.y / 2 + ColPivot.y };
 }
 
-void Player::GetItem(ItemType newitem)
+void Player::GetItem(int newitem)
 {
 	switch (newitem)
 	{
-	case WATER_BOMB:
-		MaxBomb++;
+	case 1:
+		if (MaxBomb <= BOMB_LIMIT)
+		{
+			MaxBomb++;
+			ItemBag.push_back(&newitem);
+		}
 		break;
-	case ROLLER_SKATE:
-		Speed += 2;
+	case 2:
+		if (Speed <= SPEED_LIMIT)
+		{
+			Speed += 2;
+			ItemBag.push_back(&newitem);
+		}
 		break;
-	case FLASK:
-		BombPower += 2;
+	case 3:
+		if (BombPower <= POWER_LIMIT)
+		{
+			BombPower++;
+			ItemBag.push_back(&newitem);
+		}
 		break;
 	}
-
-	ItemBag.push_back(&newitem);
 }
 
 void Player::Update()

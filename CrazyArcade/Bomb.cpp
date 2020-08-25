@@ -57,22 +57,23 @@ void Bomb::Update()
 			if (RRCollision(&PLAYER->GetCollider(), &Waves->GetCollider()))
 				cout << "Player Hit!" << endl;
 
+			//for (int i = 0; i < ITEM_VECTOR.size(); i++)
+			//{
+			//	if (RRCollision(&Waves->GetCollider(), &ITEM_VECTOR[i]->GetCollider()))
+			//	{
+			//		delete ITEM_VECTOR[i];
+			//		ITEM_VECTOR.erase(ITEM_VECTOR.begin() + i);
+			//	}
+			//}
+
 			for (int i = 0; i < BLOCK_VECTOR.size(); i++)
 			{
 				if (RRCollision(&Waves->GetCollider(), &BLOCK_VECTOR[i]->GetCollider()))
 				{
+					BLOCK_VECTOR[i]->CreateItem();
 					BLOCK_VECTOR[i]->SetPos({ -1, -1 });
 					BLOCK_VECTOR[i]->SetColliderState(false);
 					BLOCK_VECTOR.erase(BLOCK_VECTOR.begin() + i);
-				}
-			}
-
-			for (int i = 0; i < ITEM_VECTOR.size(); i++)
-			{
-				if (RRCollision(&Waves->GetCollider(), &ITEM_VECTOR[i]->GetCollider()))
-				{
-					delete ITEM_VECTOR[i];
-					ITEM_VECTOR.erase(ITEM_VECTOR.begin() + i);
 				}
 			}
 		}

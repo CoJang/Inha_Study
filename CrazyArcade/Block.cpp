@@ -1,11 +1,15 @@
 #include "stdafx.h"
+#include "Item.h"
+#include "CollisionManager.h"
 #include "Block.h"
+
+extern Singleton* singleton;
 
 Block::Block()
 {
 	Pos = { -1, -1 };
 	ImagePivot = { 0, 0 };
-	ColPivot = { 26, 36 };
+	ColPivot = { 26, 33 };
 	ColliderSize = {48, 48};
 
 	IsColliderActive = true;
@@ -31,4 +35,12 @@ void Block::Update()
 void Block::UpdateFrame()
 {
 	AnimObject::UpdateFrame();
+}
+
+void Block::CreateItem()
+{
+	int RandomNum = GenerateRandomNum(0, 4);
+	if (RandomNum == 0 || RandomNum == 4) return;
+	Item* tempItem = new Item(Pos, RandomNum);
+	ITEM_VECTOR.push_back(tempItem);
 }
