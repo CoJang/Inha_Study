@@ -159,6 +159,13 @@ bool Bomb::InitWave(int index, int flag)
 			return false;
 		}
 
+	for(Block* block : BLOCK_VECTOR)
+		if (RRCollision(&Wave->GetCollider(), &block->GetCollider()))
+		{
+			BombWaves.push_back(Wave);
+			return false;
+		}
+
 	BombWaves.push_back(Wave);
 	return true;
 }
