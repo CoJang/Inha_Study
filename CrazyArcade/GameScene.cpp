@@ -2,7 +2,7 @@
 #include "SceneManager.h"
 #include "GameScene.h"
 
-extern Singleton singleton;
+extern Singleton* singleton;
 
 GameScene::GameScene()
 {
@@ -40,7 +40,7 @@ void GameScene::Update()
 	Timer += ElapseTime;
 
 	MainChar->Update();
-	MainChar->Collision(map->GetBlocks());
+	MainChar->Collision();
 }
 
 void GameScene::ResetScene()
@@ -68,6 +68,11 @@ ButtonType GameScene::CheckClick(POINT mpos, int flag)
 
 void GameScene::CheckKeyDown()
 {
+	/////////////// Debug Only ///////////////
+	if (GetKeyState(VK_ESCAPE) & 0x8000)
+		PostQuitMessage(0);
+	//////////////////////////////////////////
+
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
 		MainChar->SetPlayerDir({ -1, 0 });

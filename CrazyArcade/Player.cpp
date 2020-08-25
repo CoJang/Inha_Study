@@ -2,8 +2,10 @@
 #include "Objects.h"
 #include "Block.h"
 #include "MyMath.h"
+#include "CollisionManager.h"
 #include "Player.h"
 
+extern Singleton* singleton;
 
 Player::Player()
 {
@@ -28,7 +30,9 @@ Player::Player()
 	ImageScale = 1.1f;
 
 	MaxBomb = 5;
-	BombPower = 1;
+	BombPower = 2;
+
+	singleton->GetCollisionManager()->SetPlayer(this);
 }
 
 Player::~Player()
@@ -77,26 +81,27 @@ void Player::SetPlayerDir(POINT dir)
 	}
 }
 
-void Player::Collision(Block * Blocks)
+void Player::Collision()
 {
-	RECT BlockArea;
-
-	for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++)
+	for (Block* block : BLOCK_VECTOR)
 	{
-		if (!Blocks[i].GetColliderState())
-			continue;
-
-		BlockArea = Blocks[i].GetCollider();
-
-		if (RRCollision(&ColliderBox, &BlockArea))
-		{
+		if (RRCollision(&ColliderBox, &block->GetCollider()))
 			RewindMove();
-		}
 	}
 
+	for (Block* block : OBSTACLE_VECTOR)
+	{
+		if (RRCollision(&ColliderBox, &block->GetCollider()))
+			RewindMove();
+	}
+
+	RECT BlockArea;
 	for (Bomb* B : BombBag)
 	{
-		BlockArea = B->GetCollider();
+		if (B->GetColliderState())
+			BlockArea = B->GetCollider();
+		else
+			continue;
 
 		if (RRCollision(&ColliderBox, &BlockArea))
 		{
@@ -140,16 +145,17 @@ void Player::Update()
 					Pos.x + ColliderSize.x / 2 + ColPivot.x,
 					Pos.y + ColliderSize.y / 2 + ColPivot.y };
 
-	if (!BombBag.empty())
-		for(int i = 0; i < BombBag.size(); i++)
+
+	for (int i = 0; i < BombBag.size(); i++)
+	{
+		BombBag[i]->Update();
+
+		if (BombBag[i]->GetBombState())
 		{
-			BombBag[i]->Update();
-			if (BombBag[i]->IsBombExplode())
-			{
-				delete BombBag[i];
-				BombBag.erase(BombBag.begin() + i);
-			}
+			delete BombBag[i];
+			BombBag.erase(BombBag.begin() + i);
 		}
+	}
 }
 
 void Player::Render(HDC front, HDC back, bool ColliderDraw)

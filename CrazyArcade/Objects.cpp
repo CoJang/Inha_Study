@@ -109,6 +109,7 @@ AnimObject::AnimObject()
 	Anim_Timer = 0;
 	Start = { 0, 0 };
 	ImageScale = 1.0f;
+	Anim_Speed = 0;
 }
 
 void AnimObject::InitAnimation()
@@ -117,6 +118,21 @@ void AnimObject::InitAnimation()
 	Anim_Frame_Min = 0;
 	Anim_Frame_Cur = Anim_Frame_Min;
 	Anim_Frame_Flag = 0;
+
+	Start.x = Anim_Frame_Cur * Sprite_Size.x;
+	Start.y = Anim_Frame_Flag * Sprite_Size.y;
+}
+
+void AnimObject::InitAnimation(int minframe, int framelimit, 
+							   int maxframe, int maxframeflag, int flag)
+{
+	Sprite_Size.x = bitImage.bmWidth / maxframe;
+	Sprite_Size.y = bitImage.bmHeight / maxframeflag;
+
+	Anim_Frame_Max = framelimit;
+	Anim_Frame_Min = minframe;
+	Anim_Frame_Cur = Anim_Frame_Min;
+	Anim_Frame_Flag = flag;
 
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;

@@ -46,3 +46,9 @@ using namespace std;
 #define MAP_HEIGHT 13
 
 #define ElapseTime 17
+
+#define MAP singleton->GetCollisionManager()->GetMap()
+#define BLOCKS singleton->GetCollisionManager()->GetMap()->GetBlocks()
+#define PLAYER singleton->GetCollisionManager()->GetPlayer()
+#define BLOCK_VECTOR singleton->GetCollisionManager()->GetBlocks()
+#define OBSTACLE_VECTOR singleton->GetCollisionManager()->GetObstacles()

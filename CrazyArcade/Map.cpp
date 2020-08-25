@@ -1,9 +1,12 @@
 #include "stdafx.h"
+#include "CollisionManager.h"
 #include "Map.h"
 
 #define TILE_PIVOT {-26, -53}
 #define OBSTACLE_PIVOT {-26, -39}
 #define BLOCK_PIVOT {-18, -36}
+
+extern Singleton* singleton;
 
 Map::Map()
 {
@@ -12,6 +15,8 @@ Map::Map()
 	BlockBitmaps = new BITMAP[13];
 	LoadingBackground();
 	LoadingBlocks();
+
+	singleton->GetCollisionManager()->SetMap(this);
 }
 
 
@@ -92,6 +97,8 @@ void Map::LoadingBlocks()
 					Blocks[x + (y * MAP_WIDTH)].InitCollider({ -1, -1 }, -1);
 					Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
 				}
+
+				OBSTACLE_VECTOR.push_back(&Blocks[x + (y * MAP_WIDTH)]);
 			}
 			else
 			{
@@ -100,6 +107,8 @@ void Map::LoadingBlocks()
 				Blocks[x + (y * MAP_WIDTH)].InitCollider({ 34, 36 }, -1);
 				Blocks[x + (y * MAP_WIDTH)].InitAnimation();
 				Blocks[x + (y * MAP_WIDTH)].SetDestructible(true);
+
+				BLOCK_VECTOR.push_back(&Blocks[x + (y * MAP_WIDTH)]);
 			}
 		}
 #pragma endregion

@@ -22,9 +22,6 @@
     <Filter Include="Source Files\Scene">
       <UniqueIdentifier>{67930afd-e1bb-4ee6-a479-e9864a88f5f9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\SceneManager">
-      <UniqueIdentifier>{b9314690-cfc9-470a-8a99-dbfe02c8df0b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Map">
       <UniqueIdentifier>{efab2fde-529e-4447-b3c0-6432253cb5f5}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,9 @@
     </Filter>
     <Filter Include="Source Files\Object">
       <UniqueIdentifier>{0a9a32f5-5ca1-4546-9532-a095cf649530}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Manager">
+      <UniqueIdentifier>{b9314690-cfc9-470a-8a99-dbfe02c8df0b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -70,7 +70,7 @@
       <Filter>Source Files\Scene</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
-      <Filter>Source Files\SceneManager</Filter>
+      <Filter>Source Files\Manager</Filter>
     </ClInclude>
     <ClInclude Include="MyMath.h">
       <Filter>Source Files\Math</Filter>
@@ -89,6 +89,9 @@
     </ClInclude>
     <ClInclude Include="Objects.h">
       <Filter>Source Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>Source Files\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -111,7 +114,7 @@
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
-      <Filter>Source Files\SceneManager</Filter>
+      <Filter>Source Files\Manager</Filter>
     </ClCompile>
     <ClCompile Include="MyMath.cpp">
       <Filter>Source Files\Math</Filter>
@@ -130,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="Objects.cpp">
       <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>Source Files\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
