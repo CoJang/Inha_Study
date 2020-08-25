@@ -43,7 +43,7 @@ void GameScene::Render()
 
 void GameScene::Update()
 {
-	BGM->Update();
+	//BGM->Update();
 	Timer += ElapseTime;
 
 	MainChar->Update();
