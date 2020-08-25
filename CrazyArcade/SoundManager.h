@@ -5,15 +5,6 @@
 #define SOUND_DEFAULT 0.5f
 #define SOUND_WEIGHT 0.1f
 
-class SoundManager
-{
-private:
-	FMOD_SOUND *m_sound;
-	FMOD_CHANNEL *m_channel;
-public:
-	SoundManager();
-	~SoundManager();
-};
 
 class CSound 
 {
@@ -40,4 +31,13 @@ public:
 	int volumeDown();
 
 	int Update();
+};
+
+class SoundManager
+{
+private:
+	CSound* Sounds[11];
+public:
+	SoundManager();
+	~SoundManager();
 };

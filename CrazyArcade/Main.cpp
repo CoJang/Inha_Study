@@ -167,6 +167,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		InvalidateRect(hWnd, NULL, false);
 		break;
     case WM_DESTROY:
+		delete singleton;
         PostQuitMessage(0);
         break;
     default:

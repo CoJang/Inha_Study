@@ -115,7 +115,7 @@
       <Filter>Source Files\FMOD</Filter>
     </ClInclude>
     <ClInclude Include="SoundManager.h">
-      <Filter>Source Files\Sound</Filter>
+      <Filter>Source Files\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -165,7 +165,7 @@
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="SoundManager.cpp">
-      <Filter>Source Files\Sound</Filter>
+      <Filter>Source Files\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

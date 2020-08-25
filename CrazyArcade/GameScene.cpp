@@ -24,12 +24,14 @@ GameScene::GameScene()
 	CSound::Init();
 	BGM = new CSound("sounds/bg/Forest.mp3", true);
 	BGM->play();
+	BGM->volumeDown();
 }
 
 GameScene::~GameScene()
 {
 	delete BGM;
 	CSound::Release();
+
 	delete MainChar;
 	delete map;
 }
@@ -76,11 +78,6 @@ ButtonType GameScene::CheckClick(POINT mpos, int flag)
 
 void GameScene::CheckKeyDown()
 {
-	/////////////// Debug Only ///////////////
-	if (GetKeyState(VK_ESCAPE) & 0x8000)
-		PostQuitMessage(0);
-	//////////////////////////////////////////
-
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
 		MainChar->SetPlayerDir({ -1, 0 });

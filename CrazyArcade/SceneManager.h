@@ -15,7 +15,7 @@ private:
 	int score;
 public:
 	SceneManager() {};
-	~SceneManager() {};
+	~SceneManager() { Destroy(); };
 
 	Scene* GetInstance() { return CurrentScene; };
 
