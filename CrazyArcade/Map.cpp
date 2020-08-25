@@ -16,6 +16,9 @@ Map::Map()
 	LoadingBackground();
 	LoadingBlocks();
 
+	Item* tempItem = new Item(ItemType::WATER_BOMB);
+	ITEM_VECTOR.push_back(tempItem);
+
 	singleton->GetCollisionManager()->SetMap(this);
 }
 
@@ -116,9 +119,14 @@ void Map::LoadingBlocks()
 
 void Map::Update()
 {
-	for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++)
+	for (Block* B : BLOCK_VECTOR)
 	{
-		Blocks[i].Update();
+		B->Update();
+	}
+
+	for (Item* I : ITEM_VECTOR)
+	{
+		I->Update();
 	}
 }
 
@@ -130,8 +138,17 @@ void Map::FrontRender(HDC front, HDC back, bool ColliderDraw)
 
 void Map::BackRender(HDC front, HDC back, bool ColliderDraw)
 {
-	for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++)
+	for (Block* B : OBSTACLE_VECTOR)
 	{
-		Blocks[i].Render(front, back, ColliderDraw);
+		B->Render(front, back, ColliderDraw);
+	}
+	for (Block* B : BLOCK_VECTOR)
+	{
+		B->Render(front, back, ColliderDraw);
+	}
+
+	for (Item* I : ITEM_VECTOR)
+	{
+		I->Render(front, back, ColliderDraw);
 	}
 }

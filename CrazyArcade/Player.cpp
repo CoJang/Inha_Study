@@ -29,8 +29,8 @@ Player::Player()
 	ColliderSize = { 36, 36 };
 	ImageScale = 1.1f;
 
-	MaxBomb = 5;
-	BombPower = 2;
+	MaxBomb = 1;
+	BombPower = 1;
 
 	singleton->GetCollisionManager()->SetPlayer(this);
 }
@@ -85,6 +85,8 @@ void Player::Collision()
 {
 	for (Block* block : BLOCK_VECTOR)
 	{
+		if (!block->GetColliderState()) continue;
+
 		if (RRCollision(&ColliderBox, &block->GetCollider()))
 			RewindMove();
 	}
@@ -108,6 +110,16 @@ void Player::Collision()
 			RewindMove();
 		}
 	}
+
+	for (int i = 0; i < ITEM_VECTOR.size(); i++)
+	{
+		if (RRCollision(&ColliderBox, &ITEM_VECTOR[i]->GetCollider()))
+		{
+			GetItem(ITEM_VECTOR[i]->GetType());
+			delete ITEM_VECTOR[i];
+			ITEM_VECTOR.erase(ITEM_VECTOR.begin() + i);
+		}
+	}
 }
 
 void Player::PutBomb()
@@ -128,6 +140,24 @@ void Player::RewindMove()
 					Pos.y - ColliderSize.y / 2 + ColPivot.y,
 					Pos.x + ColliderSize.x / 2 + ColPivot.x,
 					Pos.y + ColliderSize.y / 2 + ColPivot.y };
+}
+
+void Player::GetItem(ItemType newitem)
+{
+	switch (newitem)
+	{
+	case WATER_BOMB:
+		MaxBomb++;
+		break;
+	case ROLLER_SKATE:
+		Speed += 2;
+		break;
+	case FLASK:
+		BombPower += 2;
+		break;
+	}
+
+	ItemBag.push_back(&newitem);
 }
 
 void Player::Update()

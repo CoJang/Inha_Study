@@ -1,6 +1,8 @@
 #pragma once
-#include "Bomb.h"
 #include "Objects.h"
+#include "Bomb.h"
+#include "Item.h"
+
 class Block;
 
 class Player : public AnimObject
@@ -14,6 +16,7 @@ private:
 	int MaxBomb;
 	int BombPower;
 	vector<Bomb*> BombBag;
+	vector<ItemType*> ItemBag;
 public:
 	Player();
 	~Player();
@@ -26,5 +29,6 @@ public:
 
 	void PutBomb();
 	void RewindMove();
+	void GetItem(ItemType);
 };
 

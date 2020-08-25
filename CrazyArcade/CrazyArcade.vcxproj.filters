@@ -93,6 +93,9 @@
     <ClInclude Include="CollisionManager.h">
       <Filter>Source Files\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Source Files\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -136,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="CollisionManager.cpp">
       <Filter>Source Files\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

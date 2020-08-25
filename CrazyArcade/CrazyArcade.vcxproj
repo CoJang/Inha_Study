@@ -145,6 +145,7 @@
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MyMath.h" />
@@ -163,6 +164,7 @@
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MyMath.cpp" />

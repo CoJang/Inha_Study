@@ -10,6 +10,7 @@ private:
 
 	vector<Block*> HitableBlocks;
 	vector<Block*> ObstacleBlocks;
+	vector<Item*> Items;
 public:
 	CollisionManager();
 	~CollisionManager();
@@ -19,6 +20,7 @@ public:
 	inline Player* GetPlayer() { return MainChar; };
 	inline Map* GetMap() { return map; };
 
+	inline vector<Item*> & GetItems() { return Items; };
 	inline vector<Block*> & GetObstacles() { return ObstacleBlocks; };
 	inline vector<Block*> & GetBlocks() { return HitableBlocks; };
 };

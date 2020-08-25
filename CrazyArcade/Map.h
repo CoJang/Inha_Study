@@ -1,5 +1,6 @@
 #pragma once
 #include "Block.h"
+#include "Item.h"
 
 class Map
 {

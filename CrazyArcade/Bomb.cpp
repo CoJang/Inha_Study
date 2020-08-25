@@ -66,6 +66,15 @@ void Bomb::Update()
 					BLOCK_VECTOR.erase(BLOCK_VECTOR.begin() + i);
 				}
 			}
+
+			for (int i = 0; i < ITEM_VECTOR.size(); i++)
+			{
+				if (RRCollision(&Waves->GetCollider(), &ITEM_VECTOR[i]->GetCollider()))
+				{
+					delete ITEM_VECTOR[i];
+					ITEM_VECTOR.erase(ITEM_VECTOR.begin() + i);
+				}
+			}
 		}
 }
 

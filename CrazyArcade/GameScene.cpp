@@ -41,6 +41,7 @@ void GameScene::Update()
 
 	MainChar->Update();
 	MainChar->Collision();
+	map->Update();
 }
 
 void GameScene::ResetScene()
