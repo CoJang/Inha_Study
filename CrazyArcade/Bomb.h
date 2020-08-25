@@ -1,5 +1,6 @@
 #pragma once
 #include "Objects.h"
+#include "SoundManager.h"
 
 #define DETONATE_TIME 2000
 #define WAVE_ANIM_SPEED 20
@@ -15,6 +16,8 @@ private:
 	bool IsDetonated;
 
 	vector<AnimObject*> BombWaves;
+// Temp Sound
+	CSound* ExplosionSound;
 public:
 	Bomb(int Owner, POINT pos, int power);
 	~Bomb();

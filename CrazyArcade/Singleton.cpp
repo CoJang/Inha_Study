@@ -7,6 +7,7 @@
 
 Singleton::Singleton()
 {
+	CSound::Init();
 }
 
 
@@ -15,6 +16,8 @@ Singleton::~Singleton()
 	delete SM;
 	delete CM;
 	//delete SFXM;
+
+	CSound::Release();
 }
 
 void Singleton::InitSingleton(HDC* Frontbuffer, HDC* backbuffer)

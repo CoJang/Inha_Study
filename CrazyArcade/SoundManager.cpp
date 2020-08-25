@@ -94,17 +94,17 @@ SoundManager::SoundManager()
 {
 	CSound::Init();
 
-	Sounds[0] = new CSound("/sounds/appear.wav", false);
-	Sounds[1] = new CSound("/sounds/die.wav", false);
-	Sounds[2] = new CSound("/sounds/draw.wav", false);
-	Sounds[3] = new CSound("/sounds/explode.wav", false);
-	Sounds[4] = new CSound("/sounds/get.wav", false);
-	Sounds[5] = new CSound("/sounds/lay.wav", false);
-	Sounds[6] = new CSound("/sounds/lose.wav", false);
-	Sounds[7] = new CSound("/sounds/save.wav", false);
-	Sounds[8] = new CSound("/sounds/start.wav", false);
-	Sounds[9] = new CSound("/sounds/win.wav", false);
-	Sounds[10] = new CSound("/sounds/bg/forest.mp3", true);
+	Sounds[0] = new CSound("sounds/appear.wav", false);
+	Sounds[1] = new CSound("sounds/die.wav", false);
+	Sounds[2] = new CSound("sounds/draw.wav", false);
+	Sounds[3] = new CSound("sounds/explode.wav", false);
+	Sounds[4] = new CSound("sounds/get.wav", false);
+	Sounds[5] = new CSound("sounds/lay.wav", false);
+	Sounds[6] = new CSound("sounds/lose.wav", false);
+	Sounds[7] = new CSound("sounds/save.wav", false);
+	Sounds[8] = new CSound("sounds/start.wav", false);
+	Sounds[9] = new CSound("sounds/win.wav", false);
+	Sounds[10] = new CSound("sounds/bg/forest.mp3", true);
 }
 
 

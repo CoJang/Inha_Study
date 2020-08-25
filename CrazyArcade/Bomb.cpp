@@ -23,6 +23,8 @@ Bomb::Bomb(int Owner, POINT pos, int power)
 	PlayerNum = Owner;
 	IsDetonated = false;
 	Timer = 0;
+
+	ExplosionSound = new CSound("sounds/explode.wav", false);
 }
 
 Bomb::~Bomb()
@@ -33,6 +35,8 @@ Bomb::~Bomb()
 	}
 
 	BombWaves.clear();
+
+	delete ExplosionSound;
 }
 
 void Bomb::Update()
@@ -148,6 +152,8 @@ void Bomb::Explosion()
 				break;
 		}
 	}
+
+	ExplosionSound->play();
 }
 
 bool Bomb::InitWave(int index, int flag)

@@ -2,6 +2,7 @@
 #include "Objects.h"
 #include "Bomb.h"
 #include "Item.h"
+#include "SoundManager.h"
 
 class Block;
 
@@ -21,6 +22,9 @@ private:
 	int BombPower;
 	vector<Bomb*> BombBag;
 	vector<int*> ItemBag;
+// Temp Sound
+	CSound* PutSound;
+	CSound* GetSound;
 public:
 	Player();
 	~Player();
