@@ -3,6 +3,7 @@
 #include "Bomb.h"
 #include "Player.h"
 #include "Map.h"
+#include "SoundManager.h"
 
 class GameScene : public Scene
 {
@@ -19,6 +20,8 @@ private:
 	Map* map;
 
 	bool ColliderDrawMode;
+
+	CSound* BGM;
 public:
 	GameScene();
 	~GameScene();

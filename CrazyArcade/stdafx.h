@@ -32,6 +32,9 @@ using namespace std;
 #include "MyMath.h"
 
 #pragma comment(lib, "msimg32.lib")
+#pragma comment(lib, "fmodex_vc.lib")
+#include "fmod.h"
+
 #ifdef UNICODE
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #else
