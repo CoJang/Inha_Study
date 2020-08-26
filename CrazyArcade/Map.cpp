@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CollisionManager.h"
+#include "ImageManager.h"
 #include "Map.h"
 
 #define TILE_PIVOT {-26, -53}
@@ -11,8 +12,6 @@ extern Singleton* singleton;
 Map::Map()
 {
 	Blocks = new Block[MAP_WIDTH * MAP_HEIGHT];
-	BlockImages = new HBITMAP[13];
-	BlockBitmaps = new BITMAP[13];
 	LoadingBackground();
 	LoadingBlocks();
 
@@ -23,39 +22,22 @@ Map::Map()
 Map::~Map()
 {
 	delete[] Blocks;
-	delete[] BlockImages;
-	delete[] BlockBitmaps;
 }
 
 void Map::LoadingBackground()
 {
 	// BackGround Frame
-	FrameImage.Init(TEXT("images/Frame/play_bg.bmp"), { 0, 0 }, { 0, 0 });
-	BackTiles.Init(TEXT("images/map/forest/Tiles/BackTile.bmp"), { 0, 0 }, TILE_PIVOT);
+	FrameImage.Init({ 0, 0 }, { 0, 0 });
+	FrameImage.SetImage(GETIMAGE(BG_FRAME));
+	BackTiles.Init({ 0, 0 }, TILE_PIVOT);
+	BackTiles.SetImage(GETIMAGE(MAP_TILE));
 }
 
 void Map::LoadingBlocks()
 {
 // 15 * 13  [4 kinds]
 #pragma region SetBlocks
-	wstring Path;
-	for (int i = 0; i < 4; i++)
-	{
-		Path = TEXT("images/map/forest/Obstacle/Block_");
-		Path += to_wstring(i + 1); Path += TEXT(".bmp");
-		BlockImages[i] = (HBITMAP)LoadImage(NULL, Path.c_str() , IMAGE_BITMAP,
-				0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-			GetObject(BlockImages[i], sizeof(BITMAP), &BlockBitmaps[i]);
-	}
-	for (int i = 4; i < 13; i++)
-	{
-		Path = TEXT("images/map/forest/Blocks/block_");
-		Path += to_wstring(i + 1); Path += TEXT(".bmp");
-		BlockImages[i] = (HBITMAP)LoadImage(NULL, Path.c_str(), IMAGE_BITMAP,
-			0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-		GetObject(BlockImages[i], sizeof(BITMAP), &BlockBitmaps[i]);
-	}
-	
+
 	// 여유있을 때 파일 입/출력으로 뺄 것
 	int BlockSets[MAP_WIDTH * MAP_HEIGHT] =
 	{
@@ -89,13 +71,13 @@ void Map::LoadingBlocks()
 				{
 					Blocks[x + (y * MAP_WIDTH)].Init({ x * 52, y * 52 }, TILE_PIVOT);
 					Blocks[x + (y * MAP_WIDTH)].InitCollider({ 78, 48 }, 128, 94);
-					Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
+					Blocks[x + (y * MAP_WIDTH)].SetImage(GETIMAGE(MAP_OBS_POND));
 				}
 				else
 				{
 					Blocks[x + (y * MAP_WIDTH)].Init({ x * 52, y * 52 }, OBSTACLE_PIVOT);
 					Blocks[x + (y * MAP_WIDTH)].InitCollider({ -1, -1 }, -1);
-					Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
+					Blocks[x + (y * MAP_WIDTH)].SetImage(GETIMAGE(ImageIndex + 2));
 				}
 
 				OBSTACLE_VECTOR.push_back(&Blocks[x + (y * MAP_WIDTH)]);
@@ -103,7 +85,7 @@ void Map::LoadingBlocks()
 			else
 			{
 				Blocks[x + (y * MAP_WIDTH)].Init({ x * 52, y * 52 }, BLOCK_PIVOT);
-				Blocks[x + (y * MAP_WIDTH)].SetImage(BlockImages[ImageIndex], BlockBitmaps[ImageIndex]);
+				Blocks[x + (y * MAP_WIDTH)].SetImage(GETIMAGE(ImageIndex + 2));
 				Blocks[x + (y * MAP_WIDTH)].InitCollider({ 34, 36 }, -1);
 				Blocks[x + (y * MAP_WIDTH)].InitAnimation();
 				Blocks[x + (y * MAP_WIDTH)].SetDestructible(true);

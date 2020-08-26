@@ -9,8 +9,6 @@ private:
 	Objects BackTiles;
 	
 	Block* Blocks;
-	HBITMAP* BlockImages;
-	BITMAP* BlockBitmaps;
 public:
 	Map();
 	~Map();

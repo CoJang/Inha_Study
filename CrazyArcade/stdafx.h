@@ -53,6 +53,9 @@ using namespace std;
 #define MAP singleton->GetCollisionManager()->GetMap()
 #define BLOCKS singleton->GetCollisionManager()->GetMap()->GetBlocks()
 #define PLAYER singleton->GetCollisionManager()->GetPlayer()
+
+#define GETIMAGE(tag) singleton->GetImageManager()->GetImage(tag)
+
 #define BLOCK_VECTOR singleton->GetCollisionManager()->GetBlocks()
 #define OBSTACLE_VECTOR singleton->GetCollisionManager()->GetObstacles()
 #define ITEM_VECTOR singleton->GetCollisionManager()->GetItems()

@@ -5,6 +5,10 @@
 
 extern Singleton* singleton;
 
+HBITMAP Bomb::ExplosionEffect;
+BITMAP Bomb::BitExplosionFX;
+CSound* Bomb::ExplosionSound;
+
 Bomb::Bomb(int Owner, POINT pos, int power)
 {
 	AnimObject::Init(TEXT("images/effect/Popo.bmp"), RePosition(pos), { -26, -52 });
@@ -23,8 +27,6 @@ Bomb::Bomb(int Owner, POINT pos, int power)
 	PlayerNum = Owner;
 	IsDetonated = false;
 	Timer = 0;
-
-	ExplosionSound = new CSound("sounds/explode.wav", false);
 }
 
 Bomb::~Bomb()
@@ -36,7 +38,15 @@ Bomb::~Bomb()
 
 	BombWaves.clear();
 
-	delete ExplosionSound;
+	//delete ExplosionSound;
+}
+
+void Bomb::BombInit()
+{
+	ExplosionSound = new CSound("sounds/explode.wav", false);
+	ExplosionEffect = (HBITMAP)LoadImage(NULL, TEXT("images/effect/Explosion.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(ExplosionEffect, sizeof(BITMAP), &BitExplosionFX);
 }
 
 void Bomb::Update()
@@ -148,7 +158,8 @@ void Bomb::Explosion()
 		for (int i = 0; i < Power; i++)
 		{
 			// Skiped Details [Update Later]
-			if (!InitWave(i, Flag))
+			//if (!InitWave(i, Flag))
+			if (!InitWave(i, Flag, ExplosionEffect, BitExplosionFX))
 				break;
 		}
 	}
@@ -180,6 +191,41 @@ bool Bomb::InitWave(int index, int flag)
 		}
 
 	for(Block* block : BLOCK_VECTOR)
+		if (RRCollision(&Wave->GetCollider(), &block->GetCollider()))
+		{
+			BombWaves.push_back(Wave);
+			return false;
+		}
+
+	BombWaves.push_back(Wave);
+	return true;
+}
+
+bool Bomb::InitWave(int index, int flag, HBITMAP image, BITMAP bitmap)
+{
+	POINT WavePos = Pos;
+	if (flag == 0) WavePos = { Pos.x, Pos.y - 52 * (index + 1) };
+	else if (flag == 1) WavePos = { Pos.x, Pos.y + 52 * (index + 1) };
+	else if (flag == 2) WavePos = { Pos.x - 52 * (index + 1), Pos.y };
+	else if (flag == 3) WavePos = { Pos.x + 52 * (index + 1), Pos.y };
+
+	AnimObject* Wave = new AnimObject;
+	Wave->Init(WavePos, { 0, 0 });
+	Wave->SetImage(image, bitmap);
+	//Wave->SetBitmap();
+	Wave->InitAnimation(3, 4, 14, 5, flag);
+	Wave->SetAnimSpeed(WAVE_ANIM_SPEED);
+	Wave->SetImageSize(1.3f);
+	Wave->InitCollider({ 26, 24 }, 36);
+
+	for (Block* block : OBSTACLE_VECTOR)
+		if (RRCollision(&Wave->GetCollider(), &block->GetCollider()))
+		{
+			delete Wave;
+			return false;
+		}
+
+	for (Block* block : BLOCK_VECTOR)
 		if (RRCollision(&Wave->GetCollider(), &block->GetCollider()))
 		{
 			BombWaves.push_back(Wave);

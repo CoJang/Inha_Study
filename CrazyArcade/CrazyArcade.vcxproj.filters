@@ -117,6 +117,9 @@
     <ClInclude Include="SoundManager.h">
       <Filter>Source Files\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="ImageManager.h">
+      <Filter>Source Files\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -167,6 +170,9 @@
     <ClCompile Include="SoundManager.cpp">
       <Filter>Source Files\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="ImageManager.cpp">
+      <Filter>Source Files\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CrazyArcade.rc">
@@ -180,5 +186,8 @@
     <Image Include="CrazyArcade.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

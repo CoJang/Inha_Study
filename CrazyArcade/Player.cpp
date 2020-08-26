@@ -38,6 +38,7 @@ Player::Player()
 	GetSound = new CSound("sounds/get.wav", false);
 
 	singleton->GetCollisionManager()->SetPlayer(this);
+	Bomb::BombInit();
 }
 
 Player::~Player()

@@ -10,17 +10,17 @@ Objects::Objects()
 
 void Objects::Init(wstring path, POINT pos, POINT pivot)
 {
+	ImagePivot = pivot;
+	Pos = pos;
+	Pos.x -= ImagePivot.x;
+	Pos.y -= ImagePivot.y;
+
 	hImage = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP,
 		0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	GetObject(hImage, sizeof(BITMAP), &bitImage);
 
 	Sprite_Size.x = bitImage.bmWidth;
 	Sprite_Size.y = bitImage.bmHeight;
-
-	ImagePivot = pivot;
-	Pos = pos;
-	Pos.x -= ImagePivot.x;
-	Pos.y -= ImagePivot.y;
 }
 
 void Objects::Init(POINT pos, POINT pivot)
@@ -29,6 +29,19 @@ void Objects::Init(POINT pos, POINT pivot)
 	Pos = pos;
 	Pos.x -= ImagePivot.x;
 	Pos.y -= ImagePivot.y;
+}
+
+void Objects::SetImage(HBITMAP image)
+{
+	hImage = image;
+	SetBitmap();
+}
+
+void Objects::SetBitmap()
+{
+	GetObject(hImage, sizeof(BITMAP), &bitImage);
+	Sprite_Size.x = bitImage.bmWidth;
+	Sprite_Size.y = bitImage.bmHeight;
 }
 
 void Objects::SetImage(HBITMAP & image, BITMAP & bitmap)
@@ -164,7 +177,7 @@ void AnimObject::Render(HDC front, HDC back, bool colliderdraw)
 {
 	HBITMAP oldbuffer = (HBITMAP)SelectObject(back, hImage);
 
-	TransparentBlt(front, Pos.x, Pos.y,
+	bool check = TransparentBlt(front, Pos.x, Pos.y,
 					Sprite_Size.x * ImageScale,
 					Sprite_Size.y * ImageScale,
 					back, Start.x, Start.y,
@@ -175,5 +188,4 @@ void AnimObject::Render(HDC front, HDC back, bool colliderdraw)
 						 ColliderBox.right, ColliderBox.bottom);
 
 	SelectObject(back, oldbuffer);
-	DeleteObject(oldbuffer);
 }
