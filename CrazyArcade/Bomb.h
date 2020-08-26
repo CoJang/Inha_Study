@@ -17,15 +17,11 @@ private:
 
 	vector<AnimObject*> BombWaves;
 // Temp Sound
-	static CSound* ExplosionSound;
-// Temp Image
-	static HBITMAP ExplosionEffect;
-	static BITMAP BitExplosionFX;
+	CSound* ExplosionSound;
 public:
 	Bomb(int Owner, POINT pos, int power);
 	~Bomb();
 
-	static void BombInit();
 	void Update();
 	void UpdateFrame();
 	void Render(HDC, HDC, bool);
@@ -33,7 +29,6 @@ public:
 	void Explosion();
 
 	bool InitWave(int index, int flag);
-	bool InitWave(int index, int flag, HBITMAP image, BITMAP bitmap);
 
 	inline bool GetBombState() { return IsDetonated; };
 	inline void Detonate() { IsDetonated = true; };

@@ -168,6 +168,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
     case WM_DESTROY:
 		delete singleton;
+		KillTimer(hWnd, 100);
         PostQuitMessage(0);
         break;
     default:

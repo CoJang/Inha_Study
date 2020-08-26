@@ -3,26 +3,18 @@
 #include "Block.h"
 #include "MyMath.h"
 #include "CollisionManager.h"
+#include "ImageManager.h"
 #include "Player.h"
+
 
 extern Singleton* singleton;
 
 Player::Player()
 {
-	hImage = (HBITMAP)LoadImage(NULL, TEXT("images/char/Role1.bmp"), IMAGE_BITMAP,
-		0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hImage, sizeof(BITMAP), &bitImage);
+	SetImage(GETIMAGE(CHAR_BAZZY));
 
-	Sprite_Size.x = bitImage.bmWidth / 6;
-	Sprite_Size.y = bitImage.bmHeight / 4;
+	AnimObject::InitAnimation(0, 5, 6, 4, 1);
 
-	Anim_Frame_Max = bitImage.bmWidth / Sprite_Size.x - 1;
-	Anim_Frame_Min = 0;
-	Anim_Frame_Cur = Anim_Frame_Min;
-	Anim_Frame_Flag = 1;
-
-	Start.x = Anim_Frame_Cur * Sprite_Size.x;
-	Start.y = Anim_Frame_Flag * Sprite_Size.y;
 	Dir = { 0, 0 }; Speed = 10;
 
 	ColPivot = { 26, 48 };
@@ -38,7 +30,6 @@ Player::Player()
 	GetSound = new CSound("sounds/get.wav", false);
 
 	singleton->GetCollisionManager()->SetPlayer(this);
-	Bomb::BombInit();
 }
 
 Player::~Player()
@@ -157,21 +148,21 @@ void Player::GetItem(int newitem)
 {
 	switch (newitem)
 	{
-	case 1:
+	case ITEM_BOMB:
 		if (MaxBomb <= BOMB_LIMIT)
 		{
 			MaxBomb++;
 			ItemBag.push_back(&newitem);
 		}
 		break;
-	case 2:
+	case ITEM_SKATE:
 		if (Speed <= SPEED_LIMIT)
 		{
 			Speed += 2;
 			ItemBag.push_back(&newitem);
 		}
 		break;
-	case 3:
+	case ITEM_FLASK:
 		if (BombPower <= POWER_LIMIT)
 		{
 			BombPower++;

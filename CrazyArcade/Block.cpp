@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Item.h"
 #include "CollisionManager.h"
+#include "ImageManager.h"
 #include "Block.h"
 
 extern Singleton* singleton;
@@ -35,8 +36,8 @@ void Block::UpdateFrame()
 
 void Block::CreateItem()
 {
-	int RandomNum = GenerateRandomNum(0, 4);
-	if (RandomNum == 0 || RandomNum == 4) return;
+	int RandomNum = GenerateRandomNum(ITEM_BOMB, ITEM_FLASK + 2);
+	if (RandomNum > ITEM_FLASK) return;
 
 	Item* tempItem = new Item(Pos, RandomNum);
 	ITEM_VECTOR.push_back(tempItem);

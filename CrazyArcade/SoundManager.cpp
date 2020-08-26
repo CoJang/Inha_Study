@@ -104,6 +104,7 @@ SoundManager::SoundManager()
 	Sounds[7] = new CSound("sounds/save.wav", false);
 	Sounds[8] = new CSound("sounds/start.wav", false);
 	Sounds[9] = new CSound("sounds/win.wav", false);
+
 	Sounds[10] = new CSound("sounds/bg/forest.mp3", true);
 }
 

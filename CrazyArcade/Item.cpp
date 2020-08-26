@@ -1,15 +1,14 @@
 #include "stdafx.h"
 #include "CollisionManager.h"
+#include "ImageManager.h"
 #include "Item.h"
 
 extern Singleton* singleton;
 
 Item::Item(POINT pos, int itemtype)
 {
-	wstring Path = TEXT("images/items/Gift");
-	Path += to_wstring(itemtype); Path += TEXT(".bmp");
-
-	AnimObject::Init(Path.c_str(), pos, { -11, -12 });
+	AnimObject::Init(pos, { -11, -12 });
+	AnimObject::SetImage(GETIMAGE(itemtype));
 	AnimObject::InitAnimation(0, 2, 3, 1, 0);
 	AnimObject::InitCollider({ 24, 24 }, 32);
 	AnimObject::SetImageSize(1.1f);
@@ -29,7 +28,7 @@ void Item::Update()
 {
 	Timer += ElapseTime;
 
-	if (Timer % 200 < 17)
+	if (Timer % 200 < ElapseTime)
 	{
 		if (IsUpper)
 		{

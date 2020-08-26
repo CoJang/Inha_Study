@@ -30,57 +30,58 @@ bool ImageManager::LoadingImages()
 	Images[MAP_TILE] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP,	0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	if (Images[MAP_TILE] == NULL) return false;
 
-	path = TEXT("images/map/forest/Obstacle/Block_1.bmp");
-	Images[MAP_OBS_1] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[MAP_OBS_1] == NULL) return false;
+// Obstacle Blocks
+	for (int i = 1; i <= 4; i++)
+	{
+		path = TEXT("images/map/forest/Obstacle/Block_"); 
+		path += to_wstring(i);
+		path += TEXT(".bmp");
 
-	path = TEXT("images/map/forest/Obstacle/Block_2.bmp");
-	Images[MAP_OBS_2] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[MAP_OBS_2] == NULL) return false;
+		Images[MAP_TILE + i] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[MAP_TILE + i] == NULL) return false;
+	}
 
-	path = TEXT("images/map/forest/Obstacle/Block_3.bmp");
-	Images[MAP_OBS_3] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[MAP_OBS_3] == NULL) return false;
+// Breakable Blocks
+	for (int i = 5; i <= 13; i++)
+	{
+		path = TEXT("images/map/forest/Blocks/block_"); 
+		path += to_wstring(i);
+		path += TEXT(".bmp");
 
-	path = TEXT("images/map/forest/Obstacle/Block_4.bmp");
-	Images[MAP_OBS_POND] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[MAP_OBS_POND] == NULL) return false;
+		Images[i + 1] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[i + 1] == NULL) return false;
+	}
 
-	path = TEXT("images/map/forest/Blocks/block_5.bmp");
-	Images[MAP_BLK_1] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[MAP_BLK_1] == NULL) return false;
+// Items
+	for (int i = 1; i <= 4; i++)
+	{
+		path = TEXT("images/items/Gift"); path += to_wstring(i);
+		path += TEXT(".bmp");
 
-	path = TEXT("images/map/forest/Blocks/block_6.bmp");
-	Images[MAP_BLK_2] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[MAP_BLK_2] == NULL) return false;
+		Images[MAP_BLK_9 + i] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[MAP_BLK_9 + i] == NULL) return false;
+	}
 
-	path = TEXT("images/map/forest/Blocks/block_7.bmp");
-	Images[MAP_BLK_3] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[MAP_BLK_3] == NULL) return false;
+	path = TEXT("images/effect/Explosion.bmp");
+	Images[EFX_EXPLOSION] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[EFX_EXPLOSION] == NULL) return false;
 
-	path = TEXT("images/map/forest/Blocks/block_8.bmp");
-	Images[MAP_BLK_4] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[MAP_BLK_4] == NULL) return false;
+	path = TEXT("images/effect/BigPopo.bmp");
+	Images[EFX_BIGBUBBLE] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[EFX_BIGBUBBLE] == NULL) return false;
 
-	path = TEXT("images/map/forest/Blocks/block_9.bmp");
-	Images[MAP_BLK_5] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[MAP_BLK_5] == NULL) return false;
+	path = TEXT("images/effect/Popo.bmp");
+	Images[WATER_BOMB] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[WATER_BOMB] == NULL) return false;
 
-	path = TEXT("images/map/forest/Blocks/block_10.bmp");
-	Images[MAP_BLK_6] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[MAP_BLK_6] == NULL) return false;
+// char
+	path = TEXT("images/char/Role1.bmp");
+	Images[CHAR_BAZZY] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[CHAR_BAZZY] == NULL) return false;
 
-	path = TEXT("images/map/forest/Blocks/block_11.bmp");
-	Images[MAP_BLK_7] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[MAP_BLK_7] == NULL) return false;
-
-	path = TEXT("images/map/forest/Blocks/block_12.bmp");
-	Images[MAP_BLK_8] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[MAP_BLK_8] == NULL) return false;
-
-	path = TEXT("images/map/forest/Blocks/block_13.bmp");
-	Images[MAP_BLK_9] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[MAP_BLK_9] == NULL) return false;
+	path = TEXT("images/char/Role2.bmp");
+	Images[CHAR_HOOCU] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[CHAR_HOOCU] == NULL) return false;
 
 	return true;
 }
