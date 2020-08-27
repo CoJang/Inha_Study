@@ -11,6 +11,7 @@ private:
 	vector<Block*> HitableBlocks;
 	vector<Block*> ObstacleBlocks;
 	vector<Item*> Items;
+	vector<Bomb*> OtherBombs;
 public:
 	CollisionManager();
 	~CollisionManager();
@@ -23,5 +24,6 @@ public:
 	inline vector<Item*> & GetItems() { return Items; };
 	inline vector<Block*> & GetObstacles() { return ObstacleBlocks; };
 	inline vector<Block*> & GetBlocks() { return HitableBlocks; };
+	inline vector<Bomb*>& GetOtherBombs() { return OtherBombs; };
 };
 

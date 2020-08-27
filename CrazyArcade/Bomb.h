@@ -14,6 +14,7 @@ private:
 
 	int Timer;
 	bool IsDetonated;
+	bool IsExpoding;
 
 	vector<AnimObject*> BombWaves;
 // Temp Sound

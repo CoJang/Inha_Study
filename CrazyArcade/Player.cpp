@@ -130,6 +130,7 @@ void Player::PutBomb()
 		PutSound->play();
 		Bomb* NewBomb = new Bomb(1, Pos, BombPower);
 		BombBag.push_back(NewBomb);
+		BOMB_VECTOR.push_back(NewBomb);
 	}
 }
 

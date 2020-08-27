@@ -59,3 +59,4 @@ using namespace std;
 #define BLOCK_VECTOR singleton->GetCollisionManager()->GetBlocks()
 #define OBSTACLE_VECTOR singleton->GetCollisionManager()->GetObstacles()
 #define ITEM_VECTOR singleton->GetCollisionManager()->GetItems()
+#define BOMB_VECTOR singleton->GetCollisionManager()->GetOtherBombs()

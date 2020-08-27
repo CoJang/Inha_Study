@@ -24,6 +24,7 @@ Bomb::Bomb(int Owner, POINT pos, int power)
 	Power = power;
 	PlayerNum = Owner;
 	IsDetonated = false;
+	IsExpoding = false;
 	Timer = 0;
 
 	ExplosionSound = new CSound("sounds/explode.wav", false);
@@ -31,6 +32,15 @@ Bomb::Bomb(int Owner, POINT pos, int power)
 
 Bomb::~Bomb()
 {
+	for (int i = 0; i < BOMB_VECTOR.size(); i++)
+	{
+		if (Pos.x == BOMB_VECTOR[i]->GetPos().x &&
+			Pos.y == BOMB_VECTOR[i]->GetPos().y)
+		{
+			BOMB_VECTOR.erase(BOMB_VECTOR.begin() + i);
+		}
+	}
+
 	for (AnimObject* Wave : BombWaves)
 	{
 		delete Wave;
@@ -47,7 +57,7 @@ void Bomb::Update()
 
 	if (Timer > DETONATE_TIME)
 	{
-		Timer = 0;
+		IsExpoding = true;
 		Explosion();
 	}
 
@@ -84,6 +94,16 @@ void Bomb::Update()
 					BLOCK_VECTOR.erase(BLOCK_VECTOR.begin() + i);
 				}
 			}
+			for (Bomb* B : BOMB_VECTOR)
+			{
+				if (B == this || B->IsExpoding) continue;
+
+				if (RRCollision(&Waves->GetCollider(), &B->GetCollider()))
+				{
+					B->IsExpoding = true;
+					B->Explosion();
+				}
+			}
 		}
 }
 
@@ -106,7 +126,8 @@ void Bomb::Render(HDC front, HDC back, bool colliderdraw)
 {
 	AnimObject::Render(front, back, colliderdraw);
 
-	if (!BombWaves.empty())
+	if (!BombWaves.empty() && IsExpoding)
+	{
 		for (AnimObject* Waves : BombWaves)
 		{
 			Waves->Render(front, back, colliderdraw);
@@ -115,6 +136,7 @@ void Bomb::Render(HDC front, HDC back, bool colliderdraw)
 				IsDetonated = true;
 			}
 		}
+	}
 }
 
 // Set In Tile
@@ -143,6 +165,7 @@ POINT Bomb::RePosition(POINT pos)
 
 void Bomb::Explosion()
 {
+	Timer = 0;
 	// Wave Image Flag Index
 	// Flag 0: Up, 1: Down, 2: Left, 3: Right, 4: Center
 	for (int Flag = 0; Flag < 5; Flag++)
