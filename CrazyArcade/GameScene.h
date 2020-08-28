@@ -20,8 +20,6 @@ private:
 	Map* map;
 
 	bool ColliderDrawMode;
-
-	CSound* BGM;
 public:
 	GameScene();
 	~GameScene();

@@ -33,7 +33,6 @@ using namespace std;
 
 #pragma comment(lib, "msimg32.lib")
 #pragma comment(lib, "fmodex_vc.lib")
-#include "fmod.h"
 
 #ifdef UNICODE
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
@@ -49,6 +48,8 @@ using namespace std;
 #define MAP_HEIGHT 13
 
 #define ElapseTime 17
+
+#define SOUNDMANAGER singleton->GetSoundManager()
 
 #define MAP singleton->GetCollisionManager()->GetMap()
 #define BLOCKS singleton->GetCollisionManager()->GetMap()->GetBlocks()

@@ -1,43 +1,37 @@
 #pragma once
+#include "fmod.hpp"
+#include <map>
 
 #define SOUND_MAX 1.0f
 #define SOUND_MIN 0.0f
 #define SOUND_DEFAULT 0.5f
 #define SOUND_WEIGHT 0.1f
 
-
-class CSound 
-{
-private:
-	static FMOD_SYSTEM *g_sound_system;
-
-	FMOD_SOUND *m_sound;
-	FMOD_CHANNEL *m_channel;
-
-	float m_volume;
-	FMOD_BOOL m_bool;
-public:
-	CSound(const char* path, bool loop);
-	~CSound();
-
-	static int Init();
-	static int Release();
-
-	int play();
-	int pause();
-	int resume();
-	int stop();
-	int volumeUp();
-	int volumeDown();
-
-	int Update();
-};
+using namespace FMOD;
 
 class SoundManager
 {
 private:
-	CSound* Sounds[11];
+	System * fmodSystem;
+
+	Channel* bgmChannel;
+	Channel* sfxChannel;
+
+	Sound* bgm;
+	map<string, Sound*> soundHash;
+
 public:
 	SoundManager();
 	~SoundManager();
+
+	void init();
+	void AddSFX(string path, string musicName);
+	void AddBGM(string path);
+
+	void PlaySFX(string soundName);
+	void PlayBGM();
+
+	void Stop();
+
+	void Destroy();
 };

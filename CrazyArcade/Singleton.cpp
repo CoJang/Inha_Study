@@ -1,34 +1,27 @@
 #include "stdafx.h"
-#include "SceneManager.h"
-#include "CollisionManager.h"
-#include "SoundManager.h"
-#include "ImageManager.h"
 #include "Singleton.h"
 
 
 Singleton::Singleton()
 {
-	CSound::Init();
 }
-
 
 Singleton::~Singleton()
 {
 	delete SM;
 	delete CM;
-	//delete SFXM;
+	delete SFXM;
 	delete IM;
-
-	CSound::Release();
 }
 
 void Singleton::InitSingleton(HDC* Frontbuffer, HDC* backbuffer)
 {
 	SM = new SceneManager;
 	CM = new CollisionManager;
-	//SFXM = new SoundManager;
+	SFXM = new SoundManager;
 	IM = new ImageManager;
 
+	SFXM->init();
 	SM->InitManager(Frontbuffer, backbuffer);
 }
 

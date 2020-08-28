@@ -17,6 +17,10 @@ Block::Block()
 	IsDestructible = false;
 }
 
+Block::~Block()
+{
+}
+
 void Block::Render(HDC front, HDC back, bool ColliderDraw)
 {
 	if (Pos.x == -1 || Pos.y == -1) return;
@@ -51,9 +55,10 @@ void Block::SetColliderState(bool isactive)
 	{
 		for (int i = 0; i < BLOCK_VECTOR.size(); i++)
 		{
-			if (Pos.x == BLOCK_VECTOR[i]->GetPos().x &&
-				Pos.y == BLOCK_VECTOR[i]->GetPos().y)
+			if (this == BLOCK_VECTOR[i])
 			{
+				CreateItem();
+				SetPos({ -1, -1 });
 				BLOCK_VECTOR.erase(BLOCK_VECTOR.begin() + i);
 			}
 		}

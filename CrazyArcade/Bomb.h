@@ -18,8 +18,6 @@ private:
 
 	vector<AnimObject*> BombWaves;
 	vector<Block*> TargetBlocks;
-// Temp Sound
-	CSound* ExplosionSound;
 public:
 	Bomb(int Owner, POINT pos, int power);
 	~Bomb();

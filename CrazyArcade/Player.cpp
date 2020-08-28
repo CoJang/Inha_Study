@@ -24,11 +24,6 @@ Player::Player()
 	MaxBomb = 2;
 	BombPower = 1;
 
-	PutSound = new CSound("sounds/appear.wav", false);
-	PutSound->volumeDown();
-
-	GetSound = new CSound("sounds/get.wav", false);
-
 	singleton->GetCollisionManager()->SetPlayer(this);
 }
 
@@ -40,9 +35,6 @@ Player::~Player()
 	}
 
 	BombBag.clear();
-
-	delete PutSound;
-	delete GetSound;
 }
 
 void Player::InitPlayer(POINT pos, POINT pivot)
@@ -115,7 +107,7 @@ void Player::Collision()
 	{
 		if (RRCollision(&ColliderBox, &ITEM_VECTOR[i]->GetCollider()))
 		{
-			GetSound->play();
+			SOUNDMANAGER->PlaySFX("ItemGet");
 			GetItem(ITEM_VECTOR[i]->GetType());
 			delete ITEM_VECTOR[i];
 			ITEM_VECTOR.erase(ITEM_VECTOR.begin() + i);
@@ -127,7 +119,8 @@ void Player::PutBomb()
 {
 	if (BombBag.size() < MaxBomb)
 	{
-		PutSound->play();
+		SOUNDMANAGER->PlaySFX("BombPut");
+
 		Bomb* NewBomb = new Bomb(1, Pos, BombPower);
 		if (NewBomb->GetPos().x > 780 || NewBomb->GetPos().x < 26 ||
 			NewBomb->GetPos().y > 676 || NewBomb->GetPos().y < 52)

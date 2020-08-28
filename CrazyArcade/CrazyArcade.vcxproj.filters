@@ -120,6 +120,9 @@
     <ClInclude Include="ImageManager.h">
       <Filter>Source Files\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="fmod.hpp">
+      <Filter>Source Files\FMOD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

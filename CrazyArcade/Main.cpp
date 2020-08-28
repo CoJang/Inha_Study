@@ -158,6 +158,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			BitBlt(hdc, 0, 0, WIN_WIDTH, WIN_HEIGHT, BackBuffer[0], 0, 0, SRCCOPY);
 			SelectObject(BackBuffer[0], oldBitmap);
 
+			DeleteObject(oldBitmap);
+			DeleteObject(BackBitmap);
+
 			EndPaint(hWnd, &ps);
 		double endTime = GetTickCount();
 		cout << endTime - startTime << endl;

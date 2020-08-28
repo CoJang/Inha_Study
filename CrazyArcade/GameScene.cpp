@@ -15,25 +15,19 @@ GameScene::GameScene()
 
 	Timer = 0;
 
-	
-	BGM = new CSound("sounds/bg/Forest.mp3", true);
-	BGM->play();
-	BGM->volumeDown();
-
 	map = new Map;
 	MainChar = new Player;
 	MainChar->InitPlayer({ 52, 0 }, {-26, -26});
 
 	ColliderDrawMode = false;
+
+	SOUNDMANAGER->PlayBGM();
 }
 
 GameScene::~GameScene()
 {
-	delete BGM;
 	delete MainChar;
-
 	delete map;
-	CSound::Release();
 }
 
 void GameScene::Render()
@@ -45,7 +39,6 @@ void GameScene::Render()
 
 void GameScene::Update()
 {
-	BGM->Update();
 	Timer += ElapseTime;
 
 	MainChar->Update();

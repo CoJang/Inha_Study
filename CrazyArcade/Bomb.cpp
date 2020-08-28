@@ -26,8 +26,6 @@ Bomb::Bomb(int Owner, POINT pos, int power)
 	IsDetonated = false;
 	IsExpoding = false;
 	Timer = 0;
-
-	ExplosionSound = new CSound("sounds/explode.wav", false);
 }
 
 Bomb::~Bomb()
@@ -47,15 +45,13 @@ Bomb::~Bomb()
 	}
 
 	BombWaves.clear();
-
-	delete ExplosionSound;
 }
 
 void Bomb::Update()
 {
 	Timer += ElapseTime;
 
-	if (Timer > DETONATE_TIME)
+	if (Timer > DETONATE_TIME && IsExpoding == false)
 	{
 		IsExpoding = true;
 		Explosion();
@@ -87,20 +83,6 @@ void Bomb::Update()
 			// Explosion Wave's Center
 			if (Waves->GetPos().x == Pos.x &&
 				Waves->GetPos().y == Pos.y) continue;
-
-			for (int i = 0; i < TargetBlocks.size(); i++)
-			{
-				if (!TargetBlocks[i]->GetColliderState()) continue;
-
-				if (RRCollision(&Waves->GetCollider(),
-								&TargetBlocks[i]->GetCollider()))
-				{
-					TargetBlocks[i]->CreateItem();
-					TargetBlocks[i]->SetPos({ -1, -1 });
-					TargetBlocks[i]->SetColliderState(false);
-					TargetBlocks.erase(TargetBlocks.begin() + i);
-				}
-			}
 
 			for (Bomb* B : BOMB_VECTOR)
 			{
@@ -186,7 +168,20 @@ void Bomb::Explosion()
 		}
 	}
 
-	ExplosionSound->play();
+	SOUNDMANAGER->PlaySFX("Boom");
+
+	for (AnimObject* Waves : BombWaves)
+		for (int i = 0; i < TargetBlocks.size(); i++)
+		{
+			if (!TargetBlocks[i]->GetColliderState()) continue;
+
+			if (RRCollision(&Waves->GetCollider(),
+				&TargetBlocks[i]->GetCollider()))
+			{
+				TargetBlocks[i]->SetColliderState(false);
+				TargetBlocks.erase(TargetBlocks.begin() + i);
+			}
+		}
 }
 
 bool Bomb::InitWave(int index, int flag)

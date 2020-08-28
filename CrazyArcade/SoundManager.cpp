@@ -1,117 +1,65 @@
 #include "stdafx.h"
 #include "SoundManager.h"
 
-FMOD_SYSTEM* CSound::g_sound_system;
-
-CSound::CSound(const char* path, bool loop) {
-	if (loop) {
-		FMOD_System_CreateStream(g_sound_system, path, FMOD_LOOP_NORMAL, 0, &m_sound);
-	}
-	else {
-		FMOD_System_CreateSound(g_sound_system, path, FMOD_DEFAULT, 0, &m_sound);
-	}
-
-	m_channel = nullptr;
-	m_volume = SOUND_DEFAULT;
-}
-
-CSound::~CSound() {
-	FMOD_Sound_Release(m_sound);
-}
-
-
-int CSound::Init() {
-	FMOD_System_Create(&g_sound_system);
-	FMOD_System_Init(g_sound_system, 32, FMOD_INIT_NORMAL, NULL);
-
-	return 0;
-}
-
-int CSound::Release() {
-	FMOD_System_Close(g_sound_system);
-	FMOD_System_Release(g_sound_system);
-
-	return 0;
-}
-
-
-int CSound::play() {
-	FMOD_System_PlaySound(g_sound_system, FMOD_CHANNEL_FREE, m_sound, false, &m_channel);
-
-	return 0;
-}
-
-int CSound::pause() {
-	FMOD_Channel_SetPaused(m_channel, true);
-
-	return 0;
-}
-
-int CSound::resume() {
-	FMOD_Channel_SetPaused(m_channel, false);
-
-	return 0;
-}
-
-int CSound::stop() {
-	FMOD_Channel_Stop(m_channel);
-
-	return 0;
-}
-
-int CSound::volumeUp() {
-	if (m_volume < SOUND_MAX) {
-		m_volume += SOUND_WEIGHT;
-	}
-
-	FMOD_Channel_SetVolume(m_channel, m_volume);
-
-	return 0;
-}
-
-int CSound::volumeDown() {
-	if (m_volume > SOUND_MIN) {
-		m_volume -= SOUND_WEIGHT;
-	}
-
-	FMOD_Channel_SetVolume(m_channel, m_volume);
-
-	return 0;
-}
-
-
-int CSound::Update() {
-	FMOD_Channel_IsPlaying(m_channel, &m_bool);
-
-	if (m_bool) {
-		FMOD_System_Update(g_sound_system);
-	}
-
-	return 0;
-}
-
 SoundManager::SoundManager()
 {
-	CSound::Init();
-
-	Sounds[0] = new CSound("sounds/appear.wav", false);
-	Sounds[1] = new CSound("sounds/die.wav", false);
-	Sounds[2] = new CSound("sounds/draw.wav", false);
-	Sounds[3] = new CSound("sounds/explode.wav", false);
-	Sounds[4] = new CSound("sounds/get.wav", false);
-	Sounds[5] = new CSound("sounds/lay.wav", false);
-	Sounds[6] = new CSound("sounds/lose.wav", false);
-	Sounds[7] = new CSound("sounds/save.wav", false);
-	Sounds[8] = new CSound("sounds/start.wav", false);
-	Sounds[9] = new CSound("sounds/win.wav", false);
-
-	Sounds[10] = new CSound("sounds/bg/forest.mp3", true);
 }
 
 
 SoundManager::~SoundManager()
 {
-	delete[] Sounds;
+	Stop();
+	fmodSystem->close();
+}
 
-	CSound::Release();
+void SoundManager::Destroy()
+{
+	delete fmodSystem;
+}
+
+void SoundManager::init()
+{
+	System_Create(&fmodSystem);
+	fmodSystem->init(4, FMOD_INIT_NORMAL, NULL);
+	
+
+	AddBGM("sounds/bg/Forest.mp3");
+
+	AddSFX("sounds/appear.wav", "BombPut");
+	AddSFX("sounds/die.wav", "Die");
+	AddSFX("sounds/draw.wav", "Draw");
+	AddSFX("sounds/explode.wav", "Boom");
+	AddSFX("sounds/get.wav", "ItemGet");
+	AddSFX("sounds/lay.wav", "Lay");
+	AddSFX("sounds/lose.wav", "Lose");
+	AddSFX("sounds/start.wav", "Start");
+	AddSFX("sounds/win.wav", "Win");
+}
+
+void SoundManager::AddBGM(string path)
+{
+	//fmodSystem->createSound(path.c_str(), FMOD_LOOP_NORMAL, NULL, &bgm);
+	fmodSystem->createStream(path.c_str(), FMOD_LOOP_NORMAL, NULL, &bgm);
+}
+
+void SoundManager::AddSFX(string path, string soundName)
+{
+	fmodSystem->createSound(path.c_str(), FMOD_DEFAULT, NULL, &soundHash[soundName]);
+}
+
+void SoundManager::PlayBGM()
+{
+	fmodSystem->playSound(FMOD_CHANNEL_REUSE, bgm, false, &bgmChannel);
+}
+
+void SoundManager::PlaySFX(string soundName)
+{
+	if (soundHash[soundName] != NULL)
+		fmodSystem->playSound(FMOD_CHANNEL_REUSE, soundHash[soundName], false, &sfxChannel);
+}
+
+void SoundManager::Stop()
+{
+	sfxChannel->stop();
+	bgmChannel->stop();
 }

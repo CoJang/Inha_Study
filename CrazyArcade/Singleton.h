@@ -1,9 +1,9 @@
 #pragma once
 
-class SceneManager;
-class CollisionManager;
-class SoundManager;
-class ImageManager;
+#include "SceneManager.h"
+#include "CollisionManager.h"
+#include "SoundManager.h"
+#include "ImageManager.h"
 
 class Singleton
 {
@@ -12,6 +12,7 @@ private:
 	CollisionManager* CM;
 	SoundManager* SFXM;
 	ImageManager* IM;
+
 public:
 	Singleton();
 	~Singleton();
