@@ -21,7 +21,7 @@ Player::Player()
 	ColliderSize = { 36, 36 };
 	ImageScale = 1.1f;
 
-	MaxBomb = 1;
+	MaxBomb = 2;
 	BombPower = 1;
 
 	PutSound = new CSound("sounds/appear.wav", false);
@@ -129,6 +129,12 @@ void Player::PutBomb()
 	{
 		PutSound->play();
 		Bomb* NewBomb = new Bomb(1, Pos, BombPower);
+		if (NewBomb->GetPos().x > 780 || NewBomb->GetPos().x < 26 ||
+			NewBomb->GetPos().y > 676 || NewBomb->GetPos().y < 52)
+		{
+			delete NewBomb;
+			return;
+		}
 		BombBag.push_back(NewBomb);
 		BOMB_VECTOR.push_back(NewBomb);
 	}

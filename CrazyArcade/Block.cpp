@@ -42,3 +42,20 @@ void Block::CreateItem()
 	Item* tempItem = new Item(Pos, RandomNum);
 	ITEM_VECTOR.push_back(tempItem);
 }
+
+void Block::SetColliderState(bool isactive)
+{
+	IsColliderActive = isactive;
+
+	if (!IsColliderActive)
+	{
+		for (int i = 0; i < BLOCK_VECTOR.size(); i++)
+		{
+			if (Pos.x == BLOCK_VECTOR[i]->GetPos().x &&
+				Pos.y == BLOCK_VECTOR[i]->GetPos().y)
+			{
+				BLOCK_VECTOR.erase(BLOCK_VECTOR.begin() + i);
+			}
+		}
+	}
+}

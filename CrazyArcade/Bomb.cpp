@@ -34,10 +34,10 @@ Bomb::~Bomb()
 {
 	for (int i = 0; i < BOMB_VECTOR.size(); i++)
 	{
-		if (Pos.x == BOMB_VECTOR[i]->GetPos().x &&
-			Pos.y == BOMB_VECTOR[i]->GetPos().y)
+		if (BOMB_VECTOR[i] == this)
 		{
 			BOMB_VECTOR.erase(BOMB_VECTOR.begin() + i);
+			break;
 		}
 	}
 
@@ -84,16 +84,24 @@ void Bomb::Update()
 				}
 			}
 
-			for (int i = 0; i < BLOCK_VECTOR.size(); i++)
+			// Explosion Wave's Center
+			if (Waves->GetPos().x == Pos.x &&
+				Waves->GetPos().y == Pos.y) continue;
+
+			for (int i = 0; i < TargetBlocks.size(); i++)
 			{
-				if (RRCollision(&Waves->GetCollider(), &BLOCK_VECTOR[i]->GetCollider()))
+				if (!TargetBlocks[i]->GetColliderState()) continue;
+
+				if (RRCollision(&Waves->GetCollider(),
+								&TargetBlocks[i]->GetCollider()))
 				{
-					BLOCK_VECTOR[i]->CreateItem();
-					BLOCK_VECTOR[i]->SetPos({ -1, -1 });
-					BLOCK_VECTOR[i]->SetColliderState(false);
-					BLOCK_VECTOR.erase(BLOCK_VECTOR.begin() + i);
+					TargetBlocks[i]->CreateItem();
+					TargetBlocks[i]->SetPos({ -1, -1 });
+					TargetBlocks[i]->SetColliderState(false);
+					TargetBlocks.erase(TargetBlocks.begin() + i);
 				}
 			}
+
 			for (Bomb* B : BOMB_VECTOR)
 			{
 				if (B == this || B->IsExpoding) continue;
@@ -189,6 +197,9 @@ bool Bomb::InitWave(int index, int flag)
 	else if (flag == 2) WavePos = { Pos.x - 52 * (index + 1), Pos.y };
 	else if (flag == 3) WavePos = { Pos.x + 52 * (index + 1), Pos.y };
 
+	if (WavePos.x > 780 || WavePos.x < 0 ||
+		WavePos.y > 676 || WavePos.y < 52) return false;
+
 	AnimObject* Wave = new AnimObject;
 	Wave->Init(WavePos, { 0, 0 });
 	Wave->SetImage(GETIMAGE(EFX_EXPLOSION));
@@ -204,10 +215,11 @@ bool Bomb::InitWave(int index, int flag)
 			return false;
 		}
 
-	for(Block* block : BLOCK_VECTOR)
+	for (Block* block : BLOCK_VECTOR)
 		if (RRCollision(&Wave->GetCollider(), &block->GetCollider()))
 		{
 			BombWaves.push_back(Wave);
+			TargetBlocks.push_back(block);
 			return false;
 		}
 

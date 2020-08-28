@@ -14,8 +14,8 @@ public:
 	void UpdateFrame();
 
 	void CreateItem();
+	void SetColliderState(bool isactive);
 
 	inline void SetDestructible(bool destructible) { IsDestructible = destructible; };
 	inline bool GetDestructible() { return IsDestructible; };
 };
-
