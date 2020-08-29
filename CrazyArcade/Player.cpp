@@ -46,31 +46,48 @@ void Player::InitPlayer(POINT pos, POINT pivot)
 	Pos.y -= ImagePivot.y;
 }
 
-void Player::SetPlayerDir(POINT dir)
+void Player::SetPlayerDir()
 {
-	Dir = dir;
+	static bool IsKeyDown = false;
 
-	// Left
-	if (Dir.x == 1)
+	if (GetKeyState(VK_LEFT) & 0x8000)
+	{
+		IsKeyDown = true;
+		Anim_Frame_Flag = 2;
+		Dir = { -1, 0 };
+	}
+	else if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
 		Anim_Frame_Flag = 3;
-	} // Right
-	else if (Dir.x == -1)
-	{
-		Anim_Frame_Flag = 2;
-	}// Up
-	else if (Dir.y == -1)
-	{
-		Anim_Frame_Flag = 0;
-	}// Down
-	else if (Dir.y == 1)
-	{
-		Anim_Frame_Flag = 1;
+		IsKeyDown = true;
+		Dir = { 1, 0 };
 	}
-	else // idle
+
+	else if (GetKeyState(VK_DOWN) & 0x8000)
 	{
+		IsKeyDown = true;
+		Anim_Frame_Flag = 1;
+		Dir = { 0, 1 };
+	}
+	else if (GetKeyState(VK_UP) & 0x8000)
+	{
+		IsKeyDown = true;
+		Anim_Frame_Flag = 0;
+		Dir = { 0, -1 };
+	}
+
+	if (!IsKeyDown)
+	{
+		Dir = { 0, 0 };
 		Anim_Frame_Cur = Anim_Frame_Min;
 	}
+
+	if (GetAsyncKeyState(VK_SPACE) & 0x0001)
+	{
+		PutBomb();
+	}
+
+	IsKeyDown = false;
 }
 
 void Player::Collision()
@@ -79,25 +96,37 @@ void Player::Collision()
 	{
 		if (!block->GetColliderState()) continue;
 
+		RECT rt = block->GetCollider();
+		POINT rtsize = block->GetColliderSize();
+
 		if (RRCollision(&ColliderBox, &block->GetCollider()))
+		{
 			RewindMove();
+
+			if (Pos.x < rt.right && Pos.x > rt.left && Pos.y > rt.top && Pos.y < rt.bottom)
+			{
+				if (Pos.y > block->GetPos().y)
+					Pos.x += 1;
+				else if (Pos.y < block->GetPos().y)
+					Pos.x -= 1;
+			}
+
+			UpdateColliderBox();
+		}
 	}
 
 	for (Block* block : OBSTACLE_VECTOR)
 	{
-		if (RRCollision(&ColliderBox, &block->GetCollider()))
+		if (ObstacleCollision(block))
 			RewindMove();
 	}
 
-	RECT BlockArea;
 	for (Bomb* B : BombBag)
 	{
-		if (B->GetColliderState())
-			BlockArea = B->GetCollider();
-		else
+		if (!B->GetColliderState())
 			continue;
 
-		if (RRCollision(&ColliderBox, &BlockArea))
+		if (ObstacleCollision(B))
 		{
 			RewindMove();
 		}
@@ -113,6 +142,14 @@ void Player::Collision()
 			ITEM_VECTOR.erase(ITEM_VECTOR.begin() + i);
 		}
 	}
+}
+
+void Player::UpdateColliderBox()
+{
+	ColliderBox = { Pos.x - ColliderSize.x / 2 + ColPivot.x,
+					Pos.y - ColliderSize.y / 2 + ColPivot.y,
+					Pos.x + ColliderSize.x / 2 + ColPivot.x,
+					Pos.y + ColliderSize.y / 2 + ColPivot.y };
 }
 
 void Player::PutBomb()
@@ -138,10 +175,7 @@ void Player::RewindMove()
 	Pos.x -= Speed * Dir.x;
 	Pos.y -= Speed * Dir.y;
 
-	ColliderBox = { Pos.x - ColliderSize.x / 2 + ColPivot.x,
-					Pos.y - ColliderSize.y / 2 + ColPivot.y,
-					Pos.x + ColliderSize.x / 2 + ColPivot.x,
-					Pos.y + ColliderSize.y / 2 + ColPivot.y };
+	UpdateColliderBox();
 }
 
 void Player::GetItem(int newitem)
@@ -172,6 +206,21 @@ void Player::GetItem(int newitem)
 	}
 }
 
+bool Player::ObstacleCollision(Objects* other)
+{
+	RECT rt = other->GetCollider();
+	POINT size = other->GetColliderSize();
+
+	// x axis collision
+	//if (ColliderBox.right > rt.left +  &&
+	//	ColliderBox.left < rt.right)
+	//{
+
+	//}
+
+	return false;
+}
+
 void Player::Update()
 {
 	Start.x = Anim_Frame_Cur * Sprite_Size.x;
@@ -182,11 +231,8 @@ void Player::Update()
 	Pos.x += Speed * Dir.x;
 	Pos.y += Speed * Dir.y;
 
-	ColliderBox = { Pos.x - ColliderSize.x / 2 + ColPivot.x,
-					Pos.y - ColliderSize.y / 2 + ColPivot.y,
-					Pos.x + ColliderSize.x / 2 + ColPivot.x,
-					Pos.y + ColliderSize.y / 2 + ColPivot.y };
-
+	UpdateColliderBox();
+	Collision();
 
 	for (int i = 0; i < BombBag.size(); i++)
 	{

@@ -28,6 +28,7 @@ public:
 	virtual void InitCollider(POINT pivot, int size);
 	virtual void InitCollider(POINT pivot, int sizex, int sizey);
 	inline RECT GetCollider() { return ColliderBox; };
+	inline POINT GetColliderSize() { return ColliderSize; };
 	virtual bool GetColliderState() { return IsColliderActive; };
 	virtual void SetColliderState(bool isactive) { IsColliderActive = isactive; };
 

@@ -11,6 +11,7 @@ SoundManager::~SoundManager()
 	fmodSystem->close();
 }
 
+// cant use
 void SoundManager::Destroy()
 {
 	delete fmodSystem;

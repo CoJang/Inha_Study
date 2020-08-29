@@ -29,11 +29,14 @@ public:
 	void Update();
 	void Render(HDC front, HDC back, bool ColliderDraw);
 	void InitPlayer(POINT pos, POINT pivot);
-	void SetPlayerDir(POINT dir);
+	void SetPlayerDir();
 	void Collision();
 
+	void UpdateColliderBox();
 	void PutBomb();
 	void RewindMove();
 	void GetItem(int);
+
+	bool ObstacleCollision(Objects* other);
 };
 
