@@ -102,23 +102,17 @@ void Player::Collision()
 		if (RRCollision(&ColliderBox, &block->GetCollider()))
 		{
 			RewindMove();
-
-			if (Pos.x < rt.right && Pos.x > rt.left && Pos.y > rt.top && Pos.y < rt.bottom)
-			{
-				if (Pos.y > block->GetPos().y)
-					Pos.x += 1;
-				else if (Pos.y < block->GetPos().y)
-					Pos.x -= 1;
-			}
-
-			UpdateColliderBox();
+			ObstacleCollision(block);
 		}
 	}
 
 	for (Block* block : OBSTACLE_VECTOR)
 	{
-		if (ObstacleCollision(block))
+		if (RRCollision(&ColliderBox, &block->GetCollider()))
+		{
 			RewindMove();
+			ObstacleCollision(block);
+		}
 	}
 
 	for (Bomb* B : BombBag)
@@ -126,7 +120,7 @@ void Player::Collision()
 		if (!B->GetColliderState())
 			continue;
 
-		if (ObstacleCollision(B))
+		if (RRCollision(&ColliderBox, &B->GetCollider()))
 		{
 			RewindMove();
 		}
@@ -150,14 +144,17 @@ void Player::UpdateColliderBox()
 					Pos.y - ColliderSize.y / 2 + ColPivot.y,
 					Pos.x + ColliderSize.x / 2 + ColPivot.x,
 					Pos.y + ColliderSize.y / 2 + ColPivot.y };
+
+	vertex[0] = { ColliderBox.left,  ColliderBox.top };
+	vertex[1] = { ColliderBox.right, ColliderBox.top };
+	vertex[2] = { ColliderBox.right, ColliderBox.bottom };
+	vertex[3] = { ColliderBox.left,  ColliderBox.bottom };
 }
 
 void Player::PutBomb()
 {
 	if (BombBag.size() < MaxBomb)
 	{
-		SOUNDMANAGER->PlaySFX("BombPut");
-
 		Bomb* NewBomb = new Bomb(1, Pos, BombPower);
 		if (NewBomb->GetPos().x > 780 || NewBomb->GetPos().x < 26 ||
 			NewBomb->GetPos().y > 676 || NewBomb->GetPos().y < 52)
@@ -165,6 +162,8 @@ void Player::PutBomb()
 			delete NewBomb;
 			return;
 		}
+
+		SOUNDMANAGER->PlaySFX("BombPut");
 		BombBag.push_back(NewBomb);
 		BOMB_VECTOR.push_back(NewBomb);
 	}
@@ -209,14 +208,78 @@ void Player::GetItem(int newitem)
 bool Player::ObstacleCollision(Objects* other)
 {
 	RECT rt = other->GetCollider();
-	POINT size = other->GetColliderSize();
+	POINT Halfsize = other->GetColliderSize();
+	Halfsize.x /= 2;  Halfsize.y /= 2;
 
-	// x axis collision
-	//if (ColliderBox.right > rt.left +  &&
-	//	ColliderBox.left < rt.right)
-	//{
+	POINT BoxVTX[4];
 
-	//}
+	// LT[0], RT[0], RB[2], LB[3]
+	BoxVTX[0] = { rt.left,  rt.top };
+	BoxVTX[1] = { rt.right, rt.top };
+	BoxVTX[2] = { rt.right, rt.bottom };
+	BoxVTX[3] = { rt.left,  rt.bottom };
+
+	/*
+		v0--v1
+		|	|
+		|	|
+		v3--v2
+	*/
+
+
+	if (vertex[0].x <= BoxVTX[2].x && 
+		vertex[0].x > BoxVTX[2].x - Halfsize.x)
+	{
+		if (vertex[0].y >= BoxVTX[2].y)
+			Pos.x += Speed / 3;
+	}
+	if (vertex[0].x >= BoxVTX[2].x)
+	{
+		if (vertex[0].y <= BoxVTX[2].y &&
+			vertex[0].y > BoxVTX[2].y - Halfsize.y)
+			Pos.y += Speed / 3;
+	}
+
+	if (vertex[1].x >= BoxVTX[3].x &&
+		vertex[1].x < BoxVTX[3].x + Halfsize.x)
+	{
+		if (vertex[1].y >= BoxVTX[3].y)
+			Pos.x -= Speed / 3;
+	}
+	if (vertex[1].x <= BoxVTX[3].x)
+	{
+		if (vertex[1].y <= BoxVTX[3].y &&
+			vertex[1].y > BoxVTX[3].y - Halfsize.y)
+			Pos.y += Speed / 3;
+	}
+
+	if (vertex[2].x >= BoxVTX[0].x &&
+		vertex[2].x < BoxVTX[0].x + Halfsize.x)
+	{
+		if (vertex[2].y <= BoxVTX[0].y)
+			Pos.x -= Speed / 3;
+	}
+	if (vertex[2].x <= BoxVTX[0].x)
+	{
+		if (vertex[2].y >= BoxVTX[0].y &&
+			vertex[2].y < BoxVTX[0].y + Halfsize.y)
+			Pos.y -= Speed / 3;
+	}
+
+	if (vertex[3].x <= BoxVTX[1].x &&
+		vertex[3].x > BoxVTX[1].x - Halfsize.x)
+	{
+		if (vertex[3].y <= BoxVTX[1].y)
+			Pos.x += Speed / 3;
+	}
+	if (vertex[3].x >= BoxVTX[1].x)
+	{
+		if (vertex[3].y >= BoxVTX[1].y &&
+			vertex[3].y < BoxVTX[1].y + Halfsize.y)
+			Pos.y -= Speed / 3;
+	}
+
+	UpdateColliderBox();
 
 	return false;
 }

@@ -16,6 +16,7 @@ private:
 // Basic Attri
 	POINT Dir;
 	int Speed;
+	POINT vertex[4];
 
 // Game Attri
 	int MaxBomb;

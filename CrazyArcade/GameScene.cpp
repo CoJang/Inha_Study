@@ -21,7 +21,7 @@ GameScene::GameScene()
 
 	ColliderDrawMode = false;
 
-	SOUNDMANAGER->PlayBGM();
+	//SOUNDMANAGER->PlayBGM();
 }
 
 GameScene::~GameScene()
@@ -42,7 +42,6 @@ void GameScene::Update()
 	Timer += ElapseTime;
 
 	MainChar->Update();
-	//MainChar->Collision();
 	map->Update();
 }
 
