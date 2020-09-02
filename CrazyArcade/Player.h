@@ -19,10 +19,17 @@ private:
 	POINT vertex[4];
 
 // Game Attri
+	bool IsTrapped;
+	bool IsDeath;
+
 	int MaxBomb;
 	int BombPower;
 	vector<Bomb*> BombBag;
 	vector<int*> ItemBag;
+
+	int DeathAnim;
+	HBITMAP DeathImage[2];
+	BITMAP DeathBitmap[2];
 public:
 	Player();
 	~Player();
@@ -37,6 +44,7 @@ public:
 	void PutBomb();
 	void RewindMove();
 	void GetItem(int);
+	void TrapPlayer();
 
 	bool ObstacleCollision(Objects* other);
 };

@@ -66,18 +66,25 @@ bool ImageManager::LoadingImages()
 	Images[EFX_EXPLOSION] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	if (Images[EFX_EXPLOSION] == NULL) return false;
 
-	path = TEXT("images/effect/BigPopo.bmp");
-	Images[EFX_BIGBUBBLE] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[EFX_BIGBUBBLE] == NULL) return false;
-
 	path = TEXT("images/effect/Popo.bmp");
 	Images[WATER_BOMB] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	if (Images[WATER_BOMB] == NULL) return false;
 
 // char
-	path = TEXT("images/char/Role1.bmp");
-	Images[CHAR_BAZZY] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[CHAR_BAZZY] == NULL) return false;
+
+	{ // BAZZY
+		path = TEXT("images/char/Role1.bmp");
+		Images[CHAR_BAZZY] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[CHAR_BAZZY] == NULL) return false;
+
+		path = TEXT("images/char/Role1Trap2.bmp");
+		Images[CHAR_BAZZY_TRAP] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[CHAR_BAZZY_TRAP] == NULL) return false;
+
+		path = TEXT("images/char/Role1Die.bmp");
+		Images[CHAR_BAZZY_DIE] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[CHAR_BAZZY_DIE] == NULL) return false;
+	}
 
 	path = TEXT("images/char/Role2.bmp");
 	Images[CHAR_HOOCU] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);

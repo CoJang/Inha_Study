@@ -8,7 +8,7 @@ extern Singleton* singleton;
 
 Bomb::Bomb(int Owner, POINT pos, int power)
 {
-	AnimObject::Init(RePosition(pos), { -26, -52 });
+	AnimObject::Init(RePosition(pos), { 0, 0 });
 	SetImage(GETIMAGE(WATER_BOMB));
 
 	Sprite_Size.x = bitImage.bmWidth / 3;
@@ -18,7 +18,7 @@ Bomb::Bomb(int Owner, POINT pos, int power)
 	AnimObject::InitAnimation();
 	Anim_Speed = 180;
 
-	AnimObject::InitCollider({ 26, 24 }, 36);
+	AnimObject::InitCollider({ 26, 26 }, 36);
 	IsColliderActive = false;
 
 	Power = power;
@@ -67,7 +67,9 @@ void Bomb::Update()
 		{
 			Waves->Update();
 			if (RRCollision(&PLAYER->GetCollider(), &Waves->GetCollider()))
-				cout << "Player Hit!" << endl;
+			{
+				PLAYER->TrapPlayer();
+			}
 
 			for (int i = 0; i < ITEM_VECTOR.size(); i++)
 			{
@@ -136,7 +138,7 @@ POINT Bomb::RePosition(POINT pos)
 	{
 		if (i * 52 < pos.x && pos.x < (i + 1) * 52)
 		{
-			pos.x = i * 52;
+			pos.x = i * 52 + 26;
 			break;
 		}
 	}
@@ -145,7 +147,7 @@ POINT Bomb::RePosition(POINT pos)
 	{
 		if (i * 52 < pos.y && pos.y < (i + 1) * 52)
 		{
-			pos.y = i * 52;
+			pos.y = i * 52 + 52;
 			break;
 		}
 	}

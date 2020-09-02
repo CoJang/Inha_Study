@@ -12,6 +12,10 @@ extern Singleton* singleton;
 Player::Player()
 {
 	SetImage(GETIMAGE(CHAR_BAZZY));
+	DeathImage[0] = GETIMAGE(CHAR_BAZZY_TRAP);
+	GetObject(DeathImage[0], sizeof(BITMAP), &DeathBitmap[0]);
+	DeathImage[1] = GETIMAGE(CHAR_BAZZY_DIE);
+	GetObject(DeathImage[1], sizeof(BITMAP), &DeathBitmap[1]);
 
 	AnimObject::InitAnimation(0, 5, 6, 4, 1);
 
@@ -23,6 +27,11 @@ Player::Player()
 
 	MaxBomb = 2;
 	BombPower = 1;
+
+	IsTrapped = false;
+	IsDeath = false;
+	DeathAnim = 0;
+	//TrapPlayer();
 
 	singleton->GetCollisionManager()->SetPlayer(this);
 }
@@ -41,9 +50,6 @@ void Player::InitPlayer(POINT pos, POINT pivot)
 {
 	ImagePivot = pivot;
 	Pos = pos;
-
-	Pos.x -= ImagePivot.x;
-	Pos.y -= ImagePivot.y;
 }
 
 void Player::SetPlayerDir()
@@ -53,33 +59,39 @@ void Player::SetPlayerDir()
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
 		IsKeyDown = true;
-		Anim_Frame_Flag = 2;
 		Dir = { -1, 0 };
+		if(!IsTrapped && !IsDeath)
+			Anim_Frame_Flag = 2;
 	}
 	else if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
-		Anim_Frame_Flag = 3;
 		IsKeyDown = true;
 		Dir = { 1, 0 };
+		if (!IsTrapped && !IsDeath)
+			Anim_Frame_Flag = 3;
 	}
 
 	else if (GetKeyState(VK_DOWN) & 0x8000)
 	{
 		IsKeyDown = true;
-		Anim_Frame_Flag = 1;
 		Dir = { 0, 1 };
+		if (!IsTrapped && !IsDeath)
+			Anim_Frame_Flag = 1;
 	}
 	else if (GetKeyState(VK_UP) & 0x8000)
 	{
 		IsKeyDown = true;
-		Anim_Frame_Flag = 0;
 		Dir = { 0, -1 };
+		if (!IsTrapped && !IsDeath)
+			Anim_Frame_Flag = 0;
 	}
 
 	if (!IsKeyDown)
 	{
 		Dir = { 0, 0 };
-		Anim_Frame_Cur = Anim_Frame_Min;
+
+		if (!IsTrapped && !IsDeath)
+			Anim_Frame_Cur = Anim_Frame_Min;
 	}
 
 	if (GetAsyncKeyState(VK_SPACE) & 0x0001)
@@ -157,7 +169,7 @@ void Player::PutBomb()
 	{
 		Bomb* NewBomb = new Bomb(1, Pos, BombPower);
 		if (NewBomb->GetPos().x > 780 || NewBomb->GetPos().x < 26 ||
-			NewBomb->GetPos().y > 676 || NewBomb->GetPos().y < 52)
+			NewBomb->GetPos().y > 676 || NewBomb->GetPos().y < 16)
 		{
 			delete NewBomb;
 			return;
@@ -203,6 +215,26 @@ void Player::GetItem(int newitem)
 		}
 		break;
 	}
+}
+
+void Player::TrapPlayer()
+{
+	if (!IsTrapped && !IsDeath)
+		IsTrapped = true;
+	else
+		return;
+
+	HBITMAP htemp = hImage;
+	BITMAP btemp = bitImage;
+	hImage = DeathImage[0];
+	bitImage = DeathBitmap[0];
+	DeathImage[0] = hImage;
+	DeathBitmap[0] = bitImage;
+
+	InitAnimation(0, 3, 4, 1, 0);
+	Anim_Speed = 200;
+	ImageScale = 1.3f;
+	ImagePivot = { 18, 0 };
 }
 
 bool Player::ObstacleCollision(Objects* other)
@@ -286,13 +318,18 @@ bool Player::ObstacleCollision(Objects* other)
 
 void Player::Update()
 {
-	Start.x = Anim_Frame_Cur * Sprite_Size.x;
-	Start.y = Anim_Frame_Flag * Sprite_Size.y;
-
 	UpdateFrame();
 
-	Pos.x += Speed * Dir.x;
-	Pos.y += Speed * Dir.y;
+	if (!IsTrapped)
+	{
+		Pos.x += Speed * Dir.x;
+		Pos.y += Speed * Dir.y;
+	}
+	else
+	{
+		Pos.x += 1 * Dir.x;
+		Pos.y += 1 * Dir.y;
+	}
 
 	UpdateColliderBox();
 	Collision();

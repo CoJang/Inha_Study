@@ -29,7 +29,7 @@ void Map::LoadingBackground()
 	// BackGround Frame
 	FrameImage.Init({ 0, 0 }, { 0, 0 });
 	FrameImage.SetImage(GETIMAGE(BG_FRAME));
-	BackTiles.Init({ 0, 0 }, TILE_PIVOT);
+	BackTiles.Init({ 0, 0 }, { -26, -53 });
 	BackTiles.SetImage(GETIMAGE(MAP_TILE));
 }
 
@@ -70,7 +70,7 @@ void Map::LoadingBlocks()
 				if (ImageIndex == 3) // pond
 				{
 					Blocks[x + (y * MAP_WIDTH)].Init({ x * 52, y * 52 }, TILE_PIVOT);
-					Blocks[x + (y * MAP_WIDTH)].InitCollider({ 78, 48 }, 128, 94);
+					Blocks[x + (y * MAP_WIDTH)].InitCollider({ 104, 104 }, 128, 94);
 					Blocks[x + (y * MAP_WIDTH)].SetImage(GETIMAGE(MAP_OBS_POND));
 				}
 				else
@@ -86,7 +86,7 @@ void Map::LoadingBlocks()
 			{
 				Blocks[x + (y * MAP_WIDTH)].Init({ x * 52, y * 52 }, BLOCK_PIVOT);
 				Blocks[x + (y * MAP_WIDTH)].SetImage(GETIMAGE(ImageIndex + 2));
-				Blocks[x + (y * MAP_WIDTH)].InitCollider({ 34, 36 }, -1);
+				Blocks[x + (y * MAP_WIDTH)].InitCollider({ -1, -1 }, -1);
 				Blocks[x + (y * MAP_WIDTH)].InitAnimation();
 				Blocks[x + (y * MAP_WIDTH)].SetDestructible(true);
 

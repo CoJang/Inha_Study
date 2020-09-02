@@ -17,7 +17,9 @@ GameScene::GameScene()
 
 	map = new Map;
 	MainChar = new Player;
-	MainChar->InitPlayer({ 52, 0 }, {-26, -26});
+
+	// 52 + 26
+	MainChar->InitPlayer({ 78, 26 }, {0, 0});
 
 	ColliderDrawMode = false;
 

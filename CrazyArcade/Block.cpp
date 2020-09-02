@@ -10,8 +10,8 @@ Block::Block()
 {
 	Pos = { -1, -1 };
 	ImagePivot = { 0, 0 };
-	ColPivot = { 26, 33 };
-	ColliderSize = {48, 48};
+	ColPivot = { 52, 72 };
+	ColliderSize = { 48, 48 };
 
 	IsColliderActive = true;
 	IsDestructible = false;

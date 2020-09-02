@@ -7,10 +7,10 @@ extern Singleton* singleton;
 
 Item::Item(POINT pos, int itemtype)
 {
-	AnimObject::Init(pos, { -11, -12 });
+	AnimObject::Init(pos, { -29, -48 });
 	AnimObject::SetImage(GETIMAGE(itemtype));
 	AnimObject::InitAnimation(0, 2, 3, 1, 0);
-	AnimObject::InitCollider({ 24, 24 }, 32);
+	AnimObject::InitCollider({ 52, 76 }, 32);
 	AnimObject::SetImageSize(1.1f);
 	AnimObject::SetAnimSpeed(150);
 

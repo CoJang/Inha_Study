@@ -12,8 +12,6 @@ void Objects::Init(wstring path, POINT pos, POINT pivot)
 {
 	ImagePivot = pivot;
 	Pos = pos;
-	Pos.x -= ImagePivot.x;
-	Pos.y -= ImagePivot.y;
 
 	hImage = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP,
 		0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
@@ -27,8 +25,6 @@ void Objects::Init(POINT pos, POINT pivot)
 {
 	ImagePivot = pivot;
 	Pos = pos;
-	Pos.x -= ImagePivot.x;
-	Pos.y -= ImagePivot.y;
 }
 
 void Objects::SetImage(HBITMAP image)
@@ -51,6 +47,7 @@ void Objects::SetImage(HBITMAP & image, BITMAP & bitmap)
 	Sprite_Size.x = bitImage.bmWidth;
 	Sprite_Size.y = bitImage.bmHeight;
 }
+
 
 void Objects::InitCollider(POINT pivot, int size)
 {
@@ -89,8 +86,10 @@ void Objects::Render(HDC front, HDC back, bool colliderdraw)
 {
 	HBITMAP oldbuffer = (HBITMAP)SelectObject(back, hImage);
 
-	BitBlt(front, Pos.x, Pos.y, Sprite_Size.x, Sprite_Size.y,
-			back, 0, 0, SRCCOPY);
+	BitBlt(front, Pos.x - ImagePivot.x,
+				  Pos.y - ImagePivot.y, 
+				  Sprite_Size.x, Sprite_Size.y,
+			      back, 0, 0, SRCCOPY);
 
 	if (colliderdraw && IsColliderActive)
 		Rectangle(front, ColliderBox.left, ColliderBox.top,
@@ -106,8 +105,10 @@ void Objects::TransRender(HDC front, HDC back, bool colliderdraw)
 {
 	HBITMAP oldbuffer = (HBITMAP)SelectObject(back, hImage);
 
-	TransparentBlt(front, Pos.x, Pos.y, Sprite_Size.x, Sprite_Size.y,
-					back, 0, 0,	Sprite_Size.x, Sprite_Size.y, FILTER);
+	TransparentBlt(front, Pos.x - ImagePivot.x, 
+						  Pos.y - ImagePivot.y, 
+						  Sprite_Size.x, Sprite_Size.y,
+						  back, 0, 0, Sprite_Size.x, Sprite_Size.y, FILTER);
 
 	if (colliderdraw && IsColliderActive)
 		Rectangle(front, ColliderBox.left, ColliderBox.top,
@@ -153,14 +154,14 @@ void AnimObject::InitAnimation(int minframe, int framelimit,
 
 void AnimObject::Update()
 {
-	Start.x = Anim_Frame_Cur * Sprite_Size.x;
-	Start.y = Anim_Frame_Flag * Sprite_Size.y;
-
 	UpdateFrame();
 }
 
 void AnimObject::UpdateFrame()
 {
+	Start.x = Anim_Frame_Cur * Sprite_Size.x;
+	Start.y = Anim_Frame_Flag * Sprite_Size.y;
+
 	Anim_Timer += ElapseTime;
 
 	if (Anim_Timer >= Anim_Speed)
@@ -177,11 +178,11 @@ void AnimObject::Render(HDC front, HDC back, bool colliderdraw)
 {
 	HBITMAP oldbuffer = (HBITMAP)SelectObject(back, hImage);
 
-	bool check = TransparentBlt(front, Pos.x, Pos.y,
-					Sprite_Size.x * ImageScale,
-					Sprite_Size.y * ImageScale,
-					back, Start.x, Start.y,
-					Sprite_Size.x, Sprite_Size.y, FILTER);
+	TransparentBlt(front, Pos.x - ImagePivot.x, Pos.y - ImagePivot.y,
+							Sprite_Size.x * ImageScale,
+							Sprite_Size.y * ImageScale,
+							back, Start.x, Start.y,
+							Sprite_Size.x, Sprite_Size.y, FILTER);
 
 	if (colliderdraw && IsColliderActive)
 		Rectangle(front, ColliderBox.left, ColliderBox.top,
