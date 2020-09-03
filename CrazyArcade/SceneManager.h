@@ -1,5 +1,6 @@
 #pragma once
 #include "TitleScene.h"
+#include "LobbyScene.h"
 #include "GameScene.h"
 //#include "GameOverScene.h"
 
@@ -11,6 +12,7 @@ private:
 	HDC* FrontBuffer;
 	HDC* BackBuffer;
 
+	string IP;
 	wstring ID;
 	int score;
 public:

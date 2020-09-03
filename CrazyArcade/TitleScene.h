@@ -18,9 +18,6 @@ public:
 	TitleScene();
 	~TitleScene();
 
-	void SetID(wstring input) { ID = input; };
-	wstring GetID(){ return ID; };
-
 	void ShowID();
 	void DrawButtons();
 	ButtonType CheckClick(POINT mpos, int flag);

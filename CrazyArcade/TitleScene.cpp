@@ -50,8 +50,8 @@ void TitleScene::ShowID()
 
 	oldFont = (HFONT)SelectObject(*FrontBuffer, myFont);
 
-	TextOut(*FrontBuffer, 110, 235, TEXT("ENTER YOUR ID"), 13);
-	DrawText(*FrontBuffer, ID.c_str(), ID.size(), &ID_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	TextOutA(*FrontBuffer, 110, 235, "ENTER IP", 9);
+	DrawTextA(*FrontBuffer, IP.c_str(), IP.size(), &ID_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
 	SelectObject(*FrontBuffer, oldFont);
 
@@ -76,7 +76,11 @@ ButtonType TitleScene::CheckClick(POINT mpos, int flag)
 	if (mpos.x < START_Rect.right && mpos.x > START_Rect.left &&
 		mpos.y < START_Rect.bottom && mpos.y > START_Rect.top)
 	{
-		if(flag == 0) singleton->GetSceneManager()->NextScene();
+		if (flag == 0)
+		{
+			if(singleton->GetNetworkManager()->OperateServer())
+				singleton->GetSceneManager()->NextScene();
+		}
 	}
 	return UNKNOWN;
 }

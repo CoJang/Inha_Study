@@ -3,6 +3,7 @@
 enum SceneType
 {
 	TITLE,
+	LOBBY,
 	GAME,
 	GAMEOVER,
 	DEFAULT
@@ -20,6 +21,7 @@ enum ButtonType
 class Scene
 {
 protected:
+	string IP;
 	wstring ID;
 	SceneType type;
 
@@ -33,8 +35,9 @@ public:
 	virtual ~Scene() {};
 	void InitScene(HDC* Front, HDC* Back) { FrontBuffer = Front; BackBuffer = Back; };
 
+	virtual void SetIP(string input) { IP = input; };
 	virtual void SetID(wstring input) { ID = input; };
-	virtual wstring GetID() { return NULL; };
+	virtual wstring GetID() { return ID; };
 	virtual void ShowID() {};
 
 	virtual void DrawButtons() {};

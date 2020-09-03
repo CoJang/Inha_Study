@@ -31,9 +31,6 @@
     <Filter Include="Source Files\Player">
       <UniqueIdentifier>{2b70436f-262b-4ce3-a9fc-20dfeb5a5528}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Bomb">
-      <UniqueIdentifier>{9d4df095-cac6-49d1-ae5b-226d17353e1a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Object">
       <UniqueIdentifier>{0a9a32f5-5ca1-4546-9532-a095cf649530}</UniqueIdentifier>
     </Filter>
@@ -43,8 +40,8 @@
     <Filter Include="Source Files\FMOD">
       <UniqueIdentifier>{d86cd560-3866-4f92-919c-7804ab4c06d9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Sound">
-      <UniqueIdentifier>{38758d5a-dbc4-4128-bfb2-0fc1f0374a21}</UniqueIdentifier>
+    <Filter Include="Source Files\Object\Bomb">
+      <UniqueIdentifier>{9d4df095-cac6-49d1-ae5b-226d17353e1a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -91,7 +88,7 @@
       <Filter>Source Files\Map</Filter>
     </ClInclude>
     <ClInclude Include="Bomb.h">
-      <Filter>Source Files\Bomb</Filter>
+      <Filter>Source Files\Object\Bomb</Filter>
     </ClInclude>
     <ClInclude Include="Objects.h">
       <Filter>Source Files\Object</Filter>
@@ -122,6 +119,12 @@
     </ClInclude>
     <ClInclude Include="fmod.hpp">
       <Filter>Source Files\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkManager.h">
+      <Filter>Source Files\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="LobbyScene.h">
+      <Filter>Source Files\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -159,7 +162,7 @@
       <Filter>Source Files\Map</Filter>
     </ClCompile>
     <ClCompile Include="Bomb.cpp">
-      <Filter>Source Files\Bomb</Filter>
+      <Filter>Source Files\Object\Bomb</Filter>
     </ClCompile>
     <ClCompile Include="Objects.cpp">
       <Filter>Source Files\Object</Filter>
@@ -175,6 +178,12 @@
     </ClCompile>
     <ClCompile Include="ImageManager.cpp">
       <Filter>Source Files\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkManager.cpp">
+      <Filter>Source Files\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="LobbyScene.cpp">
+      <Filter>Source Files\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

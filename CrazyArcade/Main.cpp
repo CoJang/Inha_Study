@@ -121,7 +121,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			BackBuffer[0] = CreateCompatibleDC(hdc);
 			BackBuffer[1] = CreateCompatibleDC(BackBuffer[0]);
 
-			singleton->InitSingleton(&BackBuffer[0], &BackBuffer[1]);
+			singleton->InitSingleton(hWnd, &BackBuffer[0], &BackBuffer[1]);
 		}
 		break;
     case WM_COMMAND:
@@ -143,7 +143,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_PAINT:
         {
-		double startTime = GetTickCount();
+		//double startTime = GetTickCount();
 			PAINTSTRUCT ps;
 			hdc = BeginPaint(hWnd, &ps);
 			BackBitmap = CreateCompatibleBitmap(hdc, WIN_WIDTH, WIN_HEIGHT);
@@ -161,10 +161,54 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DeleteObject(BackBitmap);
 
 			EndPaint(hWnd, &ps);
-		double endTime = GetTickCount();
-		cout << endTime - startTime << endl;
+		//double endTime = GetTickCount();
+		//cout << endTime - startTime << endl;
         }
         break;
+	case WM_LBUTTONUP:
+		static POINT MousePos;
+		MousePos = { LOWORD(lParam), HIWORD(lParam) };
+		singleton->GetSceneManager()->GetInstance()->CheckClick(MousePos, 0);
+		break;
+	case WM_CHAR:
+	{
+		if(CURRENT_SCENE->GetType() == TITLE)
+		{
+			static string input;
+			if (wParam != VK_RETURN && wParam != VK_BACK)
+			{
+				input += wParam;
+				CURRENT_SCENE->SetIP(input);
+				singleton->GetNetworkManager()->SetIP(input);
+			}
+			else if (wParam == VK_BACK && input.size() > 0)
+			{
+				input.erase(input.begin() + input.size() - 1);
+				CURRENT_SCENE->SetIP(input);
+				singleton->GetNetworkManager()->SetIP(input);
+			}
+			else
+			{
+				CURRENT_SCENE->SetIP(input);
+				singleton->GetNetworkManager()->SetIP(input);
+				input = "";
+			}
+		} // end of if(CURRENT_SCENE == TITLE)
+	} // end of WM_CHAR:
+		break;
+	case WM_ASYNC:
+		switch (lParam)
+		{
+		case FD_ACCEPT:
+			NETWORKMANAGER->Accept();
+			break;
+		case FD_READ:
+			NETWORKMANAGER->ReadMessage(wParam);
+			break;
+		default:
+			break;
+		}
+		break;
 	case WM_TIMER:
 		InvalidateRect(hWnd, NULL, false);
 		break;

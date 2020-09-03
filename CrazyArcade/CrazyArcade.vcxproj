@@ -152,9 +152,11 @@
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="LobbyScene.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MyMath.h" />
+    <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Objects.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
@@ -173,9 +175,11 @@
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="LobbyScene.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MyMath.cpp" />
+    <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="Objects.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />

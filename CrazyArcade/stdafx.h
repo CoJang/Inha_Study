@@ -24,6 +24,7 @@
 #include <fstream>
 #include <istream>
 #include <ostream>
+#include <WinSock2.h>
 
 using namespace std;
 
@@ -31,6 +32,7 @@ using namespace std;
 #include "Singleton.h"
 #include "MyMath.h"
 
+#pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "msimg32.lib")
 #pragma comment(lib, "fmodex_vc.lib")
 
@@ -49,7 +51,9 @@ using namespace std;
 
 #define ElapseTime 17
 
+#define NETWORKMANAGER singleton->GetNetworkManager()
 #define SOUNDMANAGER singleton->GetSoundManager()
+#define CURRENT_SCENE singleton->GetSceneManager()->GetInstance()
 
 #define MAP singleton->GetCollisionManager()->GetMap()
 #define BLOCKS singleton->GetCollisionManager()->GetMap()->GetBlocks()

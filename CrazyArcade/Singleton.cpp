@@ -12,10 +12,12 @@ Singleton::~Singleton()
 	delete CM;
 	delete SFXM;
 	delete IM;
+	delete NM;
 }
 
-void Singleton::InitSingleton(HDC* Frontbuffer, HDC* backbuffer)
+void Singleton::InitSingleton(HWND hWnd, HDC* Frontbuffer, HDC* backbuffer)
 {
+	NM = new NetworkManager;
 	SM = new SceneManager;
 	CM = new CollisionManager;
 	SFXM = new SoundManager;
@@ -23,6 +25,7 @@ void Singleton::InitSingleton(HDC* Frontbuffer, HDC* backbuffer)
 
 	SFXM->init();
 	SM->InitManager(Frontbuffer, backbuffer);
+	NM->InitNetworkManager(hWnd);
 }
 
 void Singleton::Release()

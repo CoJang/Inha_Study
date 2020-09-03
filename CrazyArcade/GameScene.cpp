@@ -60,7 +60,7 @@ void GameScene::DrawButtons()
 
 	ScoreStr = TEXT("Score : ") + (to_wstring(score));
 	DrawText(*FrontBuffer, ScoreStr.c_str(), ScoreStr.size(), &SCORE_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-	DrawText(*FrontBuffer, ID.c_str(), ID.size(), &ID_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	DrawTextA(*FrontBuffer, IP.c_str(), IP.size(), &ID_Rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
 	SelectObject(*FrontBuffer, oldFont);
 }
