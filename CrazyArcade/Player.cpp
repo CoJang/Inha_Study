@@ -30,8 +30,10 @@ Player::Player()
 
 	IsTrapped = false;
 	IsDeath = false;
+
 	DeathAnim = 0;
-	//TrapPlayer();
+	DeathTimer = 0;
+	LifeTime = 2000;
 
 	singleton->GetCollisionManager()->SetPlayer(this);
 }
@@ -46,10 +48,11 @@ Player::~Player()
 	BombBag.clear();
 }
 
-void Player::InitPlayer(POINT pos, POINT pivot)
+void Player::InitPlayer(POINT pos, POINT pivot, int playerflag)
 {
 	ImagePivot = pivot;
 	Pos = pos;
+	PlayerFlag = playerflag;
 }
 
 void Player::SetPlayerDir()
@@ -232,9 +235,22 @@ void Player::TrapPlayer()
 	DeathBitmap[0] = bitImage;
 
 	InitAnimation(0, 3, 4, 1, 0);
-	Anim_Speed = 200;
+	Anim_Speed = 600;
 	ImageScale = 1.3f;
 	ImagePivot = { 18, 0 };
+	oldSpeed = Speed;
+	Speed = 1;
+}
+
+void Player::KillPlayer()
+{
+	hImage = DeathImage[1];
+	bitImage = DeathBitmap[1];
+
+	InitAnimation(0, 7, 8, 1, 0);
+	Anim_Speed = 100;
+	ImageScale = 1.2f;
+	ImagePivot = { 0, 0 };
 }
 
 bool Player::ObstacleCollision(Objects* other)
@@ -320,15 +336,29 @@ void Player::Update()
 {
 	UpdateFrame();
 
-	if (!IsTrapped)
+	if (IsDeath) return;
+
+	if (IsTrapped)
 	{
-		Pos.x += Speed * Dir.x;
-		Pos.y += Speed * Dir.y;
+		DeathTimer += ElapseTime;
+
+		if (DeathTimer >= LifeTime)
+		{
+			IsTrapped = false;
+			IsDeath = true;
+
+			cout << "Player " << PlayerFlag << "Death!" << endl;
+			KillPlayer();
+		}
 	}
-	else
+
+	Pos.x += Speed * Dir.x;
+	Pos.y += Speed * Dir.y;
+
+	if (Pos.x > 780 || Pos.x < 26 ||
+		Pos.y > 676 || Pos.y < 16)
 	{
-		Pos.x += 1 * Dir.x;
-		Pos.y += 1 * Dir.y;
+		RewindMove();
 	}
 
 	UpdateColliderBox();

@@ -81,7 +81,7 @@ bool ImageManager::LoadingImages()
 		Images[CHAR_BAZZY_TRAP] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		if (Images[CHAR_BAZZY_TRAP] == NULL) return false;
 
-		path = TEXT("images/char/Role1Die.bmp");
+		path = TEXT("images/char/Role1Die2.bmp");
 		Images[CHAR_BAZZY_DIE] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		if (Images[CHAR_BAZZY_DIE] == NULL) return false;
 	}

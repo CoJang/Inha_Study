@@ -19,7 +19,7 @@ GameScene::GameScene()
 	MainChar = new Player;
 
 	// 52 + 26
-	MainChar->InitPlayer({ 78, 26 }, {0, 0});
+	MainChar->InitPlayer({ 78, 26 }, {0, 0}, 1);
 
 	ColliderDrawMode = false;
 

@@ -13,9 +13,13 @@ class Block;
 class Player : public AnimObject
 {
 private:
+// Player Flag
+	int PlayerFlag;
+
 // Basic Attri
 	POINT Dir;
 	int Speed;
+	int oldSpeed;
 	POINT vertex[4];
 
 // Game Attri
@@ -27,25 +31,30 @@ private:
 	vector<Bomb*> BombBag;
 	vector<int*> ItemBag;
 
+	int DeathTimer;
+	int LifeTime;
 	int DeathAnim;
 	HBITMAP DeathImage[2];
 	BITMAP DeathBitmap[2];
 public:
 	Player();
 	~Player();
+	void InitPlayer(POINT pos, POINT pivot, int playerflag);
 
 	void Update();
 	void Render(HDC front, HDC back, bool ColliderDraw);
-	void InitPlayer(POINT pos, POINT pivot);
-	void SetPlayerDir();
-	void Collision();
 
-	void UpdateColliderBox();
-	void PutBomb();
 	void RewindMove();
-	void GetItem(int);
-	void TrapPlayer();
+	void SetPlayerDir();
 
+	void Collision();
+	void UpdateColliderBox();
 	bool ObstacleCollision(Objects* other);
+
+	void PutBomb();
+	void GetItem(int);
+
+	void TrapPlayer();
+	void KillPlayer();
 };
 
