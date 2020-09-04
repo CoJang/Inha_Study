@@ -179,18 +179,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				input += wParam;
 				CURRENT_SCENE->SetIP(input);
-				singleton->GetNetworkManager()->SetIP(input);
 			}
 			else if (wParam == VK_BACK && input.size() > 0)
 			{
 				input.erase(input.begin() + input.size() - 1);
 				CURRENT_SCENE->SetIP(input);
-				singleton->GetNetworkManager()->SetIP(input);
 			}
 			else
 			{
 				CURRENT_SCENE->SetIP(input);
-				singleton->GetNetworkManager()->SetIP(input);
 				input = "";
 			}
 		} // end of if(CURRENT_SCENE == TITLE)

@@ -181,6 +181,8 @@ void Player::PutBomb()
 		SOUNDMANAGER->PlaySFX("BombPut");
 		BombBag.push_back(NewBomb);
 		BOMB_VECTOR.push_back(NewBomb);
+
+		NETWORKMANAGER->BroadcastMsg((string)"Player Put a Bomb", false);
 	}
 }
 

@@ -19,6 +19,11 @@ void SceneManager::NextScene()
 		CurrentScene = Manager[LOBBY];
 		CurrentScene->SetID(ID);
 		break;
+	case LOBBY:
+		CurrentScene = Manager[GAME];
+		CurrentScene->SetType(GAME);
+		CurrentScene->SetID(ID);
+		break;
 	case GAME:
 		CurrentScene = Manager[GAMEOVER];
 		CurrentScene->SetType(GAMEOVER);

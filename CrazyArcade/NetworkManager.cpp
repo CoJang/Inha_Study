@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "NetworkManager.h"
 
+extern Singleton* singleton;
+
 NetworkManager::NetworkManager()
 {
 	size = 0; msgLen = 0;
@@ -45,6 +47,7 @@ bool NetworkManager::OperateServer()
 		else
 		{
 			cout << "Listen Success!" << endl;
+			Ntype = HOST;
 			return true;
 		}
 	}
@@ -57,6 +60,7 @@ bool NetworkManager::OperateServer()
 	else
 	{
 		cout << "Connect Success!" << endl;
+		Ntype = CLIENT;
 		WSAAsyncSelect(ServerSocket, hWnd, WM_ASYNC, FD_READ);
 		return true;
 	}
@@ -68,6 +72,50 @@ void NetworkManager::ReadMessage(WPARAM wParam)
 {
 	msgLen = recv(wParam, buff, 128, 0);
 	buff[msgLen] = NULL;
+
+	cout << buff << endl;
+	string temp(buff);
+	if (strcmp(temp.c_str(), "NextScene") == 0)
+	{
+		singleton->GetSceneManager()->NextScene();
+	}
+}
+
+void NetworkManager::BroadcastMsg(string msg, bool usemembermsg)
+{
+	if (usemembermsg)
+	{
+		if (Ntype == HOST)
+		{
+			for (SOCKET client : ClientList)
+			{
+				send(client, Message.c_str(), Message.size(), 0);
+			}
+		}
+		else
+		{
+			send(ServerSocket, Message.c_str(), Message.size(), 0);
+		}
+	}
+	else
+	{
+		if (Ntype == HOST)
+		{
+			for (SOCKET client : ClientList)
+			{
+				send(client, msg.c_str(), msg.size(), 0);
+			}
+		}
+		else
+		{
+			send(ServerSocket, msg.c_str(), msg.size(), 0);
+		}
+	}
+}
+
+void NetworkManager::SendMsg(SOCKET target, string msg)
+{
+	send(target, msg.c_str(), msg.size(), 0);
 }
 
 bool NetworkManager::Accept()

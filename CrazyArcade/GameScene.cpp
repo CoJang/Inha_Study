@@ -23,6 +23,7 @@ GameScene::GameScene()
 
 	ColliderDrawMode = false;
 
+	// ==Mute==
 	//SOUNDMANAGER->PlayBGM();
 }
 

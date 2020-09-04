@@ -2,9 +2,17 @@
 
 #define WM_ASYNC WM_USER + 2
 
+enum NetWorkType
+{
+	HOST,
+	CLIENT
+};
+
 class NetworkManager
 {
 private:
+	NetWorkType Ntype;
+
 	HWND hWnd;
 	WSADATA wsadata;
 	SOCKET ServerSocket, ClientSocket;
@@ -12,6 +20,7 @@ private:
 	string IP_ADDR;
 	int size, msgLen;
 	char buff[128];
+	string Message;
 
 	vector<SOCKET> ClientList;
 public:
@@ -19,11 +28,16 @@ public:
 	~NetworkManager();
 	
 	void InitNetworkManager(HWND input);
+	bool OperateServer();
 	bool Accept();
 
-	bool OperateServer();
+	void SetMsg(string msg);
+	void SetMsg(char* msg);
 	void ReadMessage(WPARAM wParam);
+	void BroadcastMsg(string msg, bool usemembermsg);
+	void SendMsg(SOCKET target, string msg);
 
+	inline void SetNetworkType(NetWorkType type) { Ntype = type; };
 	inline void SetIP(string ip) { IP_ADDR = ip; };
 
 	inline int GetClientNum() { return ClientList.size(); };

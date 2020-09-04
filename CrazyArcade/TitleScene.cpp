@@ -7,6 +7,7 @@ extern Singleton* singleton;
 TitleScene::TitleScene()
 {
 	type = TITLE;
+	IP = "39.120.236.53";
 	ID = TEXT("Unknown");
 	ID_Rect = {0, 250, 450, 450};
 	START_Rect = { 0, 650, 450, 742 };
@@ -78,8 +79,12 @@ ButtonType TitleScene::CheckClick(POINT mpos, int flag)
 	{
 		if (flag == 0)
 		{
-			if(singleton->GetNetworkManager()->OperateServer())
+			NETWORKMANAGER->SetIP(IP);
+
+			if (singleton->GetNetworkManager()->OperateServer())
+			{
 				singleton->GetSceneManager()->NextScene();
+			}
 		}
 	}
 	return UNKNOWN;
