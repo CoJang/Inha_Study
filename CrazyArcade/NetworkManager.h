@@ -8,6 +8,29 @@ enum NetWorkType
 	CLIENT
 };
 
+struct BombPacket
+{
+	int PlayerFlag;
+	POINT Pos;
+	int Power;
+};
+
+enum Header
+{
+	COMMAND,
+	BOMB,
+};
+
+typedef struct Packet
+{
+	Header head;
+
+	int PlayerFlag;
+	POINT Pos;
+	int Power;
+	char* Cmd;
+}Packet;
+
 class NetworkManager
 {
 private:
@@ -24,6 +47,8 @@ private:
 
 	vector<SOCKET> ClientList;
 public:
+	Packet tempPacket;
+
 	NetworkManager();
 	~NetworkManager();
 	
@@ -31,15 +56,17 @@ public:
 	bool OperateServer();
 	bool Accept();
 
-	void SetMsg(string msg);
-	void SetMsg(char* msg);
 	void ReadMessage(WPARAM wParam);
-	void BroadcastMsg(string msg, bool usemembermsg);
 	void SendMsg(SOCKET target, string msg);
 
 	inline void SetNetworkType(NetWorkType type) { Ntype = type; };
 	inline void SetIP(string ip) { IP_ADDR = ip; };
 
 	inline int GetClientNum() { return ClientList.size(); };
+
+	void SendPacket();
+	void SendPacket(Packet packet);
+
+	void PrintPacket();
 };
 

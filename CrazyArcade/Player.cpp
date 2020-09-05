@@ -170,7 +170,7 @@ void Player::PutBomb()
 {
 	if (BombBag.size() < MaxBomb)
 	{
-		Bomb* NewBomb = new Bomb(1, Pos, BombPower);
+		Bomb* NewBomb = new Bomb(PlayerFlag, Pos, BombPower);
 		if (NewBomb->GetPos().x > 780 || NewBomb->GetPos().x < 26 ||
 			NewBomb->GetPos().y > 676 || NewBomb->GetPos().y < 16)
 		{
@@ -182,7 +182,9 @@ void Player::PutBomb()
 		BombBag.push_back(NewBomb);
 		BOMB_VECTOR.push_back(NewBomb);
 
-		NETWORKMANAGER->BroadcastMsg((string)"Player Put a Bomb", false);
+		Packet temp; temp.head = BOMB; temp.PlayerFlag = PlayerFlag;
+		temp.Pos = NewBomb->GetPos(); temp.Power = BombPower;
+		NETWORKMANAGER->SendPacket(temp);
 	}
 }
 

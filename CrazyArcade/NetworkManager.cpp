@@ -7,6 +7,8 @@ NetworkManager::NetworkManager()
 {
 	size = 0; msgLen = 0;
 	memset(buff, 0, sizeof(buff));
+
+	memset(&tempPacket, 0, sizeof(Packet));
 }
 
 NetworkManager::~NetworkManager()
@@ -33,7 +35,8 @@ bool NetworkManager::OperateServer()
 
 	if (bind(ServerSocket, (LPSOCKADDR)&addr, sizeof(addr)))
 	{
-		MessageBox(NULL, TEXT("Binding Failed"), TEXT("Error"), MB_OK);
+		cout << "Binding Failed!" << endl;
+		cout << "Trying Connect..." << endl;
 	}
 	else
 	{
@@ -59,7 +62,7 @@ bool NetworkManager::OperateServer()
 	}
 	else
 	{
-		cout << "Connect Success!" << endl;
+		MessageBox(NULL, TEXT("Connect Success"), TEXT("Success"), MB_OK);
 		Ntype = CLIENT;
 		WSAAsyncSelect(ServerSocket, hWnd, WM_ASYNC, FD_READ);
 		return true;
@@ -70,52 +73,77 @@ bool NetworkManager::OperateServer()
 
 void NetworkManager::ReadMessage(WPARAM wParam)
 {
-	msgLen = recv(wParam, buff, 128, 0);
-	buff[msgLen] = NULL;
+	msgLen = recv(wParam, (char*)&tempPacket, sizeof(Packet), 0);
+	
+	PrintPacket();
 
-	cout << buff << endl;
-	string temp(buff);
-	if (strcmp(temp.c_str(), "NextScene") == 0)
+	if (strcmp(tempPacket.Cmd, "NextScene") == 0)
 	{
 		singleton->GetSceneManager()->NextScene();
 	}
-}
 
-void NetworkManager::BroadcastMsg(string msg, bool usemembermsg)
-{
-	if (usemembermsg)
-	{
-		if (Ntype == HOST)
-		{
-			for (SOCKET client : ClientList)
-			{
-				send(client, Message.c_str(), Message.size(), 0);
-			}
-		}
-		else
-		{
-			send(ServerSocket, Message.c_str(), Message.size(), 0);
-		}
-	}
-	else
-	{
-		if (Ntype == HOST)
-		{
-			for (SOCKET client : ClientList)
-			{
-				send(client, msg.c_str(), msg.size(), 0);
-			}
-		}
-		else
-		{
-			send(ServerSocket, msg.c_str(), msg.size(), 0);
-		}
-	}
+	memset(&tempPacket, 0, sizeof(Packet));
 }
 
 void NetworkManager::SendMsg(SOCKET target, string msg)
 {
 	send(target, msg.c_str(), msg.size(), 0);
+}
+
+void NetworkManager::SendPacket(Packet packet)
+{
+	if (Ntype == CLIENT)
+	{
+		send(ServerSocket, (char*)&packet, sizeof(Packet), 0);
+	}
+	else if(Ntype == HOST)
+	{
+		for (SOCKET client : ClientList)
+		{
+			send(client, (char*)&packet, sizeof(Packet), 0);
+		}
+	}
+}
+
+void NetworkManager::PrintPacket()
+{
+	cout << "== Recived Packet Info ==" << endl;
+
+	switch (tempPacket.head)
+	{
+	case HOST:
+		cout << "Header : Host" << endl;
+		break;
+	case BOMB:
+		cout << "Header : Bomb" << endl;
+		break;
+	default:
+		cout << "Header : Unknown" << endl;
+		break;
+	}
+	
+	cout << "PlayerFlag : " << tempPacket.PlayerFlag << endl;
+	cout << "Pos.x : " << tempPacket.Pos.x << endl;
+	cout << "Pos.y : " << tempPacket.Pos.y << endl;
+	cout << "Bomb Power : " << tempPacket.Power << endl;
+	cout << "Command : " << tempPacket.Cmd << endl;
+
+	cout << "== Recived Packet Info End ==" << endl;
+}
+
+void NetworkManager::SendPacket()
+{
+	if (Ntype == CLIENT)
+	{
+		send(ServerSocket, (char*)&tempPacket, sizeof(Packet), 0);
+	}
+	else if (Ntype == HOST)
+	{
+		for (SOCKET client : ClientList)
+		{
+			send(client, (char*)&tempPacket, sizeof(Packet), 0);
+		}
+	}
 }
 
 bool NetworkManager::Accept()

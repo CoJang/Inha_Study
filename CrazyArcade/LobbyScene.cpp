@@ -16,7 +16,8 @@ void LobbyScene::Render()
 {
 	if (NETWORKMANAGER->GetClientNum() != 0)
 	{
-		NETWORKMANAGER->BroadcastMsg((string)"NextScene", false);
+		Packet temp; temp.head = COMMAND; temp.Cmd = "NextScene";
+		NETWORKMANAGER->SendPacket(temp);
 		singleton->GetSceneManager()->NextScene();
 	}
 }
