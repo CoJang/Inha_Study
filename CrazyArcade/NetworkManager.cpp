@@ -77,17 +77,15 @@ void NetworkManager::ReadMessage(WPARAM wParam)
 	
 	PrintPacket();
 
-	if (strcmp(tempPacket.Cmd, "NextScene") == 0)
+	if (tempPacket.head == COMMAND)
 	{
-		singleton->GetSceneManager()->NextScene();
+		if (strcmp(tempPacket.Cmd.c_str(), "NextScene") == 0)
+		{
+			singleton->GetSceneManager()->NextScene();
+		}
 	}
 
 	memset(&tempPacket, 0, sizeof(Packet));
-}
-
-void NetworkManager::SendMsg(SOCKET target, string msg)
-{
-	send(target, msg.c_str(), msg.size(), 0);
 }
 
 void NetworkManager::SendPacket(Packet packet)
@@ -105,32 +103,6 @@ void NetworkManager::SendPacket(Packet packet)
 	}
 }
 
-void NetworkManager::PrintPacket()
-{
-	cout << "== Recived Packet Info ==" << endl;
-
-	switch (tempPacket.head)
-	{
-	case HOST:
-		cout << "Header : Host" << endl;
-		break;
-	case BOMB:
-		cout << "Header : Bomb" << endl;
-		break;
-	default:
-		cout << "Header : Unknown" << endl;
-		break;
-	}
-	
-	cout << "PlayerFlag : " << tempPacket.PlayerFlag << endl;
-	cout << "Pos.x : " << tempPacket.Pos.x << endl;
-	cout << "Pos.y : " << tempPacket.Pos.y << endl;
-	cout << "Bomb Power : " << tempPacket.Power << endl;
-	cout << "Command : " << tempPacket.Cmd << endl;
-
-	cout << "== Recived Packet Info End ==" << endl;
-}
-
 void NetworkManager::SendPacket()
 {
 	if (Ntype == CLIENT)
@@ -144,6 +116,33 @@ void NetworkManager::SendPacket()
 			send(client, (char*)&tempPacket, sizeof(Packet), 0);
 		}
 	}
+}
+
+void NetworkManager::PrintPacket()
+{
+	cout << "== Recived Packet Info ==" << endl;
+
+	switch (tempPacket.head)
+	{
+	case COMMAND:
+		cout << "Header : Command" << endl;
+		break;
+	case BOMB:
+		cout << "Header : Bomb" << endl;
+		break;
+	default:
+		cout << "Header : Unknown" << endl;
+		break;
+	}
+	
+	cout << "PlayerFlag : " << tempPacket.PlayerFlag << endl;
+	cout << "Pos.x : " << tempPacket.Pos.x << endl;
+	cout << "Pos.y : " << tempPacket.Pos.y << endl;
+	cout << "Bomb Power : " << tempPacket.Power << endl;
+	if(tempPacket.head == COMMAND)
+		cout << "Command : " << tempPacket.Cmd << endl;
+
+	cout << "== Recived Packet Info End ==" << endl;
 }
 
 bool NetworkManager::Accept()

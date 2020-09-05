@@ -20,6 +20,7 @@ private:
 	Map* map;
 
 	bool ColliderDrawMode;
+	vector<Bomb*> OtherBombs;
 public:
 	GameScene();
 	~GameScene();

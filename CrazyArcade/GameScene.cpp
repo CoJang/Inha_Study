@@ -38,6 +38,11 @@ void GameScene::Render()
 	map->FrontRender(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 	map->BackRender(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 	MainChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
+
+	for (Bomb* B : OtherBombs)
+	{
+		B->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
+	}
 }
 
 void GameScene::Update()

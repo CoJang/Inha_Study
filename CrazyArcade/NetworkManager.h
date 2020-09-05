@@ -8,13 +8,6 @@ enum NetWorkType
 	CLIENT
 };
 
-struct BombPacket
-{
-	int PlayerFlag;
-	POINT Pos;
-	int Power;
-};
-
 enum Header
 {
 	COMMAND,
@@ -28,7 +21,7 @@ typedef struct Packet
 	int PlayerFlag;
 	POINT Pos;
 	int Power;
-	char* Cmd;
+	string Cmd;
 }Packet;
 
 class NetworkManager
@@ -57,7 +50,6 @@ public:
 	bool Accept();
 
 	void ReadMessage(WPARAM wParam);
-	void SendMsg(SOCKET target, string msg);
 
 	inline void SetNetworkType(NetWorkType type) { Ntype = type; };
 	inline void SetIP(string ip) { IP_ADDR = ip; };
