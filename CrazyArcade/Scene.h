@@ -1,4 +1,7 @@
 #pragma once
+#include "Singleton.h"
+
+struct Packet;
 
 enum SceneType
 {
@@ -50,4 +53,6 @@ public:
 	virtual void Update() = 0;
 	virtual void Render() = 0;
 	virtual void ResetScene() = 0;
+
+	virtual void ReceiveData(Packet* data) {};
 };

@@ -84,13 +84,12 @@ void NetworkManager::ReadMessage(WPARAM wParam)
 			singleton->GetSceneManager()->NextScene();
 		}
 	}
+	else if (tempPacket.head == BOMB)
+	{
+		CURRENT_SCENE->ReceiveData(&tempPacket);
+	}
 
 	memset(&tempPacket, 0, sizeof(Packet));
-}
-
-void NetworkManager::SendMsg(SOCKET target, string msg)
-{
-	send(target, msg.c_str(), msg.size(), 0);
 }
 
 void NetworkManager::SendPacket(Packet packet)
@@ -108,9 +107,24 @@ void NetworkManager::SendPacket(Packet packet)
 	}
 }
 
+void NetworkManager::SendPacket()
+{
+	if (Ntype == CLIENT)
+	{
+		send(ServerSocket, (char*)&tempPacket, sizeof(Packet), 0);
+	}
+	else if (Ntype == HOST)
+	{
+		for (SOCKET client : ClientList)
+		{
+			send(client, (char*)&tempPacket, sizeof(Packet), 0);
+		}
+	}
+}
+
 void NetworkManager::PrintPacket()
 {
-	cout << "== Recived Packet Info ==" << endl;
+	cout << "== Received Packet Info ==" << endl;
 
 	switch (tempPacket.head)
 	{
@@ -129,25 +143,10 @@ void NetworkManager::PrintPacket()
 	cout << "Pos.x : " << tempPacket.Pos.x << endl;
 	cout << "Pos.y : " << tempPacket.Pos.y << endl;
 	cout << "Bomb Power : " << tempPacket.Power << endl;
-	if (tempPacket.head == COMMAND)
+	if(tempPacket.head == COMMAND)
 		cout << "Command : " << tempPacket.Cmd << endl;
 
-	cout << "== Recived Packet Info End ==" << endl;
-}
-
-void NetworkManager::SendPacket()
-{
-	if (Ntype == CLIENT)
-	{
-		send(ServerSocket, (char*)&tempPacket, sizeof(Packet), 0);
-	}
-	else if (Ntype == HOST)
-	{
-		for (SOCKET client : ClientList)
-		{
-			send(client, (char*)&tempPacket, sizeof(Packet), 0);
-		}
-	}
+	cout << "== Received Packet Info End ==" << endl;
 }
 
 bool NetworkManager::Accept()
