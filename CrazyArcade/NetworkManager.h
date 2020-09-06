@@ -28,7 +28,7 @@ typedef struct Packet
 	int PlayerFlag;
 	POINT Pos;
 	int Power;
-	char* Cmd;
+	string Cmd;
 }Packet;
 
 class NetworkManager

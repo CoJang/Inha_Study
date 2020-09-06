@@ -77,9 +77,12 @@ void NetworkManager::ReadMessage(WPARAM wParam)
 	
 	PrintPacket();
 
-	if (strcmp(tempPacket.Cmd, "NextScene") == 0)
+	if (tempPacket.head == COMMAND)
 	{
-		singleton->GetSceneManager()->NextScene();
+		if (strcmp(tempPacket.Cmd.c_str(), "NextScene") == 0)
+		{
+			singleton->GetSceneManager()->NextScene();
+		}
 	}
 
 	memset(&tempPacket, 0, sizeof(Packet));
@@ -111,8 +114,8 @@ void NetworkManager::PrintPacket()
 
 	switch (tempPacket.head)
 	{
-	case HOST:
-		cout << "Header : Host" << endl;
+	case COMMAND:
+		cout << "Header : Command" << endl;
 		break;
 	case BOMB:
 		cout << "Header : Bomb" << endl;
@@ -126,7 +129,8 @@ void NetworkManager::PrintPacket()
 	cout << "Pos.x : " << tempPacket.Pos.x << endl;
 	cout << "Pos.y : " << tempPacket.Pos.y << endl;
 	cout << "Bomb Power : " << tempPacket.Power << endl;
-	cout << "Command : " << tempPacket.Cmd << endl;
+	if (tempPacket.head == COMMAND)
+		cout << "Command : " << tempPacket.Cmd << endl;
 
 	cout << "== Recived Packet Info End ==" << endl;
 }
