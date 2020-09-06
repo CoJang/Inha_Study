@@ -29,3 +29,14 @@ void LobbyScene::Update()
 void LobbyScene::ResetScene()
 {
 }
+
+void LobbyScene::ReceiveData(Packet* data)
+{
+	if (data->head == COMMAND)
+	{
+		if (strcmp(data->Cmd.c_str(), "NextScene") == 0)
+		{
+			singleton->GetSceneManager()->NextScene();
+		}
+	}
+}

@@ -18,13 +18,16 @@ GameScene::GameScene()
 	map = new Map;
 	MainChar = new Player;
 
-	// 52 + 26
-	MainChar->InitPlayer({ 78, 26 }, {0, 0}, 1);
-
 	ColliderDrawMode = false;
 
 	// ==Mute==
 	//SOUNDMANAGER->PlayBGM();
+
+	if (NETWORKMANAGER->GetNetworkType() == HOST)
+	{
+		NETWORKMANAGER->SetPlayerFlag();
+		MainChar->InitPlayer({ 78, 78 }, { 0, 0 }, 1);
+	}
 }
 
 GameScene::~GameScene()
@@ -100,11 +103,24 @@ void GameScene::CheckKeyDown()
 
 void GameScene::ReceiveData(Packet* data)
 {
-	if (data->head == BOMB) 
+	// 1p {78, 78}, 2p {702, 78}, 3p{78, 598}, 4p{702, 598}
+	switch (data->head)
 	{
-		Bomb* NewBomb = new Bomb(data->PlayerFlag, data->Pos, data->Power);
-		OtherBombs.push_back(NewBomb);
+	case COMMAND:
+		return;
+	case BOMB:
+		{
+			Bomb* NewBomb = new Bomb(data->PlayerFlag, data->Pos, data->Power);
+			OtherBombs.push_back(NewBomb);
+		}
+		return;
+	case USER:
+		return;
+	case USERINIT:
+		MainChar->InitPlayer(data->Pos, { 0, 0 }, data->PlayerFlag);
+		return;
+	default:
+		return;
 	}
-
 }
 

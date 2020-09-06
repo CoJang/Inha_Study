@@ -12,5 +12,6 @@ public:
 	void Render();
 	void Update();
 	void ResetScene();
+	void ReceiveData(Packet* data);
 };
 

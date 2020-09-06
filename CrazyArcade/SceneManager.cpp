@@ -15,16 +15,29 @@ void SceneManager::NextScene()
 	switch (CurrentScene->GetType())
 	{
 	case TITLE:
-		if (ID.empty()) ID = CurrentScene->GetID();
-		CurrentScene = Manager[LOBBY];
-		CurrentScene->SetID(ID);
+		{
+			if (ID.empty()) ID = CurrentScene->GetID();
+			Scene* Lobby = new LobbyScene;
+			Lobby->InitScene(FrontBuffer, BackBuffer);
+			Manager.push_back(Lobby);
+			CurrentScene = Manager[LOBBY];
+			CurrentScene->SetID(ID);
+		}
 		break;
 	case LOBBY:
-		CurrentScene = Manager[GAME];
-		CurrentScene->SetType(GAME);
-		CurrentScene->SetID(ID);
+		{
+			Scene* InGame = new GameScene;
+			InGame->InitScene(FrontBuffer, BackBuffer);
+			Manager.push_back(InGame);
+			CurrentScene = Manager[GAME];
+			CurrentScene->SetType(GAME);
+			CurrentScene->SetID(ID);
+		}
 		break;
 	case GAME:
+		//Scene* End = new GameOverScene;
+		//End->InitScene(FrontBuffer, BackBuffer);
+		//Manager.push_back(End);
 		CurrentScene = Manager[GAMEOVER];
 		CurrentScene->SetType(GAMEOVER);
 		CurrentScene->SetID(ID);
@@ -60,18 +73,12 @@ void SceneManager::PrevScene()
 void SceneManager::InitManager(HDC* Front, HDC* Back)
 {
 	Scene* Title = new TitleScene;
-	Scene* Lobby = new LobbyScene;
-	Scene* InGame = new GameScene;
 	//Scene* End = new GameOverScene;
 
 	Title->InitScene(Front, Back);
-	Lobby->InitScene(Front, Back);
-	InGame->InitScene(Front, Back);
 	//End->InitScene(Front, Back);
 
 	Manager.push_back(Title);
-	Manager.push_back(Lobby);
-	Manager.push_back(InGame);
 	//Manager.push_back(End);
 
 	CurrentScene = Manager[TITLE];

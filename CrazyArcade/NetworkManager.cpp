@@ -8,7 +8,7 @@ NetworkManager::NetworkManager()
 	size = 0; msgLen = 0;
 	memset(buff, 0, sizeof(buff));
 
-	memset(&tempPacket, 0, sizeof(Packet));
+	memset(&PacketMsg, 0, sizeof(Packet));
 }
 
 NetworkManager::~NetworkManager()
@@ -73,23 +73,37 @@ bool NetworkManager::OperateServer()
 
 void NetworkManager::ReadMessage(WPARAM wParam)
 {
-	msgLen = recv(wParam, (char*)&tempPacket, sizeof(Packet), 0);
+	msgLen = recv(wParam, (char*)&PacketMsg, sizeof(Packet), 0);
 	
 	PrintPacket();
 
-	if (tempPacket.head == COMMAND)
-	{
-		if (strcmp(tempPacket.Cmd.c_str(), "NextScene") == 0)
-		{
-			singleton->GetSceneManager()->NextScene();
-		}
-	}
-	else if (tempPacket.head == BOMB)
-	{
-		CURRENT_SCENE->ReceiveData(&tempPacket);
-	}
+	CURRENT_SCENE->ReceiveData(&PacketMsg);
 
-	memset(&tempPacket, 0, sizeof(Packet));
+	memset(&PacketMsg, 0, sizeof(Packet));
+}
+
+int NetworkManager::SetPlayerFlag()
+{
+	for (int i = 0; i < ClientList.size(); i++)
+	{
+		PacketMsg.head = USERINIT;
+		PacketMsg.PlayerFlag = i + 2;
+		switch (PacketMsg.PlayerFlag)
+		{
+		case 2:
+			PacketMsg.Pos = { 702, 78 };
+			break;
+		case 3:
+			PacketMsg.Pos = { 78, 598 };
+			break;
+		case 4:
+			PacketMsg.Pos = { 702, 598 };
+			break;
+		}
+		PacketMsg.Power = 1;
+		send(ClientList[i], (char*)&PacketMsg, sizeof(Packet), 0);
+	}
+	return 0;
 }
 
 void NetworkManager::SendPacket(Packet packet)
@@ -111,13 +125,13 @@ void NetworkManager::SendPacket()
 {
 	if (Ntype == CLIENT)
 	{
-		send(ServerSocket, (char*)&tempPacket, sizeof(Packet), 0);
+		send(ServerSocket, (char*)&PacketMsg, sizeof(Packet), 0);
 	}
 	else if (Ntype == HOST)
 	{
 		for (SOCKET client : ClientList)
 		{
-			send(client, (char*)&tempPacket, sizeof(Packet), 0);
+			send(client, (char*)&PacketMsg, sizeof(Packet), 0);
 		}
 	}
 }
@@ -126,7 +140,7 @@ void NetworkManager::PrintPacket()
 {
 	cout << "== Received Packet Info ==" << endl;
 
-	switch (tempPacket.head)
+	switch (PacketMsg.head)
 	{
 	case COMMAND:
 		cout << "Header : Command" << endl;
@@ -139,12 +153,12 @@ void NetworkManager::PrintPacket()
 		break;
 	}
 	
-	cout << "PlayerFlag : " << tempPacket.PlayerFlag << endl;
-	cout << "Pos.x : " << tempPacket.Pos.x << endl;
-	cout << "Pos.y : " << tempPacket.Pos.y << endl;
-	cout << "Bomb Power : " << tempPacket.Power << endl;
-	if(tempPacket.head == COMMAND)
-		cout << "Command : " << tempPacket.Cmd << endl;
+	cout << "PlayerFlag : " << PacketMsg.PlayerFlag << endl;
+	cout << "Pos.x : " << PacketMsg.Pos.x << endl;
+	cout << "Pos.y : " << PacketMsg.Pos.y << endl;
+	cout << "Bomb Power : " << PacketMsg.Power << endl;
+	if(PacketMsg.head == COMMAND)
+		cout << "Command : " << PacketMsg.Cmd << endl;
 
 	cout << "== Received Packet Info End ==" << endl;
 }

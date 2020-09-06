@@ -11,6 +11,8 @@ enum NetWorkType
 enum Header
 {
 	COMMAND,
+	USER,
+	USERINIT,
 	BOMB,
 };
 
@@ -40,7 +42,7 @@ private:
 
 	vector<SOCKET> ClientList;
 public:
-	Packet tempPacket;
+	Packet PacketMsg;
 
 	NetworkManager();
 	~NetworkManager();
@@ -50,11 +52,12 @@ public:
 	bool Accept();
 
 	void ReadMessage(WPARAM wParam);
+	int SetPlayerFlag();
 
-	inline void SetNetworkType(NetWorkType type) { Ntype = type; };
 	inline void SetIP(string ip) { IP_ADDR = ip; };
-
 	inline int GetClientNum() { return ClientList.size(); };
+	inline NetWorkType GetNetworkType() { return Ntype; };
+	inline void SetNetworkType(NetWorkType type) { Ntype = type; };
 
 	void SendPacket();
 	void SendPacket(Packet packet);
