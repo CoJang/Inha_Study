@@ -16,6 +16,7 @@ private:
 	int score;
 
 	Player* MainChar;
+	Player* OtherChar;
 	Map* map;
 
 	bool ColliderDrawMode;

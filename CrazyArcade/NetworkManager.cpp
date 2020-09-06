@@ -121,6 +121,15 @@ void NetworkManager::SendPacket(Packet packet)
 	}
 }
 
+void NetworkManager::SendPlayerPacket(int playerflag, POINT pos)
+{
+	PacketMsg.head = USER;
+	PacketMsg.Pos = pos;
+	PacketMsg.PlayerFlag = playerflag;
+
+	SendPacket();
+}
+
 void NetworkManager::SendPacket()
 {
 	if (Ntype == CLIENT)
@@ -147,6 +156,12 @@ void NetworkManager::PrintPacket()
 		break;
 	case BOMB:
 		cout << "Header : Bomb" << endl;
+		break;
+	case USER:
+		cout << "Header : User" << endl;
+		break;
+	case USERINIT:
+		cout << "Header : User Init" << endl;
 		break;
 	default:
 		cout << "Header : Unknown" << endl;

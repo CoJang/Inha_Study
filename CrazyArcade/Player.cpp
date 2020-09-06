@@ -367,6 +367,7 @@ void Player::Update()
 
 	UpdateColliderBox();
 	Collision();
+	NETWORKMANAGER->SendPlayerPacket(PlayerFlag, Pos);
 
 	for (int i = 0; i < BombBag.size(); i++)
 	{

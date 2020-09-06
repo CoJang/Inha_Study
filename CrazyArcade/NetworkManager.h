@@ -61,6 +61,7 @@ public:
 
 	void SendPacket();
 	void SendPacket(Packet packet);
+	void SendPlayerPacket(int playerflag, POINT pos);
 
 	void PrintPacket();
 };

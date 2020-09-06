@@ -17,6 +17,7 @@ GameScene::GameScene()
 
 	map = new Map;
 	MainChar = new Player;
+	OtherChar = new Player;
 
 	ColliderDrawMode = false;
 
@@ -28,6 +29,8 @@ GameScene::GameScene()
 		NETWORKMANAGER->SetPlayerFlag();
 		MainChar->InitPlayer({ 78, 78 }, { 0, 0 }, 1);
 	}
+
+	OtherChar->InitPlayer({ 78, 52 }, { 0, 0 }, 2);
 }
 
 GameScene::~GameScene()
@@ -41,6 +44,7 @@ void GameScene::Render()
 	map->FrontRender(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 	map->BackRender(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 	MainChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
+	OtherChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 
 	for (Bomb* B : OtherBombs)
 	{
@@ -112,9 +116,11 @@ void GameScene::ReceiveData(Packet* data)
 		{
 			Bomb* NewBomb = new Bomb(data->PlayerFlag, data->Pos, data->Power);
 			OtherBombs.push_back(NewBomb);
+			BOMB_VECTOR.push_back(NewBomb);
 		}
 		return;
 	case USER:
+		OtherChar->SetPos(data->Pos);
 		return;
 	case USERINIT:
 		MainChar->InitPlayer(data->Pos, { 0, 0 }, data->PlayerFlag);
