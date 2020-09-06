@@ -3,7 +3,6 @@
 #include "Bomb.h"
 #include "Player.h"
 #include "Map.h"
-#include "SoundManager.h"
 
 class GameScene : public Scene
 {
@@ -28,6 +27,7 @@ public:
 	void DrawButtons();
 	ButtonType CheckClick(POINT mpos, int flag);
 	void CheckKeyDown();
+	void ReceiveData(Packet* data);
 
 	void Render();
 	void Update();

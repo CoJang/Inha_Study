@@ -51,6 +51,18 @@ void GameScene::Update()
 
 	MainChar->Update();
 	map->Update();
+
+
+	for (int i = 0; i < OtherBombs.size(); i++)
+	{
+		OtherBombs[i]->Update();
+
+		if (OtherBombs[i]->GetBombState())
+		{
+			delete OtherBombs[i];
+			OtherBombs.erase(OtherBombs.begin() + i);
+		}
+	}
 }
 
 void GameScene::ResetScene()
@@ -85,3 +97,14 @@ void GameScene::CheckKeyDown()
 		ColliderDrawMode ^= true;
 	}
 }
+
+void GameScene::ReceiveData(Packet* data)
+{
+	if (data->head == BOMB) 
+	{
+		Bomb* NewBomb = new Bomb(data->PlayerFlag, data->Pos, data->Power);
+		OtherBombs.push_back(NewBomb);
+	}
+
+}
+
