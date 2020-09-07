@@ -126,9 +126,17 @@ void GameScene::ReceiveData(Packet* data)
 		if (data->IsTrapped == true)
 			OtherChar->TrapPlayer();
 		return;
+	case ITEM:
+		{
+			Item* tempItem = new Item(data->Pos, data->Power);
+			ITEM_VECTOR.push_back(tempItem);
+		}
+		return;
 	case USERINIT:
-		MainChar->InitPlayer(data->Pos, { 0, 0 }, data->PlayerFlag);
-		singleton->GetCollisionManager()->SetPlayer(MainChar);
+		{
+			MainChar->InitPlayer(data->Pos, { 0, 0 }, data->PlayerFlag);
+			singleton->GetCollisionManager()->SetPlayer(MainChar);
+		}
 		return;
 	default:
 		return;

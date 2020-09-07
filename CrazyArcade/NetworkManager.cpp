@@ -75,7 +75,7 @@ void NetworkManager::ReadMessage(WPARAM wParam)
 {
 	msgLen = recv(wParam, (char*)&PacketMsg, sizeof(Packet), 0);
 	
-	PrintPacket();
+	//PrintPacket();
 
 	CURRENT_SCENE->ReceiveData(&PacketMsg);
 

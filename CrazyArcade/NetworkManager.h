@@ -14,6 +14,7 @@ enum Header
 	USER,
 	USERINIT,
 	BOMB,
+	ITEM,
 };
 
 typedef struct Packet
