@@ -27,7 +27,8 @@ GameScene::GameScene()
 	if (NETWORKMANAGER->GetNetworkType() == HOST)
 	{
 		NETWORKMANAGER->SetPlayerFlag();
-		MainChar->InitPlayer({ 78, 78 }, { 0, 0 }, 1);
+		MainChar->InitPlayer({ 78, 78 }, { 0, 0 }, 1); 
+		singleton->GetCollisionManager()->SetPlayer(MainChar);
 	}
 
 	OtherChar->InitPlayer({ 78, 52 }, { 0, 0 }, 2);
@@ -57,8 +58,8 @@ void GameScene::Update()
 	Timer += ElapseTime;
 
 	MainChar->Update();
+	OtherChar->Update();
 	map->Update();
-
 
 	for (int i = 0; i < OtherBombs.size(); i++)
 	{
@@ -121,9 +122,13 @@ void GameScene::ReceiveData(Packet* data)
 		return;
 	case USER:
 		OtherChar->SetPos(data->Pos);
+		OtherChar->SetPlayerDir(data->Input);
+		if (data->IsTrapped == true)
+			OtherChar->TrapPlayer();
 		return;
 	case USERINIT:
 		MainChar->InitPlayer(data->Pos, { 0, 0 }, data->PlayerFlag);
+		singleton->GetCollisionManager()->SetPlayer(MainChar);
 		return;
 	default:
 		return;

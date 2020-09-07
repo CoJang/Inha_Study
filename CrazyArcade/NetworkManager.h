@@ -23,6 +23,9 @@ typedef struct Packet
 	int PlayerFlag;
 	POINT Pos;
 	int Power;
+	int Input;
+	bool IsTrapped;
+	bool IsDeath;
 	string Cmd;
 }Packet;
 

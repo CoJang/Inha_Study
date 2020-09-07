@@ -58,6 +58,8 @@ void Player::InitPlayer(POINT pos, POINT pivot, int playerflag)
 void Player::SetPlayerDir()
 {
 	static bool IsKeyDown = false;
+	Packet temp; temp.head = USER; temp.PlayerFlag = PlayerFlag;
+	temp.Pos = Pos; temp.IsTrapped = IsTrapped; temp.IsDeath = IsDeath;
 
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
@@ -65,6 +67,8 @@ void Player::SetPlayerDir()
 		Dir = { -1, 0 };
 		if(!IsTrapped && !IsDeath)
 			Anim_Frame_Flag = 2;
+
+		temp.Input = VK_LEFT;
 	}
 	else if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
@@ -72,6 +76,8 @@ void Player::SetPlayerDir()
 		Dir = { 1, 0 };
 		if (!IsTrapped && !IsDeath)
 			Anim_Frame_Flag = 3;
+
+		temp.Input = VK_RIGHT;
 	}
 
 	else if (GetKeyState(VK_DOWN) & 0x8000)
@@ -80,6 +86,8 @@ void Player::SetPlayerDir()
 		Dir = { 0, 1 };
 		if (!IsTrapped && !IsDeath)
 			Anim_Frame_Flag = 1;
+
+		temp.Input = VK_DOWN;
 	}
 	else if (GetKeyState(VK_UP) & 0x8000)
 	{
@@ -87,6 +95,8 @@ void Player::SetPlayerDir()
 		Dir = { 0, -1 };
 		if (!IsTrapped && !IsDeath)
 			Anim_Frame_Flag = 0;
+
+		temp.Input = VK_UP;
 	}
 
 	if (!IsKeyDown)
@@ -95,7 +105,11 @@ void Player::SetPlayerDir()
 
 		if (!IsTrapped && !IsDeath)
 			Anim_Frame_Cur = Anim_Frame_Min;
+
+		temp.Input = 0;
 	}
+
+	NETWORKMANAGER->SendPacket(temp);
 
 	if (GetAsyncKeyState(VK_SPACE) & 0x0001)
 	{
@@ -103,6 +117,43 @@ void Player::SetPlayerDir()
 	}
 
 	IsKeyDown = false;
+}
+
+void Player::SetPlayerDir(int KeyState)
+{
+	if (KeyState == VK_LEFT)
+	{
+		Dir = { -1, 0 };
+		if (!IsTrapped && !IsDeath)
+			Anim_Frame_Flag = 2;
+	}
+	else if (KeyState == VK_RIGHT)
+	{
+		Dir = { 1, 0 };
+		if (!IsTrapped && !IsDeath)
+			Anim_Frame_Flag = 3;
+	}
+
+	else if (KeyState == VK_DOWN)
+	{
+		Dir = { 0, 1 };
+		if (!IsTrapped && !IsDeath)
+			Anim_Frame_Flag = 1;
+	}
+	else if (KeyState ==VK_UP)
+	{
+		Dir = { 0, -1 };
+		if (!IsTrapped && !IsDeath)
+			Anim_Frame_Flag = 0;
+	}
+
+	if (KeyState == 0)
+	{
+		Dir = { 0, 0 };
+
+		if (!IsTrapped && !IsDeath)
+			Anim_Frame_Cur = Anim_Frame_Min;
+	}
 }
 
 void Player::Collision()
@@ -367,7 +418,7 @@ void Player::Update()
 
 	UpdateColliderBox();
 	Collision();
-	NETWORKMANAGER->SendPlayerPacket(PlayerFlag, Pos);
+	//NETWORKMANAGER->SendPlayerPacket(PlayerFlag, Pos);
 
 	for (int i = 0; i < BombBag.size(); i++)
 	{

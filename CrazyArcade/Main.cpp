@@ -60,7 +60,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		else
 		{
 			// Key Down Sequence
-			singleton->GetSceneManager()->GetInstance()->CheckKeyDown();
+			//singleton->GetSceneManager()->GetInstance()->CheckKeyDown();
 		}
 	}
 

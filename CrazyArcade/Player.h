@@ -46,6 +46,7 @@ public:
 
 	void RewindMove();
 	void SetPlayerDir();
+	void SetPlayerDir(int KeyState);
 
 	void Collision();
 	void UpdateColliderBox();
