@@ -33,6 +33,7 @@ GameScene::GameScene()
 	}
 
 	OtherChar->InitPlayer({ 78, 52 }, { 0, 0 }, 2);
+	MoveWindow(NETWORKMANAGER->GetWindowHandle(), 100, 100, WIN_WIDTH, WIN_HEIGHT, false);
 }
 
 GameScene::~GameScene()
@@ -45,8 +46,8 @@ void GameScene::Render()
 {
 	map->FrontRender(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 	map->BackRender(*FrontBuffer, *BackBuffer, ColliderDrawMode);
-	MainChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
-	OtherChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
+	//MainChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
+	//OtherChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 
 	for (Bomb* B : OtherBombs)
 	{

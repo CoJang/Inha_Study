@@ -64,6 +64,8 @@ public:
 	inline void SetImageSize(float scale) { ImageScale = scale; };
 	inline void SetAnimSpeed(int milisec) { Anim_Speed = milisec; };
 	inline void SetAnimFrameFlag(int frame_flag) { Anim_Frame_Flag = frame_flag; };
+	inline void SetAnimMinFrame(int min_frame) { Anim_Frame_Min = min_frame; };
+	inline void SetAnimMaxFrame(int max_frame) { Anim_Frame_Max = max_frame; };
 
 	virtual void Update();
 	virtual void UpdateFrame();

@@ -111,6 +111,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static HDC hdc;
 	static HDC BackBuffer[2];
 	static HBITMAP BackBitmap, oldBitmap;
+	static POINT MousePos;
 
     switch (message)
     {
@@ -166,9 +167,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 	case WM_LBUTTONUP:
-		static POINT MousePos;
 		MousePos = { LOWORD(lParam), HIWORD(lParam) };
 		singleton->GetSceneManager()->GetInstance()->CheckClick(MousePos, 0);
+		break;
+	case WM_MOUSEMOVE:
+		MousePos = { LOWORD(lParam), HIWORD(lParam) };
+		singleton->GetSceneManager()->GetInstance()->CheckClick(MousePos, 1);
 		break;
 	case WM_CHAR:
 	{

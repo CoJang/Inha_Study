@@ -95,5 +95,25 @@ bool ImageManager::LoadingImages()
 	Images[LOBBY_FRAME] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	if (Images[LOBBY_FRAME] == NULL) return false;
 
+	path = TEXT("images/map/forest/minimap.bmp");
+	Images[LOBBY_MINIMAP_FOREST] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[LOBBY_MINIMAP_FOREST] == NULL) return false;
+
+	path = TEXT("images/Frame/check.bmp");
+	Images[LOBBY_CHECK1] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[LOBBY_CHECK1] == NULL) return false;
+
+	path = TEXT("images/Frame/check2.bmp");
+	Images[LOBBY_CHECK2] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[LOBBY_CHECK2] == NULL) return false;
+
+	path = TEXT("images/Frame/start.bmp");
+	Images[LOBBY_START] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[LOBBY_START] == NULL) return false;
+
+	path = TEXT("images/Frame/bazziPick.bmp");
+	Images[LOBBY_BAZZY_PICK] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[LOBBY_BAZZY_PICK] == NULL) return false;
+
 	return true;
 }
