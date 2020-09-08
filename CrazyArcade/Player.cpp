@@ -229,6 +229,26 @@ void Player::PutBomb()
 			return;
 		}
 
+		for (Bomb* B : BombBag)
+		{
+			if (NewBomb->GetPos().x == B->GetPos().x &&
+				NewBomb->GetPos().y == B->GetPos().y)
+			{
+				delete NewBomb;
+				return;
+			}
+		}
+
+		for (Bomb* B : BOMB_VECTOR)
+		{
+			if (NewBomb->GetPos().x == B->GetPos().x &&
+				NewBomb->GetPos().y == B->GetPos().y)
+			{
+				delete NewBomb;
+				return;
+			}
+		}
+
 		SOUNDMANAGER->PlaySFX("BombPut");
 		BombBag.push_back(NewBomb);
 		BOMB_VECTOR.push_back(NewBomb);
