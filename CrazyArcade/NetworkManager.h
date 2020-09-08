@@ -62,6 +62,7 @@ public:
 	inline int GetClientNum() { return ClientList.size(); };
 	inline NetWorkType GetNetworkType() { return Ntype; };
 	inline void SetNetworkType(NetWorkType type) { Ntype = type; };
+	inline HWND GetWindowHandle() { return hWnd; };
 
 	void SendPacket();
 	void SendPacket(Packet packet);

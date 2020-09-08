@@ -22,6 +22,7 @@ GameScene::GameScene()
 	ColliderDrawMode = false;
 
 	// ==Mute==
+	SOUNDMANAGER->AddBGM("sounds/bg/Forest.mp3");
 	//SOUNDMANAGER->PlayBGM();
 
 	if (NETWORKMANAGER->GetNetworkType() == HOST)

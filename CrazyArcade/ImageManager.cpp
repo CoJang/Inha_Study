@@ -90,5 +90,10 @@ bool ImageManager::LoadingImages()
 	Images[CHAR_HOOCU] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	if (Images[CHAR_HOOCU] == NULL) return false;
 
+// LOBBY
+	path = TEXT("images/Frame/Waiting.bmp");
+	Images[LOBBY_FRAME] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[LOBBY_FRAME] == NULL) return false;
+
 	return true;
 }

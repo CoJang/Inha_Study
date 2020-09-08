@@ -23,7 +23,7 @@ void SoundManager::init()
 	fmodSystem->init(4, FMOD_INIT_NORMAL, NULL);
 	
 
-	AddBGM("sounds/bg/Forest.mp3");
+	//AddBGM("sounds/bg/Forest.mp3");
 
 	AddSFX("sounds/appear.wav", "BombPut");
 	AddSFX("sounds/die.wav", "Die");

@@ -1,10 +1,11 @@
 #pragma once
+#include "Objects.h"
 #include "Scene.h"
 
 class LobbyScene : public Scene
 {
 private:
-
+	Objects LobbyImage;
 public:
 	LobbyScene();
 	~LobbyScene();

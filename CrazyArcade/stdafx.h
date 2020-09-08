@@ -65,3 +65,4 @@ using namespace std;
 #define OBSTACLE_VECTOR singleton->GetCollisionManager()->GetObstacles()
 #define ITEM_VECTOR singleton->GetCollisionManager()->GetItems()
 #define BOMB_VECTOR singleton->GetCollisionManager()->GetOtherBombs()
+#define PLAYER_VECTOR singleton->GetCollisionManager()->GetOtherPlayers()

@@ -140,7 +140,7 @@ void Player::SetPlayerDir(int KeyState)
 		if (!IsTrapped && !IsDeath)
 			Anim_Frame_Flag = 1;
 	}
-	else if (KeyState ==VK_UP)
+	else if (KeyState == VK_UP)
 	{
 		Dir = { 0, -1 };
 		if (!IsTrapped && !IsDeath)
@@ -192,6 +192,17 @@ void Player::Collision()
 		}
 	}
 
+	for (Bomb* B : BOMB_VECTOR)
+	{
+		if (!B->GetColliderState())
+			continue;
+
+		if (RRCollision(&ColliderBox, &B->GetCollider()))
+		{
+			RewindMove();
+		}
+	}
+
 	for (int i = 0; i < ITEM_VECTOR.size(); i++)
 	{
 		if (RRCollision(&ColliderBox, &ITEM_VECTOR[i]->GetCollider()))
@@ -200,6 +211,21 @@ void Player::Collision()
 			GetItem(ITEM_VECTOR[i]->GetType());
 			delete ITEM_VECTOR[i];
 			ITEM_VECTOR.erase(ITEM_VECTOR.begin() + i);
+		}
+	}
+
+	if (IsTrapped)
+	{
+		for (Player* otherPlayer : PLAYER_VECTOR)
+		{
+			if (RRCollision(&ColliderBox, &otherPlayer->GetCollider()))
+			{
+				IsTrapped = false;
+				IsDeath = true;
+
+				cout << "Player " << PlayerFlag << "Death!" << endl;
+				KillPlayer();
+			}
 		}
 	}
 }
@@ -438,7 +464,6 @@ void Player::Update()
 
 	UpdateColliderBox();
 	Collision();
-	//NETWORKMANAGER->SendPlayerPacket(PlayerFlag, Pos);
 
 	for (int i = 0; i < BombBag.size(); i++)
 	{
