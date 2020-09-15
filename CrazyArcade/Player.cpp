@@ -11,14 +11,6 @@ extern Singleton* singleton;
 
 Player::Player()
 {
-	SetImage(GETIMAGE(CHAR_BAZZY));
-	DeathImage[0] = GETIMAGE(CHAR_BAZZY_TRAP);
-	GetObject(DeathImage[0], sizeof(BITMAP), &DeathBitmap[0]);
-	DeathImage[1] = GETIMAGE(CHAR_BAZZY_DIE);
-	GetObject(DeathImage[1], sizeof(BITMAP), &DeathBitmap[1]);
-
-	AnimObject::InitAnimation(0, 5, 6, 4, 1);
-
 	Dir = { 0, 0 }; Speed = 10;
 
 	ColPivot = { 26, 48 };
@@ -48,11 +40,31 @@ Player::~Player()
 	BombBag.clear();
 }
 
-void Player::InitPlayer(POINT pos, POINT pivot, int playerflag)
+void Player::InitPlayer(POINT pos, POINT pivot, int playerflag, int charflag)
 {
+	if (charflag == 0)
+	{
+		SetImage(GETIMAGE(CHAR_BAZZY));
+		DeathImage[0] = GETIMAGE(CHAR_BAZZY_TRAP);
+		GetObject(DeathImage[0], sizeof(BITMAP), &DeathBitmap[0]);
+		DeathImage[1] = GETIMAGE(CHAR_BAZZY_DIE);
+		GetObject(DeathImage[1], sizeof(BITMAP), &DeathBitmap[1]);
+	}
+	else if (charflag == 1)
+	{
+		SetImage(GETIMAGE(CHAR_DAO));
+		DeathImage[0] = GETIMAGE(CHAR_DAO_TRAP);
+		GetObject(DeathImage[0], sizeof(BITMAP), &DeathBitmap[0]);
+		DeathImage[1] = GETIMAGE(CHAR_DAO_DIE);
+		GetObject(DeathImage[1], sizeof(BITMAP), &DeathBitmap[1]);
+	}
+
+	AnimObject::InitAnimation(0, 5, 6, 4, 1);
+
 	ImagePivot = pivot;
 	Pos = pos;
 	PlayerFlag = playerflag;
+
 }
 
 void Player::SetPlayerDir()

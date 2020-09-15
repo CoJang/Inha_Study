@@ -86,9 +86,19 @@ bool ImageManager::LoadingImages()
 		if (Images[CHAR_BAZZY_DIE] == NULL) return false;
 	}
 
-	path = TEXT("images/char/Role2.bmp");
-	Images[CHAR_HOOCU] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[CHAR_HOOCU] == NULL) return false;
+	{ // DAO
+		path = TEXT("images/char/Role3.bmp");
+		Images[CHAR_DAO] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[CHAR_DAO] == NULL) return false;
+
+		path = TEXT("images/char/Role3Trap.bmp");
+		Images[CHAR_DAO_TRAP] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[CHAR_DAO_TRAP] == NULL) return false;
+
+		path = TEXT("images/char/Role3Die.bmp");
+		Images[CHAR_DAO_DIE] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[CHAR_DAO_DIE] == NULL) return false;
+	}
 
 // LOBBY
 	path = TEXT("images/Frame/Waiting.bmp");
@@ -111,9 +121,21 @@ bool ImageManager::LoadingImages()
 	Images[LOBBY_START] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	if (Images[LOBBY_START] == NULL) return false;
 
-	path = TEXT("images/Frame/bazziPick.bmp");
-	Images[LOBBY_BAZZY_PICK] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[LOBBY_BAZZY_PICK] == NULL) return false;
+	path = TEXT("images/Frame/face01.bmp");
+	Images[LOBBY_BAZZY_FACE] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[LOBBY_BAZZY_FACE] == NULL) return false;
+
+	path = TEXT("images/Frame/face02.bmp");
+	Images[LOBBY_DAO_FACE] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[LOBBY_DAO_FACE] == NULL) return false;
+
+	path = TEXT("images/Frame/friend_01.bmp");
+	Images[LOBBY_BAZZY_CHAR] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[LOBBY_BAZZY_CHAR] == NULL) return false;
+
+	path = TEXT("images/Frame/friend_03.bmp");
+	Images[LOBBY_DAO_CHAR] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	if (Images[LOBBY_DAO_CHAR] == NULL) return false;
 
 	return true;
 }
