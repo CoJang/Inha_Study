@@ -30,6 +30,9 @@ void Map::InitTiles()
 
 void Map::Render(HDC hdc)
 {
+	Tiles[Start.x + (MapSize.x * Start.y)].color = RGB(255, 255, 0);
+	Tiles[End.x + (MapSize.x * End.y)].color = RGB(0, 0, 255);
+
 	for (int x = 0; x < MapSize.x; x++)
 		for (int y = 0; y < MapSize.y; y++)
 		{
@@ -38,6 +41,12 @@ void Map::Render(HDC hdc)
 			if(IsCostRenderMode)
 				Tiles[x + (y * MapSize.x)].CostRender(hdc);
 		}
+	
+	if (IsCostRenderMode)
+	{
+		Tiles[Start.x + (Start.y * MapSize.x)].CostRender(hdc);
+		Tiles[End.x + (End.y * MapSize.x)].CostRender(hdc);
+	}
 }
 
 void Map::SetStartGoal(POINT MousePos)
@@ -103,47 +112,45 @@ void Map::UpdateNearValue(POINT index)
 
 	if (!index.x - 1 < 0)
 	{
-		UpdateG({ index.x - 1, index.y }, index, ParentG, 10);
+		//UpdateG({ index.x - 1, index.y }, index, ParentG, 10);
 		AddToOpenList({ index.x - 1, index.y }, Parent);
 	}
 	if (!index.y - 1 < 0)
 	{
-		UpdateG({ index.x, index.y - 1 }, index, ParentG, 10);
+		//UpdateG({ index.x, index.y - 1 }, index, ParentG, 10);
 		AddToOpenList({ index.x, index.y - 1 }, Parent);
 	}
 	if (!(index.x + 1 >= MapSize.x))
 	{
-		UpdateG({ index.x + 1, index.y }, index, ParentG, 10);
+		//UpdateG({ index.x + 1, index.y }, index, ParentG, 10);
 		AddToOpenList({ index.x + 1, index.y }, Parent);
 	}
 	if (!(index.y + 1 >= MapSize.y))
 	{
-		UpdateG({ index.x, index.y + 1 }, index, ParentG, 10);
+		//UpdateG({ index.x, index.y + 1 }, index, ParentG, 10);
 		AddToOpenList({ index.x, index.y + 1 }, Parent);
 	}
 
 	if (!(index.x - 1 < 0 || index.y - 1 < 0))
 	{
-		UpdateG({ index.x - 1, index.y - 1 }, index, ParentG, 14);
+		//UpdateG({ index.x - 1, index.y - 1 }, index, ParentG, 14);
 		AddToOpenList({ index.x - 1, index.y - 1 }, Parent);
 	}
 	if (!(index.x - 1 < 0 || index.y + 1 >= MapSize.y))
 	{
-		UpdateG({ index.x - 1, index.y + 1 }, index, ParentG, 14);
+		//UpdateG({ index.x - 1, index.y + 1 }, index, ParentG, 14);
 		AddToOpenList({ index.x - 1, index.y + 1 }, Parent);
 	}
 	if (!(index.y - 1 < 0 || index.x + 1 >= MapSize.x))
 	{
-		UpdateG({ index.x + 1, index.y - 1 }, index, ParentG, 14);
+		//UpdateG({ index.x + 1, index.y - 1 }, index, ParentG, 14);
 		AddToOpenList({ index.x + 1, index.y - 1 }, Parent);
 	}
 	if (!(index.x + 1 >= MapSize.x || index.y + 1 >= MapSize.y))
 	{
-		UpdateG({ index.x + 1, index.y + 1 }, index, ParentG, 14);
+		//UpdateG({ index.x + 1, index.y + 1 }, index, ParentG, 14);
 		AddToOpenList({ index.x + 1, index.y + 1 }, Parent);
 	}
-
-	UpdateF();
 
 	CloseList.push_back(index);
 	Tiles[index.x + (index.y * MapSize.x)].color = RGB(255, 0, 0);
@@ -156,7 +163,7 @@ void Map::UpdateG(POINT index, POINT parent, int ParentG, int AddValue)
 
 	if (AddValue == 0)
 	{
-		POINT parent = Tiles[index.x + (index.y * MapSize.x)].Parents;
+		//POINT parent = Tiles[index.x + (index.y * MapSize.x)].Parents;
 		POINT Gap = { index.x, index.y };
 		Gap.x = abs(Gap.x - parent.x);
 		Gap.y = abs(Gap.y - parent.y);
@@ -178,14 +185,16 @@ void Map::UpdateG(POINT index, POINT parent, int ParentG, int AddValue)
 			Cost += 10;
 		}
 
-		/////////////////////////////////////////////////////////////////
-		if (oldG > ParentG + AddValue || oldG == 0)
+		if (oldG > Cost || oldG == 0)
 		{
+			Tiles[index.x + (index.y * MapSize.x)].Parents = parent;
 			Tiles[index.x + (index.y * MapSize.x)].CostFromStart = Cost;
+			UpdateF();
 		}
 	}
 	else if (oldG > ParentG + AddValue || oldG == 0)
 	{
+		Tiles[index.x + (index.y * MapSize.x)].Parents = parent;
 		Tiles[index.x + (index.y * MapSize.x)].CostFromStart = ParentG + AddValue;
 	}
 }
@@ -258,7 +267,7 @@ POINT Map::GetMinF()
 
 void Map::AddToOpenList(POINT index, POINT parent)
 {
-	if (Tiles[index.x + (index.y * MapSize.x)].IsObstacle)
+	if (Tiles[index.x + (index.y * MapSize.x)].IsObstacle || Tiles[index.x + (index.y * MapSize.x)].Parents == parent)
 		return;
 
 	for (POINT Node : CloseList)
@@ -276,17 +285,16 @@ void Map::AddToOpenList(POINT index, POINT parent)
 
 	if (!IsDuplicated)
 	{
-		OpenList.push_back(index);
+		OpenList.push_back(index); 
+		UpdateG({ index.x, index.y }, parent, Tiles[parent.x + (parent.y * MapSize.x)].CostFromStart, 0);
 		Tiles[index.x + (index.y * MapSize.x)].Parents = parent;
 		Tiles[index.x + (index.y * MapSize.x)].color = RGB(0, 255, 0);
 	}
-	///////////////////////////////////////////////////////////////////////
 	else//if(IsDuplicated)
 	{
-		UpdateG(index, Tiles[parent.x + (parent.y * MapSize.x)].CostFromStart, 0);
+		UpdateG(index, parent, Tiles[parent.x + (parent.y * MapSize.x)].CostFromStart, 0);
 		UpdateF(index);
 	}
-	///////////////////////////////////////////////////////////////////////
 }
 
 void Map::Run()
@@ -308,9 +316,9 @@ void Map::DrawResult()
 {
 	POINT Next = Tiles[End.x + (End.y * MapSize.x)].Parents;
 
-	while (Next.x != Start.x || Next.y != Start.y)
+	while (Next.x != Start.x && Next.y != Start.y)
 	{
-		Tiles[Next.x + (Next.y * MapSize.x)].color = RGB(0, 0, 255);
+		Tiles[Next.x + (Next.y * MapSize.x)].color = RGB(120, 120, 120);
 		Next = Tiles[Next.x + (Next.y * MapSize.x)].Parents;
 	}
 }

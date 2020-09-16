@@ -23,7 +23,7 @@ void Tile::Render(HDC hdc)
 
 	SelectObject(hdc, oldBrush);
 	DeleteObject(oldBrush);
-	DeleteObject(hBrush);
+	//DeleteObject(hBrush);
 }
 
 void Tile::CostRender(HDC hdc)

@@ -27,3 +27,8 @@ using namespace std;
 #define WIN_HEIGHT 800
 
 #define TILE_SIZE 40
+
+inline bool operator==(POINT &p1, POINT &p2)
+{
+	return p1.x == p2.x && p1.y == p2.y;
+}
