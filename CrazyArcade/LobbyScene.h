@@ -8,12 +8,17 @@ private:
 	Objects MiniMap;
 	Objects LobbyImage;
 	Objects MyCheckImage;
-	Objects OthersCheckImage;
+	Objects OthersCheckImage[3];
 	AnimObject StartImage;
-	AnimObject BazzyPickImage;
+
+	Objects BazzyFace;
+	Objects DaoFace;
+	Objects OtherChar[3];
+	Objects MyChar;
 
 	RECT StartColl;
-	RECT* BazzyColl;
+	int CharFlag;
+	int PlayerFlag;
 public:
 	LobbyScene();
 	~LobbyScene();

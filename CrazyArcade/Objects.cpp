@@ -80,7 +80,7 @@ void Objects::InitCollider(POINT pivot, int sizex, int sizey)
 					Pos.y + ColliderSize.y / 2 + ColPivot.y };
 }
 
-// Default Render Target : [Front Buffer]
+// Default Render Target : [ Front Buffer]
 // Use BitBlt [ No Filttering Color ]
 void Objects::Render(HDC front, HDC back, bool colliderdraw)
 {
@@ -100,7 +100,7 @@ void Objects::Render(HDC front, HDC back, bool colliderdraw)
 }
 
 // Default Render Target : [ Front Buffer ]
-// Use TransparentBlt [ No Filttering Color ]
+// Use TransparentBlt [ Filttering Color ]
 void Objects::TransRender(HDC front, HDC back, bool colliderdraw)
 {
 	HBITMAP oldbuffer = (HBITMAP)SelectObject(back, hImage);

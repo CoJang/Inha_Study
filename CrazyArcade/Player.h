@@ -39,7 +39,7 @@ private:
 public:
 	Player();
 	~Player();
-	void InitPlayer(POINT pos, POINT pivot, int playerflag);
+	void InitPlayer(POINT pos, POINT pivot, int playerflag, int charflag);
 
 	void Update();
 	void Render(HDC front, HDC back, bool ColliderDraw);
