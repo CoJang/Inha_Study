@@ -23,7 +23,7 @@ GameScene::GameScene()
 
 	// ==Mute==
 	SOUNDMANAGER->AddBGM("sounds/bg/Forest.mp3");
-	//SOUNDMANAGER->PlayBGM();
+	SOUNDMANAGER->PlayBGM();
 
 	if (NETWORKMANAGER->GetNetworkType() == HOST)
 	{
@@ -46,8 +46,8 @@ void GameScene::Render()
 {
 	map->FrontRender(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 	map->BackRender(*FrontBuffer, *BackBuffer, ColliderDrawMode);
-	//MainChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
-	//OtherChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
+	MainChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
+	OtherChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 
 	for (Bomb* B : OtherBombs)
 	{

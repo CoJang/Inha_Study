@@ -24,6 +24,7 @@
 [Xx]64/
 [Ii]pch/
 [Dd]ebug/
+[Rr]elease/
 
 # Gradle cache directory
 .gradle/
