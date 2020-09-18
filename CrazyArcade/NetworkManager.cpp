@@ -33,6 +33,13 @@ bool NetworkManager::OperateServer()
 	addr.sin_port = 20;
 	addr.sin_addr.S_un.S_addr = inet_addr(IP_ADDR.c_str());
 
+	//char localHostName[512];
+	//struct hostent* localHostInfo;
+
+	//gethostname(localHostName, sizeof(localHostName));
+	//localHostInfo = gethostbyname(localHostName);
+	//cout << inet_ntoa(*(struct in_addr*)localHostInfo->h_addr_list[0]) << endl;
+	
 	if (bind(ServerSocket, (LPSOCKADDR)&addr, sizeof(addr)))
 	{
 		cout << "Binding Failed!" << endl;
@@ -182,6 +189,7 @@ bool NetworkManager::Accept()
 {
 	size = sizeof(c_addr);
 	ClientSocket = accept(ServerSocket, (LPSOCKADDR)&c_addr, &size);
+	//cout << inet_ntoa(c_addr.sin_addr)<< endl;
 	if (ClientSocket == SOCKET_ERROR) return false;
 	WSAAsyncSelect(ClientSocket, hWnd, WM_ASYNC, FD_READ);
 	ClientList.push_back(ClientSocket);

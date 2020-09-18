@@ -75,7 +75,6 @@ void LobbyScene::Update()
 		NETWORKMANAGER->SetPlayerFlag();
 		OldClientNum = NETWORKMANAGER->GetClientNum();
 	}
-	
 }
 
 void LobbyScene::ResetScene()

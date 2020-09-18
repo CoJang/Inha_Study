@@ -7,7 +7,7 @@ extern Singleton* singleton;
 TitleScene::TitleScene()
 {
 	type = TITLE;
-	IP = "165.246.192.68";
+	IP = "221.140.229.28";
 	ID = TEXT("Unknown");
 	ID_Rect = {0, 250, 450, 450};
 	START_Rect = { 0, 650, 450, 742 };
