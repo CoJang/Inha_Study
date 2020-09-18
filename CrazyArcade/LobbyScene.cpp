@@ -28,23 +28,21 @@ LobbyScene::LobbyScene()
 	DaoFace.SetImage(GETIMAGE(LOBBY_DAO_FACE));
 	DaoFace.InitCollider({ 42, 42 }, 84);
 
-	NETWORKMANAGER->SetPlayerFlag();
+	LobbyChar[0].Init({ 35, 125 }, { 0, 0 });
+	LobbyChar[1].Init({ 145, 125 }, { 0, 0 });
+	LobbyChar[2].Init({ 250, 125 }, { 0, 0 });
+	LobbyChar[3].Init({ 355, 125 }, { 0, 0 });
 
 	if (NETWORKMANAGER->GetNetworkType() == HOST)
 	{
 		PlayerFlag = 1;
-		MyChar.Init({ 35, 125 }, { 0, 0 });
+		MyChar = &LobbyChar[0];
 	}
-
-	OtherChar[0].Init({ 145, 125 }, { 0, 0 });
-	OtherChar[1].Init({ 250, 125 }, { 0, 0 });
-	OtherChar[2].Init({ 355, 125 }, { 0, 0 });
-	//OtherChar[0].SetImage(GETIMAGE(LOBBY_DAO_CHAR));
-	//OtherChar[1].SetImage(GETIMAGE(LOBBY_DAO_CHAR));
-	//OtherChar[2].SetImage(GETIMAGE(LOBBY_DAO_CHAR));
 
 	MyCheckImage.Init({ -100, 0 }, { 0, 0 });
 	MyCheckImage.SetImage(GETIMAGE(LOBBY_CHECK2));
+
+	OldClientNum = NETWORKMANAGER->GetClientNum();
 
 	SOUNDMANAGER->AddBGM("sounds/bg/Prepare.mp3");
 	SOUNDMANAGER->PlayBGM();
@@ -63,24 +61,21 @@ void LobbyScene::Render()
 	BazzyFace.TransRender(*FrontBuffer, *BackBuffer, false);
 	DaoFace.TransRender(*FrontBuffer, *BackBuffer, false);
 	MyCheckImage.TransRender(*FrontBuffer, *BackBuffer, false);
-	MyChar.TransRender(*FrontBuffer, *BackBuffer, false);
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 4; i++)
 	{
-		OtherChar[i].TransRender(*FrontBuffer, *BackBuffer, false);
-	}
-
-	if (NETWORKMANAGER->GetClientNum() != 0)
-	{
-		Packet temp; temp.head = COMMAND; temp.Cmd = "NextScene";
-		NETWORKMANAGER->SendPacket(temp);
-		SOUNDMANAGER->Stop();
-		singleton->GetSceneManager()->NextScene();
+		LobbyChar[i].TransRender(*FrontBuffer, *BackBuffer, false);
 	}
 }
 
 void LobbyScene::Update()
 {
+	if (OldClientNum != NETWORKMANAGER->GetClientNum())
+	{
+		NETWORKMANAGER->SetPlayerFlag();
+		OldClientNum = NETWORKMANAGER->GetClientNum();
+	}
+	
 }
 
 void LobbyScene::ResetScene()
@@ -96,41 +91,40 @@ void LobbyScene::ReceiveData(Packet* data)
 			singleton->GetSceneManager()->NextScene();
 		}
 	}
+	else if(data->head == USER)
+	{
+		if(data->Power == 0)
+		{
+			LobbyChar[data->PlayerFlag - 1].SetImage(GETIMAGE(LOBBY_BAZZY_CHAR));
+		}
+		else if (data->Power == 1)
+		{
+			LobbyChar[data->PlayerFlag - 1].SetImage(GETIMAGE(LOBBY_DAO_CHAR));
+		}
+	}
 	else if(data->head == USERINIT)
 	{
 		PlayerFlag = data->PlayerFlag;
 
-		switch (PlayerFlag)
-		{
-		case 2:
-			MyChar.SetPos({ 145, 125 });
-			OtherChar[0].SetPos({ 35, 125 });
-			OtherChar[1].SetPos({ 250, 125 });
-			OtherChar[2].SetPos({ 355, 125 });
-			break;
-		case 3:
-			MyChar.SetPos({ 250, 125 });
-			OtherChar[0].SetPos({ 35, 125 });
-			OtherChar[1].SetPos({ 145, 125 });
-			OtherChar[2].SetPos({ 355, 125 });
-			break;
-		case 4:
-			MyChar.SetPos({ 355, 125 });
-			OtherChar[0].SetPos({ 35, 125 });
-			OtherChar[1].SetPos({ 145, 125 });
-			OtherChar[2].SetPos({ 250, 125 });
-			break;
-		}
+		MyChar = &LobbyChar[PlayerFlag - 1];
 	}
 }
 
-ButtonType LobbyScene::CheckClick(POINT mpos, int flag)
+ButtonType LobbyScene::CheckClick(const POINT mpos, int flag)
 {
 	if (mpos.x < StartColl.right && mpos.x > StartColl.left&&
 		mpos.y < StartColl.bottom && mpos.y > StartColl.top)
 	{
 		StartImage.SetAnimFrameFlag(1);
 		StartImage.UpdateFrame();
+		
+		if (NETWORKMANAGER->GetClientNum() != 0 && flag == 0)
+		{
+			Packet temp; temp.head = COMMAND; temp.Cmd = "NextScene";
+			NETWORKMANAGER->SendPacket(temp);
+			SOUNDMANAGER->Stop();
+			singleton->GetSceneManager()->NextScene();
+		}
 	}
 	else
 	{
@@ -144,20 +138,23 @@ ButtonType LobbyScene::CheckClick(POINT mpos, int flag)
 		if (mpos.x < BazzyFace.GetCollider().right && mpos.x > BazzyFace.GetCollider().left&&
 			mpos.y < BazzyFace.GetCollider().bottom && mpos.y > BazzyFace.GetCollider().top)
 		{
-			MyChar.SetImage(GETIMAGE(LOBBY_BAZZY_CHAR));
+			MyChar->SetImage(GETIMAGE(LOBBY_BAZZY_CHAR));
 			MyCheckImage.SetPos({ 580, 90 });
 			CharFlag = 0;
 
-			//Packet temp; temp.head = USERINIT; temp.Cmd = "NextScene";
-			//NETWORKMANAGER->SendPacket(temp);
+			Packet temp; temp.head = USER; temp.PlayerFlag = PlayerFlag; temp.Power = CharFlag;
+			NETWORKMANAGER->SendPacket(temp);
 		}
 
 		if (mpos.x < DaoFace.GetCollider().right && mpos.x > DaoFace.GetCollider().left&&
 			mpos.y < DaoFace.GetCollider().bottom && mpos.y > DaoFace.GetCollider().top)
 		{
-			MyChar.SetImage(GETIMAGE(LOBBY_DAO_CHAR));
+			MyChar->SetImage(GETIMAGE(LOBBY_DAO_CHAR));
 			MyCheckImage.SetPos({ 705, 90 });
 			CharFlag = 1;
+
+			Packet temp; temp.head = USER; temp.PlayerFlag = PlayerFlag; temp.Power = CharFlag;
+			NETWORKMANAGER->SendPacket(temp);
 		}
 	}
 

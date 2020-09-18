@@ -8,6 +8,8 @@ void SceneManager::Destroy()
 	{
 		delete iter;
 	}
+	
+	Manager.clear();
 }
 
 void SceneManager::NextScene()
@@ -35,9 +37,6 @@ void SceneManager::NextScene()
 		}
 		break;
 	case GAME:
-		//Scene* End = new GameOverScene;
-		//End->InitScene(FrontBuffer, BackBuffer);
-		//Manager.push_back(End);
 		CurrentScene = Manager[GAMEOVER];
 		CurrentScene->SetType(GAMEOVER);
 		CurrentScene->SetID(ID);

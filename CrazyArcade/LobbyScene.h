@@ -13,12 +13,15 @@ private:
 
 	Objects BazzyFace;
 	Objects DaoFace;
-	Objects OtherChar[3];
-	Objects MyChar;
+	POINT CharPos[4];
+	Objects LobbyChar[4];
+	Objects* MyChar;
 
 	RECT StartColl;
 	int CharFlag;
 	int PlayerFlag;
+
+	int OldClientNum;
 public:
 	LobbyScene();
 	~LobbyScene();
@@ -27,6 +30,6 @@ public:
 	void Update();
 	void ResetScene();
 	void ReceiveData(Packet* data);
-	ButtonType CheckClick(POINT mpos, int flag);
+	ButtonType CheckClick(const POINT mpos, int flag);
 };
 
