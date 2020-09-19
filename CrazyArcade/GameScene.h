@@ -29,6 +29,7 @@ public:
 	ButtonType CheckClick(POINT mpos, int flag);
 	void CheckKeyDown();
 	void ReceiveData(Packet* data);
+	void Temp();
 
 	void Render();
 	void Update();

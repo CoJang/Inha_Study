@@ -28,7 +28,7 @@ void SceneManager::NextScene()
 		break;
 	case LOBBY:
 		{
-			Scene* InGame = new GameScene;
+			GameScene* InGame = new GameScene;
 			InGame->InitScene(FrontBuffer, BackBuffer);
 			Manager.push_back(InGame);
 			CurrentScene = Manager[GAME];
