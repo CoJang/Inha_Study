@@ -28,9 +28,10 @@ GameScene::GameScene(int playerFlag, int charFlag)
 	SpawnPoints[3] = { 702, 598 };
 
 	// ==Mute==
+#if !_DEBUG
 	SOUNDMANAGER->AddBGM("sounds/bg/Forest.mp3");
 	SOUNDMANAGER->PlayBGM();
-
+#endif
 	if (NETWORKMANAGER->GetNetworkType() == HOST)
 	{
 		NETWORKMANAGER->SetPlayerFlag();
