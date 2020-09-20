@@ -7,6 +7,8 @@
 class GameScene : public Scene
 {
 private:
+	int PlayerFlag;
+	int CharFlag;
 	RECT ID_Rect;
 	RECT SCORE_Rect;
 	RECT LIFE_Rect;
@@ -21,8 +23,9 @@ private:
 
 	bool ColliderDrawMode;
 	vector<Bomb*> OtherBombs;
+	POINT SpawnPoints[4];
 public:
-	GameScene();
+	GameScene(int playerFlag, int charFlag);
 	~GameScene();
 
 	void DrawButtons();

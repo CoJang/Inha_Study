@@ -5,7 +5,7 @@ extern Singleton* singleton;
 
 LobbyScene::LobbyScene()
 {
-	type = LOBBY;
+	type = LOBBY; CharFlag = -1;
 	MoveWindow(NETWORKMANAGER->GetWindowHandle(), 100, 100, 817, 670, false);
 	LobbyImage.Init({ 0, 0 }, { 0, 0 });
 	LobbyImage.SetImage(GETIMAGE(LOBBY_FRAME));
@@ -87,6 +87,7 @@ void LobbyScene::ReceiveData(Packet* data)
 	{
 		if (strcmp(data->Cmd.c_str(), "NextScene") == 0)
 		{
+			singleton->GetSceneManager()->SaveDatas(PlayerFlag, CharFlag);
 			singleton->GetSceneManager()->NextScene();
 		}
 	}
@@ -119,6 +120,9 @@ ButtonType LobbyScene::CheckClick(const POINT mpos, int flag)
 		
 		if (NETWORKMANAGER->GetClientNum() != 0 && flag == 0)
 		{
+			if (CharFlag == -1) return UNKNOWN;
+			singleton->GetSceneManager()->SaveDatas(PlayerFlag, CharFlag);
+			
 			Packet temp; temp.head = COMMAND; temp.Cmd = "NextScene";
 			NETWORKMANAGER->SendPacket(temp);
 			SOUNDMANAGER->Stop();

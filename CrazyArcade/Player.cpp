@@ -64,7 +64,6 @@ void Player::InitPlayer(POINT pos, POINT pivot, int playerflag, int charflag)
 	ImagePivot = pivot;
 	Pos = pos;
 	PlayerFlag = playerflag;
-
 }
 
 void Player::SetPlayerDir()

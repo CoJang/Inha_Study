@@ -95,18 +95,6 @@ int NetworkManager::SetPlayerFlag()
 	{
 		PacketMsg.head = USERINIT;
 		PacketMsg.PlayerFlag = i + 2;
-		switch (PacketMsg.PlayerFlag)
-		{
-		case 2:
-			PacketMsg.Pos = { 702, 78 };
-			break;
-		case 3:
-			PacketMsg.Pos = { 78, 598 };
-			break;
-		case 4:
-			PacketMsg.Pos = { 702, 598 };
-			break;
-		}
 		PacketMsg.Power = 1;
 		send(ClientList[i], (char*)&PacketMsg, sizeof(Packet), 0);
 	}

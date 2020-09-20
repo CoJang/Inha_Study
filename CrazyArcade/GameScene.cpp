@@ -4,7 +4,8 @@
 
 extern Singleton* singleton;
 
-GameScene::GameScene()
+GameScene::GameScene(int playerFlag, int charFlag)
+	: PlayerFlag(playerFlag), CharFlag(charFlag)
 {
 	type = GAME;
 	ID_Rect = { 0, 15, 200, 35 };
@@ -21,6 +22,11 @@ GameScene::GameScene()
 
 	ColliderDrawMode = false;
 
+	SpawnPoints[0] = { 78, 78 };
+	SpawnPoints[1] = { 702, 78 };
+	SpawnPoints[2] = { 78, 598 };
+	SpawnPoints[3] = { 702, 598 };
+
 	// ==Mute==
 	SOUNDMANAGER->AddBGM("sounds/bg/Forest.mp3");
 	SOUNDMANAGER->PlayBGM();
@@ -28,11 +34,17 @@ GameScene::GameScene()
 	if (NETWORKMANAGER->GetNetworkType() == HOST)
 	{
 		NETWORKMANAGER->SetPlayerFlag();
-		MainChar->InitPlayer({ 78, 78 }, { 0, 0 }, 1, 0); 
-		singleton->GetCollisionManager()->SetPlayer(MainChar);
 	}
 
-	OtherChar->InitPlayer({ 78, 52 }, { 0, 0 }, 2, 1);
+	MainChar->InitPlayer(SpawnPoints[PlayerFlag - 1], { 0, 0 }, PlayerFlag, CharFlag);
+	singleton->GetCollisionManager()->SetPlayer(MainChar);
+
+	Packet temp; temp.head = USERINIT;
+	temp.Pos = MainChar->GetPos();
+	temp.PlayerFlag = PlayerFlag;
+	temp.Power = CharFlag;
+	NETWORKMANAGER->SendPacket(temp);
+	
 	MoveWindow(NETWORKMANAGER->GetWindowHandle(), 100, 100, WIN_WIDTH, WIN_HEIGHT, false);
 }
 
@@ -136,8 +148,7 @@ void GameScene::ReceiveData(Packet* data)
 		return;
 	case USERINIT:
 		{
-			MainChar->InitPlayer(data->Pos, { 0, 0 }, data->PlayerFlag, 0);
-			singleton->GetCollisionManager()->SetPlayer(MainChar);
+			OtherChar->InitPlayer(data->Pos, { 0, 0 }, data->PlayerFlag, data->Power);
 		}
 		return;
 	default:

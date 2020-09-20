@@ -14,7 +14,9 @@ private:
 
 	string IP;
 	wstring ID;
-	int score;
+	
+	int PlayerFlag;
+	int CharFlag;
 public:
 	SceneManager() {};
 	~SceneManager() { Destroy(); };
@@ -26,8 +28,11 @@ public:
 
 	void NextScene();
 	void PrevScene();
-
-	void UpdateScore(int input) { score = input; };
-	int GetScore() { return score; };
+	
+	inline void SaveDatas(int playerFlag, int charFlag)
+	{
+		PlayerFlag = playerFlag;
+		CharFlag = charFlag;
+	};
 };
 

@@ -5,6 +5,10 @@
 class LobbyScene : public Scene
 {
 private:
+	int CharFlag;
+	int PlayerFlag;
+
+	int OldClientNum;
 	Objects MiniMap;
 	Objects LobbyImage;
 	Objects MyCheckImage;
@@ -18,10 +22,6 @@ private:
 	Objects* MyChar;
 
 	RECT StartColl;
-	int CharFlag;
-	int PlayerFlag;
-
-	int OldClientNum;
 public:
 	LobbyScene();
 	~LobbyScene();
@@ -31,5 +31,8 @@ public:
 	void ResetScene();
 	void ReceiveData(Packet* data);
 	ButtonType CheckClick(const POINT mpos, int flag);
+
+	inline int GetPlayerFlag() { return PlayerFlag; }
+	inline int GetCharFlag() { return CharFlag; }
 };
 
