@@ -23,7 +23,7 @@ GameScene::GameScene(int playerFlag, int charFlag)
 	ColliderDrawMode = false;
 
 	SpawnPoints[0] = { 78, 78 };
-	SpawnPoints[1] = { 702, 78 };
+	SpawnPoints[1] = { 26, 78 };
 	SpawnPoints[2] = { 78, 598 };
 	SpawnPoints[3] = { 702, 598 };
 
@@ -138,8 +138,11 @@ void GameScene::ReceiveData(Packet* data)
 	case USER:
 		OtherChar->SetPos(data->Pos);
 		OtherChar->SetPlayerDir(data->Input);
+		
 		if (data->IsTrapped == true)
 			OtherChar->TrapPlayer();
+		if (data->IsDeath == true)
+			OtherChar->KillPlayer();
 		return;
 	case ITEM:
 		{
@@ -150,6 +153,7 @@ void GameScene::ReceiveData(Packet* data)
 	case USERINIT:
 		{
 			OtherChar->InitPlayer(data->Pos, { 0, 0 }, data->PlayerFlag, data->Power);
+			PLAYER_VECTOR.push_back(OtherChar);
 		}
 		return;
 	default:

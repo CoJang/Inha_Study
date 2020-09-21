@@ -124,7 +124,8 @@ void Player::SetPlayerDir()
 
 	if (GetAsyncKeyState(VK_SPACE) & 0x0001)
 	{
-		PutBomb();
+		if(!IsTrapped && !IsDeath)
+			PutBomb();
 	}
 
 	IsKeyDown = false;
@@ -229,12 +230,10 @@ void Player::Collision()
 	{
 		for (Player* otherPlayer : PLAYER_VECTOR)
 		{
+			if (otherPlayer == this) return;
+			
 			if (RRCollision(&ColliderBox, &otherPlayer->GetCollider()))
 			{
-				IsTrapped = false;
-				IsDeath = true;
-
-				cout << "Player " << PlayerFlag << "Death!" << endl;
 				KillPlayer();
 			}
 		}
@@ -318,7 +317,7 @@ void Player::GetItem(int newitem)
 	case ITEM_SKATE:
 		if (Speed <= SPEED_LIMIT)
 		{
-			Speed += 2;
+			Speed++;
 			ItemBag.push_back(&newitem);
 		}
 		break;
@@ -356,6 +355,11 @@ void Player::TrapPlayer()
 
 void Player::KillPlayer()
 {
+	if (IsTrapped && !IsDeath)
+		IsDeath = true;
+	else
+		return;
+	
 	hImage = DeathImage[1];
 	bitImage = DeathBitmap[1];
 
@@ -363,6 +367,9 @@ void Player::KillPlayer()
 	Anim_Speed = 100;
 	ImageScale = 1.2f;
 	ImagePivot = { 0, 0 };
+	
+	cout << "Player " << PlayerFlag << "Death!" << endl;
+	SOUNDMANAGER->PlaySFX("Die");
 }
 
 bool Player::ObstacleCollision(Objects* other)
@@ -448,6 +455,17 @@ void Player::Update()
 {
 	UpdateFrame();
 
+	for (int i = 0; i < BombBag.size(); i++)
+	{
+		BombBag[i]->Update();
+
+		if (BombBag[i]->GetBombState())
+		{
+			delete BombBag[i];
+			BombBag.erase(BombBag.begin() + i);
+		}
+	}
+
 	if (IsDeath) return;
 
 	if (IsTrapped)
@@ -456,10 +474,6 @@ void Player::Update()
 
 		if (DeathTimer >= LifeTime)
 		{
-			IsTrapped = false;
-			IsDeath = true;
-
-			cout << "Player " << PlayerFlag << "Death!" << endl;
 			KillPlayer();
 		}
 	}
@@ -475,17 +489,17 @@ void Player::Update()
 
 	UpdateColliderBox();
 	Collision();
+}
 
-	for (int i = 0; i < BombBag.size(); i++)
+void Player::UpdateFrame()
+{
+	if(IsDeath && Anim_Frame_Cur == Anim_Frame_Max)
 	{
-		BombBag[i]->Update();
-
-		if (BombBag[i]->GetBombState())
-		{
-			delete BombBag[i];
-			BombBag.erase(BombBag.begin() + i);
-		}
+		return;
 	}
+	
+	AnimObject::UpdateFrame();
+
 }
 
 void Player::Render(HDC front, HDC back, bool ColliderDraw)

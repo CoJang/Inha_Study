@@ -42,6 +42,7 @@ public:
 	void InitPlayer(POINT pos, POINT pivot, int playerflag, int charflag);
 
 	void Update();
+	void UpdateFrame();
 	void Render(HDC front, HDC back, bool ColliderDraw);
 
 	void RewindMove();

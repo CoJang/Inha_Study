@@ -101,41 +101,58 @@ bool ImageManager::LoadingImages()
 	}
 
 // LOBBY
-	path = TEXT("images/Frame/Waiting.bmp");
-	Images[LOBBY_FRAME] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[LOBBY_FRAME] == NULL) return false;
+	{
+		path = TEXT("images/Frame/Waiting.bmp");
+		Images[LOBBY_FRAME] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[LOBBY_FRAME] == NULL) return false;
 
-	path = TEXT("images/map/forest/minimap.bmp");
-	Images[LOBBY_MINIMAP_FOREST] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[LOBBY_MINIMAP_FOREST] == NULL) return false;
+		path = TEXT("images/map/forest/minimap.bmp");
+		Images[LOBBY_MINIMAP_FOREST] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[LOBBY_MINIMAP_FOREST] == NULL) return false;
 
-	path = TEXT("images/Frame/check.bmp");
-	Images[LOBBY_CHECK1] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[LOBBY_CHECK1] == NULL) return false;
+		path = TEXT("images/Frame/check.bmp");
+		Images[LOBBY_CHECK1] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[LOBBY_CHECK1] == NULL) return false;
 
-	path = TEXT("images/Frame/check2.bmp");
-	Images[LOBBY_CHECK2] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[LOBBY_CHECK2] == NULL) return false;
+		path = TEXT("images/Frame/check2.bmp");
+		Images[LOBBY_CHECK2] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[LOBBY_CHECK2] == NULL) return false;
 
-	path = TEXT("images/Frame/start.bmp");
-	Images[LOBBY_START] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[LOBBY_START] == NULL) return false;
+		path = TEXT("images/Frame/start.bmp");
+		Images[LOBBY_START] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[LOBBY_START] == NULL) return false;
 
-	path = TEXT("images/Frame/face01.bmp");
-	Images[LOBBY_BAZZY_FACE] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[LOBBY_BAZZY_FACE] == NULL) return false;
+		path = TEXT("images/Frame/face01.bmp");
+		Images[LOBBY_BAZZY_FACE] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[LOBBY_BAZZY_FACE] == NULL) return false;
 
-	path = TEXT("images/Frame/face02.bmp");
-	Images[LOBBY_DAO_FACE] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[LOBBY_DAO_FACE] == NULL) return false;
+		path = TEXT("images/Frame/face02.bmp");
+		Images[LOBBY_DAO_FACE] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[LOBBY_DAO_FACE] == NULL) return false;
 
-	path = TEXT("images/Frame/friend_01.bmp");
-	Images[LOBBY_BAZZY_CHAR] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[LOBBY_BAZZY_CHAR] == NULL) return false;
+		path = TEXT("images/Frame/friend_01.bmp");
+		Images[LOBBY_BAZZY_CHAR] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[LOBBY_BAZZY_CHAR] == NULL) return false;
 
-	path = TEXT("images/Frame/friend_03.bmp");
-	Images[LOBBY_DAO_CHAR] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	if (Images[LOBBY_DAO_CHAR] == NULL) return false;
+		path = TEXT("images/Frame/friend_03.bmp");
+		Images[LOBBY_DAO_CHAR] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[LOBBY_DAO_CHAR] == NULL) return false;
+	}
+	
+// IN GAME
+	{
+		path = TEXT("images/Frame/win.bmp");
+		Images[GAME_WIN] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[GAME_WIN] == NULL) return false;
+		
+		path = TEXT("images/Frame/lose.bmp");
+		Images[GAME_LOSE] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[GAME_LOSE] == NULL) return false;
+		
+		path = TEXT("images/Frame/draw.bmp");
+		Images[GAME_DRAW] = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (Images[GAME_DRAW] == NULL) return false;
+	}
 
 	return true;
 }
