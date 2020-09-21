@@ -61,6 +61,12 @@ void Bomb::Update()
 	Start.y = Anim_Frame_Flag * Sprite_Size.y;
 
 	UpdateFrame();
+	
+	if(!IsColliderActive)
+	{
+		if (!RRCollision(&PLAYER->GetCollider(), &ColliderBox))
+			IsColliderActive = true;
+	}
 
 	if (!BombWaves.empty())
 		for (AnimObject* Waves : BombWaves)
@@ -107,7 +113,6 @@ void Bomb::UpdateFrame()
 	{
 		Anim_Frame_Cur++;
 		Anim_Timer = 0;
-		IsColliderActive = true;
 	}
 
 	if (Anim_Frame_Cur > Anim_Frame_Max)

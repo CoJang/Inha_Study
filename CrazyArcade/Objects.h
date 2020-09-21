@@ -16,7 +16,7 @@ protected:
 	bool IsColliderActive;
 public:
 	Objects();
-	virtual ~Objects() { };
+	virtual ~Objects() = default;
 
 	virtual void Init(wstring path, POINT pos, POINT pivot);
 

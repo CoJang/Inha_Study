@@ -88,6 +88,7 @@ void LobbyScene::ReceiveData(Packet* data)
 		if (strcmp(data->Cmd.c_str(), "NextScene") == 0)
 		{
 			singleton->GetSceneManager()->SaveDatas(PlayerFlag, CharFlag);
+			SOUNDMANAGER->Stop();
 			singleton->GetSceneManager()->NextScene();
 		}
 	}
