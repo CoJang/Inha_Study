@@ -20,10 +20,13 @@ private:
 	Player* MainChar;
 	Player* OtherChar;
 	Map* map;
+	Objects* OutcomeImage;
 
 	bool ColliderDrawMode;
 	vector<Bomb*> OtherBombs;
 	POINT SpawnPoints[4];
+	
+	bool IsGameEnd;
 public:
 	GameScene(int playerFlag, int charFlag);
 	~GameScene();

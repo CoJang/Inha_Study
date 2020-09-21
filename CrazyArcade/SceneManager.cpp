@@ -57,8 +57,11 @@ void SceneManager::PrevScene()
 	case TITLE:
 		return;
 	case GAME:
-		CurrentScene = Manager[TITLE];
-		CurrentScene->SetType(TITLE);
+		delete CurrentScene;
+		Manager.erase(Manager.begin() + GAME);
+		CurrentScene = Manager[LOBBY];
+		CurrentScene->ResetScene();
+		CurrentScene->SetType(LOBBY);
 		CurrentScene->SetID(ID);
 		break;
 	case GAMEOVER:

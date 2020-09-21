@@ -11,3 +11,12 @@ CollisionManager::~CollisionManager()
 {
 
 }
+
+void CollisionManager::ResetCollisionManager()
+{
+	HitableBlocks.clear();
+	ObstacleBlocks.clear();
+	Items.clear();
+	OtherBombs.clear();
+	OtherPlayers.clear();
+}

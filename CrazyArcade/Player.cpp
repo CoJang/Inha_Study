@@ -370,6 +370,10 @@ void Player::KillPlayer()
 	
 	cout << "Player " << PlayerFlag << "Death!" << endl;
 	SOUNDMANAGER->PlaySFX("Die");
+
+	Packet temp; temp.head = COMMAND; temp.PlayerFlag = PlayerFlag;
+	temp.Cmd = "LOSE";
+	NETWORKMANAGER->SendPacket(temp);
 }
 
 bool Player::ObstacleCollision(Objects* other)

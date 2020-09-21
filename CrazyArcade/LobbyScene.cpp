@@ -79,6 +79,26 @@ void LobbyScene::Update()
 
 void LobbyScene::ResetScene()
 {
+	type = LOBBY; CharFlag = -1;
+	MoveWindow(NETWORKMANAGER->GetWindowHandle(), 100, 100, 817, 670, false);
+
+	if (NETWORKMANAGER->GetNetworkType() == HOST)
+	{
+		PlayerFlag = 1;
+		MyChar = &LobbyChar[0];
+	}
+
+	MyCheckImage.SetPos({ -100, 0 });
+
+	for(int i = 0; i < 4; i++)
+	{
+		LobbyChar[i].SetImage(NULL);
+	}
+
+	OldClientNum = NETWORKMANAGER->GetClientNum();
+
+	SOUNDMANAGER->AddBGM("sounds/bg/Prepare.mp3");
+	SOUNDMANAGER->PlayBGM();
 }
 
 void LobbyScene::ReceiveData(Packet* data)

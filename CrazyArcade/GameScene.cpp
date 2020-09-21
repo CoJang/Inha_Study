@@ -19,19 +19,21 @@ GameScene::GameScene(int playerFlag, int charFlag)
 	map = new Map;
 	MainChar = new Player;
 	OtherChar = new Player;
+	OutcomeImage = new Objects;
+	OutcomeImage->Init({ 300, 330 }, { 0, 0 });
 
 	ColliderDrawMode = false;
+	IsGameEnd = false;
 
 	SpawnPoints[0] = { 78, 78 };
-	SpawnPoints[1] = { 26, 78 };
+	SpawnPoints[1] = { 702, 78 };
 	SpawnPoints[2] = { 78, 598 };
 	SpawnPoints[3] = { 702, 598 };
 
 	// ==Mute==
-#if !_DEBUG
 	SOUNDMANAGER->AddBGM("sounds/bg/Forest.mp3");
 	SOUNDMANAGER->PlayBGM();
-#endif
+	
 	if (NETWORKMANAGER->GetNetworkType() == HOST)
 	{
 		NETWORKMANAGER->SetPlayerFlag();
@@ -52,7 +54,11 @@ GameScene::GameScene(int playerFlag, int charFlag)
 GameScene::~GameScene()
 {
 	delete MainChar;
+	delete OtherChar;
 	delete map;
+	delete OutcomeImage;
+
+	singleton->GetCollisionManager()->ResetCollisionManager();
 }
 
 void GameScene::Render()
@@ -61,6 +67,8 @@ void GameScene::Render()
 	map->BackRender(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 	MainChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 	OtherChar->Render(*FrontBuffer, *BackBuffer, ColliderDrawMode);
+	
+	OutcomeImage->TransRender(*FrontBuffer, *BackBuffer, ColliderDrawMode);
 
 	for (Bomb* B : OtherBombs)
 	{
@@ -75,6 +83,12 @@ void GameScene::Update()
 	MainChar->Update();
 	OtherChar->Update();
 	map->Update();
+
+	if(IsGameEnd && Timer > 5000)
+	{
+		ResetScene();
+		singleton->GetSceneManager()->PrevScene();
+	}
 
 	for (int i = 0; i < OtherBombs.size(); i++)
 	{
@@ -93,6 +107,7 @@ void GameScene::ResetScene()
 	score = 0;
 	myFont = CreateFont(20, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, TEXT("Valorant"));
 	Timer = 0;
+	IsGameEnd = false;
 }
 
 void GameScene::DrawButtons()
@@ -127,6 +142,22 @@ void GameScene::ReceiveData(Packet* data)
 	switch (data->head)
 	{
 	case COMMAND:
+		if (strcmp(data->Cmd.c_str(), "LOSE") == 0)
+		{
+			SOUNDMANAGER->Stop();
+			if(data->PlayerFlag == PlayerFlag)
+			{
+				OutcomeImage->SetImage(GETIMAGE(GAME_LOSE));
+				SOUNDMANAGER->PlaySFX("Lose");
+			}
+			else
+			{
+				OutcomeImage->SetImage(GETIMAGE(GAME_WIN));
+				SOUNDMANAGER->PlaySFX("Win");
+			}
+			IsGameEnd = true;
+			Timer = 0;
+		}
 		return;
 	case BOMB:
 		{
@@ -142,7 +173,9 @@ void GameScene::ReceiveData(Packet* data)
 		if (data->IsTrapped == true)
 			OtherChar->TrapPlayer();
 		if (data->IsDeath == true)
+		{
 			OtherChar->KillPlayer();
+		}
 		return;
 	case ITEM:
 		{

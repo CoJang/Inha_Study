@@ -17,6 +17,7 @@ public:
 	CollisionManager();
 	~CollisionManager();
 
+	void ResetCollisionManager();
 	inline void SetPlayer(Player* instance) { MainChar = instance; };
 	inline void SetMap(Map* instance) { map = instance; };
 	inline Player* GetPlayer() { return MainChar; };
