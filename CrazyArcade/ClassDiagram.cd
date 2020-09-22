@@ -7,36 +7,36 @@
       <FileName>Singleton.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GameScene" Collapsed="true">
-    <Position X="0.5" Y="6.75" Width="1.5" />
+  <Class Name="GameScene">
+    <Position X="0.5" Y="6.75" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AgQBEAAAAAAAIAACAAAIDAEAAoAAAAAAgBIAAEAEgUA=</HashCode>
+      <HashCode>BgQBEAAAAAAAIAICAAAIDAEAAoAAAAAAghICAEAkgUA=</HashCode>
       <FileName>GameScene.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="LobbyScene" Collapsed="true">
-    <Position X="2.75" Y="6.75" Width="1.5" />
+  <Class Name="LobbyScene">
+    <Position X="2.75" Y="6.75" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AwUAIAAAQCAAIAABIAAAAAAAAAAAAAAAABIAACAQAAI=</HashCode>
+      <HashCode>AwUAIAgAQCEAIQIAKIAAgAAAAAAAAAAAAFIACCAwAAA=</HashCode>
       <FileName>LobbyScene.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Scene" Collapsed="true">
-    <Position X="2.75" Y="5.5" Width="1.5" />
+    <Position X="2.75" Y="5.5" Width="4.5" />
     <TypeIdentifier>
       <HashCode>AgwIAAAIAgAAoAAAgAABgAAAYIABAAEQABIAAEABgAA=</HashCode>
       <FileName>Scene.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="TitleScene" Collapsed="true">
-    <Position X="5" Y="6.75" Width="1.5" />
+    <Position X="5" Y="6.75" Width="2.75" />
     <TypeIdentifier>
       <HashCode>BAwAAAAAAAAAIMAAAAAAAIAIYAAAAIAAABIAAEAEgEA=</HashCode>
       <FileName>TitleScene.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Block" Collapsed="true">
-    <Position X="2.75" Y="4.25" Width="1.5" />
+    <Position X="0.5" Y="4" Width="4.75" />
     <TypeIdentifier>
       <HashCode>AAREAAAFAAAAAAAAAAACAARAAAAAAAAAABAAAAAAAAE=</HashCode>
       <FileName>Block.h</FileName>
@@ -50,44 +50,44 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Player" Collapsed="true">
-    <Position X="5" Y="4.25" Width="1.5" />
+    <Position X="3" Y="4.25" Width="4.25" />
     <TypeIdentifier>
-      <HashCode>AAQAAABIAIAAAEAgAQQAgAAFIAAhABgCADABASAhIBo=</HashCode>
+      <HashCode>AAQAAABJAIAAAEAgAQQAgAAFIAAhABgCADABASAhIBo=</HashCode>
       <FileName>Player.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Item" Collapsed="true">
-    <Position X="7.25" Y="4.25" Width="1.5" />
+    <Position X="7.25" Y="4.25" Width="4.25" />
     <TypeIdentifier>
       <HashCode>AAQAAEAAACAAAAAAAAAAAAAEAAAAEAEAAQAAAAEEAAA=</HashCode>
       <FileName>Item.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Objects" Collapsed="true">
-    <Position X="3.75" Y="1.5" Width="1.5" />
+    <Position X="7.5" Y="1.5" Width="4.75" />
     <TypeIdentifier>
       <HashCode>CJQAAAAEAAAAAAAACCIAIAkQgOCAiAEAADACAAAAAAA=</HashCode>
       <FileName>Objects.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="AnimObject" Collapsed="true">
-    <Position X="3.75" Y="2.75" Width="1.5" />
+    <Position X="2" Y="2.75" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAYAAIABoCAQCAQACAAAAACAAAQAAAACAJAgIAAAAAA=</HashCode>
       <FileName>Objects.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Bomb" Collapsed="true">
-    <Position X="0.5" Y="4.25" Width="1.5" />
+    <Position X="0.5" Y="4.25" Width="3.5" />
     <TypeIdentifier>
-      <HashCode>AAQgAAAJAAAQAIAAAIAAAAAEAAAAAAJBIBgAgAAMAAA=</HashCode>
+      <HashCode>AAQgAAAIAAAQAIAAAIAAAAAEAAAAAAJBIBgAgAAMAAA=</HashCode>
       <FileName>Bomb.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CollisionManager" Collapsed="true">
     <Position X="16.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABAAEAAgQAAASBAAAAEAAAEAAAABAgAAgAwAAACAAQQ=</HashCode>
+      <HashCode>CBAAEAAgQAAASBAAAAEAAAEAAAABAgAAgAwAAACAAQQ=</HashCode>
       <FileName>CollisionManager.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -108,7 +108,7 @@
   <Class Name="SceneManager" Collapsed="true">
     <Position X="9.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAARAAAAAAgEAAAAAJAAAgJABABAAAAAAAgAABAAQ=</HashCode>
+      <HashCode>AAAAARAAAAAAgEIAAAAJAAAQJABABAAAAAAAAAAhAAQ=</HashCode>
       <FileName>SceneManager.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -136,7 +136,7 @@
   <Enum Name="ImageTag" Collapsed="true">
     <Position X="13.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EFAACAAYAAAAIAAAAAEAICIAAAAAAJAAQAIAAgKAEgA=</HashCode>
+      <HashCode>EBCBSAAYAAAAIAAAAQEAICIAIAAAAJAAQAMAAkKCEhA=</HashCode>
       <FileName>ImageManager.h</FileName>
     </TypeIdentifier>
   </Enum>

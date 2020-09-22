@@ -105,20 +105,6 @@ void Bomb::Update()
 		}
 }
 
-void Bomb::UpdateFrame()
-{
-	Anim_Timer += ElapseTime;
-
-	if (Anim_Timer > Anim_Speed)
-	{
-		Anim_Frame_Cur++;
-		Anim_Timer = 0;
-	}
-
-	if (Anim_Frame_Cur > Anim_Frame_Max)
-		Anim_Frame_Cur = Anim_Frame_Min;
-}
-
 void Bomb::Render(HDC front, HDC back, bool colliderdraw)
 {
 	AnimObject::Render(front, back, colliderdraw);

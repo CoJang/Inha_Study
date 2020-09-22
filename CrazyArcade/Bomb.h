@@ -23,7 +23,6 @@ public:
 	~Bomb();
 
 	void Update();
-	void UpdateFrame();
 	void Render(HDC, HDC, bool);
 	POINT RePosition(POINT pos);
 	void Explosion();

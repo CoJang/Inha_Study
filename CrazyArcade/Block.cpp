@@ -44,6 +44,7 @@ void Block::CreateItem()
 	if (RandomNum > ITEM_FLASK) return;
 
 	if (NETWORKMANAGER->GetNetworkType() != HOST) return;
+	
 	Packet temp; temp.head = ITEM; temp.Pos = Pos; temp.Power = RandomNum;
 	NETWORKMANAGER->SendPacket(temp);
 	Item* tempItem = new Item(Pos, RandomNum);
